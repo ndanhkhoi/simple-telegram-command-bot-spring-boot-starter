@@ -90,9 +90,14 @@ publishing {
 }
 
 jar {
+    archiveBaseName = 'simple-telegram-command-bot-spring-boot-starter'
+}
+
+task fatJar(type: Jar) {
+    archiveBaseName = 'simple-telegram-command-bot-spring-boot-starter-full-dependencies'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from {
         configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
     }
-    archiveBaseName = 'simple-telegram-command-bot-spring-boot-starter'
+    with jar
 }
