@@ -25,6 +25,7 @@ import reactor.core.publisher.Mono;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -69,7 +70,7 @@ public class DefaultResource {
         boolean isMessageInGroup = TelegramMessageUtils.isMessageInGroup(update.getMessage());
         String title = TelegramMessageUtils.wrapByTag("List of available commands for this chat: ", TelegramTextStyled.BOLD);
         AtomicInteger index = new AtomicInteger(1);
-        List<String>  botOwnerChatId = Arrays.asList(botProperties.getBotOwnerChatId().split(","));
+        List<String>  botOwnerChatId = StringUtils.isNotBlank(botProperties.getBotOwnerChatId()) ? Arrays.asList(botProperties.getBotOwnerChatId().split(",")) :  new ArrayList<>();
         Flux<String> result =  simpleTelegramLongPollingCommandBot.getAvailableBotCommands(update)
                 .filter(botBotCommand -> !botBotCommand.getOnlyForOwner() || botOwnerChatId.contains(String.valueOf(chatId)))
                 .map(botBotCommand -> described(botBotCommand, isMessageInGroup))
