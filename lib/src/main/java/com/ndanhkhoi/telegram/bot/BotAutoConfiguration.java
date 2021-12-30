@@ -9,7 +9,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
@@ -25,12 +24,12 @@ public class BotAutoConfiguration {
     private final BotProperties botProperties;
 
     @Bean
-    TelegramLongPollingBot telegramLongPollingBot() throws TelegramApiException {
-        TelegramLongPollingBot telegramLongPollingBot = new SimpleTelegramLongPollingCommandBot(botProperties, applicationContext);
+    SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot() throws TelegramApiException {
+        SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot = new SimpleTelegramLongPollingCommandBot(botProperties, applicationContext);
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-        telegramBotsApi.registerBot(telegramLongPollingBot);
+        telegramBotsApi.registerBot(simpleTelegramLongPollingCommandBot);
         log.info("Spring Boot Telegram Command Bot Auto Configuration by @ndanhkhoi %28%u256F%B0%u25A1%B0%uFF09%u256F%uFE35%20%u253B%u2501%u253B");
-        return telegramLongPollingBot;
+        return simpleTelegramLongPollingCommandBot;
     }
 
 }
