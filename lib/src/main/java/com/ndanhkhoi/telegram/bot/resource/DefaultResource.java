@@ -42,7 +42,7 @@ public class DefaultResource {
     private final SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot;
     private final BotProperties botProperties;
 
-    @Value("${logging.file.name}")
+    @Value("${logging.file.name:#{null}}}")
     private String logFile;
 
     private String described(BotCommand botBotCommand, boolean isMessageInGroup) {
