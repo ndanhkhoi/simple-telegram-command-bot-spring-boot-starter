@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 import org.springframework.context.ApplicationContext;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMember;
@@ -53,8 +55,10 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
         }
         String[] packagesToScan = sb.toString().split(",");
 
+        log.info("Bot route's ackages: {}", Arrays.asList(packagesToScan));
+
         Flux.fromArray(packagesToScan)
-                .map(Reflections::new)
+                .map(packageToScan -> new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forPackage(packageToScan))))
                 .flatMap(reflections -> Flux.fromIterable(reflections.get(Scanners.TypesAnnotated.with(BotRoute.class).asClass())))
                 .flatMap(clazz -> Flux.fromArray(clazz.getDeclaredMethods()))
                 .filter(method -> Modifier.isPublic(method.getModifiers()) && method.getDeclaredAnnotationsByType(CommandMapping.class).length > 0)
