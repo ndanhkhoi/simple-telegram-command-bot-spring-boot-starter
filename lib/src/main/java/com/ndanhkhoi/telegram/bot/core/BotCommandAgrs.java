@@ -39,13 +39,13 @@ public class BotCommandAgrs {
     /**
      * Id of user sent a message
      * */
-    @AnnotaionArg(SendUsername.class)
+    @AnnotaionArg(SendUserId.class)
     private Long sendUserId;
 
     /**
      * Username of user sent a message
      * */
-    @AnnotaionArg(SendUserId.class)
+    @AnnotaionArg(SendUsername.class)
     private String sendUsername;
 
     /**
