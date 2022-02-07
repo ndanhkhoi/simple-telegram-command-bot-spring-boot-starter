@@ -188,11 +188,11 @@ public class UpdateSubscriber implements Consumer<Update> {
                 .build();
     }
 
-    private void handleCmd(BotCommand botBotCommand, BotCommandAgrs botCommandAgrs, Message message) {
+    private void handleCmd(BotCommand botCommand, BotCommandAgrs botCommandAgrs, Message message) {
         try {
-            Object[] agrs = getBotResourceArgs(botBotCommand.getMethod(), botCommandAgrs);
-            Object resource = applicationContext.getBean(botBotCommand.getMethod().getDeclaringClass());
-            botBotCommand.accept(resource, agrs, botCommandAgrs, telegramLongPollingBot);
+            Object[] agrs = getBotResourceArgs(botCommand.getMethod(), botCommandAgrs);
+            Object resource = applicationContext.getBean(botCommand.getMethod().getDeclaringClass());
+            botCommand.accept(resource, agrs, botCommandAgrs, telegramLongPollingBot);
         }
         catch (Exception ex) {
             log.error("Error!", ex);
@@ -232,7 +232,7 @@ public class UpdateSubscriber implements Consumer<Update> {
                 telegramLongPollingBot
                         .getBotCommandByAgrs(botCommandAgrs)
                         .subscribeOn(Schedulers.parallel())
-                        .subscribe(botBotCommand -> handleCmd(botBotCommand, finalBotCommandAgrs, message));
+                        .subscribe(botCommand -> handleCmd(botCommand, finalBotCommandAgrs, message));
             }
         }
     }

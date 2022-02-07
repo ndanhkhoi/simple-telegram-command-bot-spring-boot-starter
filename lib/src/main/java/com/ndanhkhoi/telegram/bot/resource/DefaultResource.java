@@ -46,18 +46,18 @@ public class DefaultResource {
     @Value("${logging.file.name:#{null}}")
     private String logFile;
 
-    private String described(BotCommand botBotCommand, boolean isMessageInGroup) {
+    private String described(BotCommand botCommand, boolean isMessageInGroup) {
         StringBuilder result = new StringBuilder();
-        StringBuilder cmd = new StringBuilder(botBotCommand.getCmd());
-        if (StringUtils.isNotBlank(botBotCommand.getBodyDescription())) {
-            cmd.append(" [").append(botBotCommand.getBodyDescription()).append("]");
+        StringBuilder cmd = new StringBuilder(botCommand.getCmd());
+        if (StringUtils.isNotBlank(botCommand.getBodyDescription())) {
+            cmd.append(" [").append(botCommand.getBodyDescription()).append("]");
         }
         result.append(TelegramMessageUtils.wrapByTag(cmd.toString(), TelegramTextStyled.CODE));
-        if (StringUtils.isNotBlank(botBotCommand.getDescription())) {
-            result.append(": ").append(botBotCommand.getDescription());
+        if (StringUtils.isNotBlank(botCommand.getDescription())) {
+            result.append(": ").append(botCommand.getDescription());
         }
         if (isMessageInGroup) {
-            if (botBotCommand.getOnlyAdmin()) {
+            if (botCommand.getOnlyAdmin()) {
                 result.append(" (").append("only admin group has permission").append(")");
             }
         }
@@ -72,8 +72,8 @@ public class DefaultResource {
         AtomicInteger index = new AtomicInteger(1);
         List<String>  botOwnerChatId = StringUtils.isNotBlank(botProperties.getBotOwnerChatId()) ? Arrays.asList(botProperties.getBotOwnerChatId().split(",")) :  new ArrayList<>();
         Flux<String> result =  simpleTelegramLongPollingCommandBot.getAvailableBotCommands(update)
-                .filter(botBotCommand -> !botBotCommand.getOnlyForOwner() || botOwnerChatId.contains(String.valueOf(chatId)))
-                .map(botBotCommand -> described(botBotCommand, isMessageInGroup))
+                .filter(botCommand -> !botCommand.getOnlyForOwner() || botOwnerChatId.contains(String.valueOf(chatId)))
+                .map(botCommand -> described(botCommand, isMessageInGroup))
                 .sort()
                 .map(described -> index.getAndIncrement() + ". " + described);
         return Flux.merge(Flux.just(title), result)
