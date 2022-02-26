@@ -29,7 +29,7 @@ public class BotAutoConfiguration {
         SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot = new SimpleTelegramLongPollingCommandBot(botProperties, applicationContext);
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         telegramBotsApi.registerBot(simpleTelegramLongPollingCommandBot);
-        log.info("Spring Boot Telegram Command Bot Auto Configuration by @ndanhkhoi %28%u256F%B0%u25A1%B0%uFF09%u256F%uFE35%20%u253B%u2501%u253B");
+        log.info("Spring Boot Telegram Command Bot Auto Configuration by @ndanhkhoi");
         return simpleTelegramLongPollingCommandBot;
     }
 

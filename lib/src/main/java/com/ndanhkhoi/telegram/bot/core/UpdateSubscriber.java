@@ -5,10 +5,10 @@ import com.google.common.collect.ImmutableMap;
 import com.ndanhkhoi.telegram.bot.annotation.AnnotaionArg;
 import com.ndanhkhoi.telegram.bot.annotation.TypeArg;
 import com.ndanhkhoi.telegram.bot.constant.CommonConstant;
-import com.ndanhkhoi.telegram.bot.utils.CommonUtils;
 import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -62,6 +62,12 @@ public class UpdateSubscriber implements Consumer<Update> {
                 .findFirst();
     }
 
+    @SneakyThrows
+    private <T> Object getProperty(T bean, String name) {
+        return PropertyUtils.getProperty(bean, name);
+    }
+
+    @SneakyThrows
     private Object[] getBotResourceArgs(Method method, BotCommandAgrs botCommandAgrs) {
         Parameter[] parameters = method.getParameters();
         Object[] args = new Object[parameters.length];
@@ -73,7 +79,7 @@ public class UpdateSubscriber implements Consumer<Update> {
                         Class<?> fieldType = field.getType();
                         OptionalInt idx = getIndexArgByType(parameters, fieldType);
                         if (idx.isPresent()) {
-                            args[idx.getAsInt()] = CommonUtils.getProperty(botCommandAgrs, field.getName());
+                            args[idx.getAsInt()] = getProperty(botCommandAgrs, field.getName());
                         }
                     }
                     AnnotaionArg[] annotaionArgs = field.getDeclaredAnnotationsByType(AnnotaionArg.class);
@@ -81,7 +87,7 @@ public class UpdateSubscriber implements Consumer<Update> {
                         AnnotaionArg annotaionArg = annotaionArgs[0];
                         OptionalInt idx = getIndexArgByAnnotation(parameters, annotaionArg.value());
                         if (idx.isPresent()) {
-                            args[idx.getAsInt()] = CommonUtils.getProperty(botCommandAgrs, field.getName());
+                            args[idx.getAsInt()] = getProperty(botCommandAgrs, field.getName());
                         }
                     }
                 });
@@ -96,9 +102,9 @@ public class UpdateSubscriber implements Consumer<Update> {
                     .put("fileId", sticker.getFileId())
                     .put("setName", sticker.getSetName())
                     .build();
-            String stickerJson = stickerInfo.toString();
-            log.info("Received Sticker: -> {}", stickerJson);
-            return stickerJson;
+            String stickerrInfo = stickerInfo.toString();
+            log.info("Received Sticker: -> {}", stickerrInfo);
+            return stickerrInfo;
         }
         return null;
     }
@@ -123,7 +129,7 @@ public class UpdateSubscriber implements Consumer<Update> {
             String textToSend = "<code>" + messageInfo + "</code>\n\n" + messageText;
             String stickerJson = stickerDetect(message);
             if (StringUtils.isNotEmpty(stickerJson)) {
-                textToSend += "✔ Sticker Detected: \n" + stickerJson;
+                textToSend += "[x] Sticker Detected: \n" + stickerJson;
             }
 
             if (StringUtils.isNotBlank(botProperties.getLoggerChatId())) {
