@@ -81,13 +81,8 @@ This library uses following dependencies:
 4. [Reactor Core](https://github.com/reactor/reactor-core)
 5. [Reflections](https://github.com/ronmamo/reflections)
 6. [Apache Commons Lang](https://github.com/apache/commons-lang)
-7. [Apache Commons Text](https://github.com/apache/commons-text)
-8. [Apache Commons IO](https://github.com/apache/commons-io)
-9. [Apache Commons Collections](https://github.com/apache/commons-collections)
-10. [Apache Commons BeanUtils](https://github.com/apache/commons-beanutils)
-11. [Apache Commons Codec](https://github.com/apache/commons-codec)
-12. [Gson](https://github.com/google/gson)
-13. [Gson Javatime Serialisers](https://github.com/gkopff/gson-javatime-serialisers)
+7. [Apache Commons IO](https://github.com/apache/commons-io)
+8. [Apache Commons BeanUtils](https://github.com/apache/commons-beanutils)
 
 ## Telegram Bot API
 This library use [Telegram bot API](https://core.telegram.org/bots), you can find more information following the link.
