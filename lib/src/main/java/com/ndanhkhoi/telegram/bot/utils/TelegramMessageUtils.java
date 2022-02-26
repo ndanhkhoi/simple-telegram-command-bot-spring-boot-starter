@@ -15,16 +15,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @UtilityClass
 public final class TelegramMessageUtils {
 
-    public static String getCommandAgrs(String text, String cmd) {
-        try {
-            return text.split(cmd + " ")[1];
-        }
-        catch (Exception ex) {
-            log.error("Error!", ex);
-            return "";
-        }
-    }
-
     public static String wrapByTag(String raw, TelegramTextStyled styled) {
         return styled.getOpenTag() + raw + styled.getCloseTag();
     }

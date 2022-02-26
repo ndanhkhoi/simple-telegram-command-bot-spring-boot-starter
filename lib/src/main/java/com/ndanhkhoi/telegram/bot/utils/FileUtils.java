@@ -3,6 +3,7 @@ package com.ndanhkhoi.telegram.bot.utils;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 
 import java.io.ByteArrayInputStream;
@@ -27,6 +28,13 @@ public final class FileUtils {
     public static InputFile getInputFile(byte[] bytes, String fileName) {
         InputFile inputFile = new InputFile();
         inputFile.setMedia(new ByteArrayInputStream(bytes), fileName);
+        return inputFile;
+    }
+
+    @SneakyThrows
+    public static InputFile getInputFile(ByteArrayResource resource) {
+        InputFile inputFile = new InputFile();
+        inputFile.setMedia(resource.getInputStream(), resource.getFilename());
         return inputFile;
     }
 

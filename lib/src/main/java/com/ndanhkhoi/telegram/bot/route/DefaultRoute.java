@@ -1,4 +1,4 @@
-package com.ndanhkhoi.telegram.bot.resource;
+package com.ndanhkhoi.telegram.bot.route;
 
 import com.ndanhkhoi.telegram.bot.annotation.BotRoute;
 import com.ndanhkhoi.telegram.bot.annotation.ChatId;
@@ -6,7 +6,7 @@ import com.ndanhkhoi.telegram.bot.annotation.CommandDescription;
 import com.ndanhkhoi.telegram.bot.annotation.CommandMapping;
 import com.ndanhkhoi.telegram.bot.constant.MediaType;
 import com.ndanhkhoi.telegram.bot.constant.TelegramTextStyled;
-import com.ndanhkhoi.telegram.bot.core.BotCommand;
+import com.ndanhkhoi.telegram.bot.model.BotCommand;
 import com.ndanhkhoi.telegram.bot.core.BotProperties;
 import com.ndanhkhoi.telegram.bot.core.SimpleTelegramLongPollingCommandBot;
 import com.ndanhkhoi.telegram.bot.utils.FileUtils;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 @BotRoute
 @Slf4j
 @RequiredArgsConstructor
-public class DefaultResource {
+public class DefaultRoute {
 
     private final SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot;
     private final BotProperties botProperties;
@@ -82,7 +82,7 @@ public class DefaultResource {
     }
 
     @CommandDescription("Get an application log file")
-    @CommandMapping(value = "/getLogFile", sendFile = MediaType.DOCUMENT, allowAllUserAccess = true, onlyForOwner = true)
+    @CommandMapping(value = "/getLogFile", sendFile = MediaType.DOCUMENT, onlyForOwner = true)
     public Object getLog(Update update, @ChatId Long chatId) {
         if (botProperties.getBotOwnerChatId().contains(String.valueOf(chatId))) {
             if (StringUtils.isNotBlank(logFile)) {

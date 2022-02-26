@@ -10,6 +10,6 @@ import lombok.experimental.UtilityClass;
 public final class CommonConstant {
 
     public static final String CMD_PREFIX = "/";
-    public static final String DEFAULT_START_TEMPLATE = "bot-start-template.html";
+    public static final String ERROR_NOTIFY_MESSAGE = "There is an error. Please contact bot owner to check it !";
 
 }

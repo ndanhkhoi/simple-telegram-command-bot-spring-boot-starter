@@ -1,6 +1,7 @@
-package com.ndanhkhoi.telegram.bot.core;
+package com.ndanhkhoi.telegram.bot.model;
 
 import com.ndanhkhoi.telegram.bot.annotation.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,12 +18,8 @@ import java.util.List;
 @Getter
 @Setter
 @Builder(setterPrefix = "with")
-public class BotCommandAgrs {
-
-    /**
-     * A command
-     * */
-    private String command;
+@AllArgsConstructor
+public class BotCommandArgs {
 
     /**
      * An update

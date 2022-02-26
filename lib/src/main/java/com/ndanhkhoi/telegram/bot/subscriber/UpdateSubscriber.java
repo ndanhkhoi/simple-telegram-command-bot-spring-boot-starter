@@ -1,10 +1,15 @@
-package com.ndanhkhoi.telegram.bot.core;
+package com.ndanhkhoi.telegram.bot.subscriber;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.ndanhkhoi.telegram.bot.annotation.AnnotaionArg;
 import com.ndanhkhoi.telegram.bot.annotation.TypeArg;
 import com.ndanhkhoi.telegram.bot.constant.CommonConstant;
+import com.ndanhkhoi.telegram.bot.core.BotProperties;
+import com.ndanhkhoi.telegram.bot.core.SimpleTelegramLongPollingCommandBot;
+import com.ndanhkhoi.telegram.bot.model.BotCommand;
+import com.ndanhkhoi.telegram.bot.model.BotCommandArgs;
+import com.ndanhkhoi.telegram.bot.resolver.ResolverRegistry;
 import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +30,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Map;
-import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
@@ -68,18 +72,18 @@ public class UpdateSubscriber implements Consumer<Update> {
     }
 
     @SneakyThrows
-    private Object[] getBotResourceArgs(Method method, BotCommandAgrs botCommandAgrs) {
+    private Object[] getBotResourceArgs(Method method, BotCommandArgs botCommandArgs) {
         Parameter[] parameters = method.getParameters();
         Object[] args = new Object[parameters.length];
 
-        FieldUtils.getAllFieldsList(BotCommandAgrs.class)
+        FieldUtils.getAllFieldsList(BotCommandArgs.class)
                 .forEach(field -> {
                     TypeArg[] typeArgs = field.getDeclaredAnnotationsByType(TypeArg.class);
                     if (typeArgs.length > 0) {
                         Class<?> fieldType = field.getType();
                         OptionalInt idx = getIndexArgByType(parameters, fieldType);
                         if (idx.isPresent()) {
-                            args[idx.getAsInt()] = getProperty(botCommandAgrs, field.getName());
+                            args[idx.getAsInt()] = getProperty(botCommandArgs, field.getName());
                         }
                     }
                     AnnotaionArg[] annotaionArgs = field.getDeclaredAnnotationsByType(AnnotaionArg.class);
@@ -87,7 +91,7 @@ public class UpdateSubscriber implements Consumer<Update> {
                         AnnotaionArg annotaionArg = annotaionArgs[0];
                         OptionalInt idx = getIndexArgByAnnotation(parameters, annotaionArg.value());
                         if (idx.isPresent()) {
-                            args[idx.getAsInt()] = getProperty(botCommandAgrs, field.getName());
+                            args[idx.getAsInt()] = getProperty(botCommandArgs, field.getName());
                         }
                     }
                 });
@@ -145,54 +149,16 @@ public class UpdateSubscriber implements Consumer<Update> {
         }
     }
 
-    private BotCommandAgrs extractBotParameter(Update update) {
-        Message message = update.getMessage();
-        String[] arr = message.getText().split(" ");
-        String command = arr[0];
-        String body = "";
-        if (arr.length > 1) {
-            body = TelegramMessageUtils.getCommandAgrs(message.getText(), command);
-        }
-        Long chatId = message.getChat().getId();
-        return BotCommandAgrs.builder()
-                .withCommand(command)
-                .withUpdate(update)
-                .withCmdBody(body)
-                .withSendUserId(update.getMessage().getFrom().getId())
-                .withSendUsername(Objects.toString(update.getMessage().getFrom().getUserName(), ""))
-                .withChatId(chatId)
-                .build();
-    }
-
-    private BotCommandAgrs extractBotParameterWithPhoto(Update update) {
-        Message message = update.getMessage();
-        String[] arr = message.getCaption().split(" ");
-        String command = arr[0];
-        String body = "";
-        if (arr.length > 1) {
-            body = TelegramMessageUtils.getCommandAgrs(message.getText(), command);
-        }
-        Long chatId = message.getChat().getId();
-        return BotCommandAgrs.builder()
-                .withCommand(command)
-                .withUpdate(update)
-                .withCmdBody(body)
-                .withSendUserId(update.getMessage().getFrom().getId())
-                .withSendUsername(Objects.toString(update.getMessage().getFrom().getUserName(), ""))
-                .withChatId(chatId)
-                .withPhotoSizes(message.getPhoto())
-                .build();
-    }
-
-    private void handleCmd(BotCommand botCommand, BotCommandAgrs botCommandAgrs, Message message) {
+    private void handleCmd(BotCommand botCommand, BotCommandArgs botCommandArgs, Message message) {
         try {
-            Object[] agrs = getBotResourceArgs(botCommand.getMethod(), botCommandAgrs);
-            Object resource = applicationContext.getBean(botCommand.getMethod().getDeclaringClass());
-            botCommand.accept(resource, agrs, botCommandAgrs, telegramLongPollingBot);
+            Object[] args = getBotResourceArgs(botCommand.getMethod(), botCommandArgs);
+            Object route = applicationContext.getBean(botCommand.getMethod().getDeclaringClass());
+            Object valueReturn = botCommand.getMethod().invoke(route, args);
+            ResolverRegistry.INSTANCE.resolve(valueReturn, botCommand, botCommandArgs, telegramLongPollingBot);
         }
         catch (Exception ex) {
             log.error("Error!", ex);
-            TelegramMessageUtils.replyMessage(telegramLongPollingBot, message, "Error 😞", false);
+            TelegramMessageUtils.replyMessage(telegramLongPollingBot, message, CommonConstant.ERROR_NOTIFY_MESSAGE, false);
         }
     }
 
@@ -221,14 +187,12 @@ public class UpdateSubscriber implements Consumer<Update> {
                 this.processNonCommandUpdate(update);
                 return;
             }
-            BotCommandAgrs botCommandAgrs = message.hasText() ? extractBotParameter(update) :
-                    message.hasPhoto() ? extractBotParameterWithPhoto(update) : null;
-            if (botCommandAgrs != null) {
-                final BotCommandAgrs finalBotCommandAgrs = botCommandAgrs;
+            BotCommandArgs botCommandArgs = telegramLongPollingBot.getCommandArgs(update);
+            if (botCommandArgs != null) {
                 telegramLongPollingBot
-                        .getBotCommandByAgrs(botCommandAgrs)
+                        .getCommand(update)
                         .subscribeOn(Schedulers.parallel())
-                        .subscribe(botCommand -> handleCmd(botCommand, finalBotCommandAgrs, message));
+                        .subscribe(botCommand -> handleCmd(botCommand, botCommandArgs, message));
             }
         }
     }

@@ -5,6 +5,10 @@ import com.ndanhkhoi.telegram.bot.annotation.CommandBody;
 import com.ndanhkhoi.telegram.bot.annotation.CommandDescription;
 import com.ndanhkhoi.telegram.bot.annotation.CommandMapping;
 import com.ndanhkhoi.telegram.bot.constant.ChatMemberStatus;
+import com.ndanhkhoi.telegram.bot.model.BotCommand;
+import com.ndanhkhoi.telegram.bot.model.BotCommandArgs;
+import com.ndanhkhoi.telegram.bot.model.MessageParser;
+import com.ndanhkhoi.telegram.bot.subscriber.UpdateSubscriber;
 import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +23,6 @@ import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMem
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMember;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -29,6 +32,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author ndanhkhoi
@@ -50,7 +54,7 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
     }
 
     private void loadBotRoutes() {
-        StringBuilder sb = new StringBuilder("com.ndanhkhoi.telegram.bot.resource");
+        StringBuilder sb = new StringBuilder("com.ndanhkhoi.telegram.bot.route");
         if (StringUtils.isNotBlank(botProperties.getBotRoutePackages())) {
             sb.append(",").append(botProperties.getBotRoutePackages());
         }
@@ -140,30 +144,65 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
         return false;
     }
 
-    @SneakyThrows
-    private String truncatedBotUsername(String command) {
-        String posfix = "@" + this.getMe().getUserName();
-        if (command.endsWith(posfix)) {
-            return command.split(posfix)[0];
-        }
-        return command;
-    }
-
     public Flux<BotCommand> getAvailableBotCommands(Update update) {
         return Flux.fromIterable(commandRegistry.getAllCommands())
                 .filter(botCommand -> this.hasPermission(update, botCommand));
     }
 
-    public Mono<BotCommand> getBotCommandByAgrs(BotCommandAgrs botCommandAgrs) {
+    @SneakyThrows
+    private String truncatedBotUsername(String command) {
+        String posfix = "@" + this.getMe().getUserName();
+        if (StringUtils.endsWith(command, posfix)) {
+            return command.split(posfix)[0];
+        }
+        return command;
+    }
+
+    public Mono<BotCommand> getCommand(Update update) {
         BotCommand botCommand = null;
-        String truncatedCmd = truncatedBotUsername(botCommandAgrs.getCommand());
-        if (commandRegistry.hasCommand(truncatedCmd) && hasPermission(botCommandAgrs.getUpdate(), commandRegistry.getCommand(truncatedCmd))) {
+        Message message = update.getMessage();
+        MessageParser messageParser = new MessageParser(message.getText());
+        String truncatedCmd = truncatedBotUsername(messageParser.getFirstWord());
+        if (commandRegistry.hasCommand(truncatedCmd) && hasPermission(update, commandRegistry.getCommand(truncatedCmd))) {
             botCommand = commandRegistry.getCommand(truncatedCmd);
         }
         else {
-            log.warn("No resource match for command: {}", botCommandAgrs.getCommand());
+            log.warn("No route match for command: {}", messageParser.getFirstWord());
         }
         return Mono.justOrEmpty(botCommand);
+    }
+
+    public BotCommandArgs getCommandArgs(Update update) {
+        Message message = update.getMessage();
+        MessageParser messageParser = new MessageParser(message.getText());
+        if (message.hasText()) {
+            Long chatId = message.getChat().getId();
+            return BotCommandArgs.builder()
+                    .withUpdate(update)
+                    .withCmdBody(messageParser.getRemainingText())
+                    .withSendUserId(update.getMessage().getFrom().getId())
+                    .withSendUsername(Objects.toString(update.getMessage().getFrom().getUserName(), ""))
+                    .withChatId(chatId)
+                    .build();
+        }
+        else if (message.hasPhoto()) {
+            return getCommandArgsWithPhoto(update);
+        }
+        return null;
+    }
+
+    private BotCommandArgs getCommandArgsWithPhoto(Update update) {
+        Message message = update.getMessage();
+        MessageParser messageParser = new MessageParser(message.getCaption());
+        Long chatId = message.getChat().getId();
+        return BotCommandArgs.builder()
+                .withUpdate(update)
+                .withCmdBody(messageParser.getRemainingText())
+                .withSendUserId(update.getMessage().getFrom().getId())
+                .withSendUsername(Objects.toString(update.getMessage().getFrom().getUserName(), ""))
+                .withChatId(chatId)
+                .withPhotoSizes(message.getPhoto())
+                .build();
     }
 
     @Override

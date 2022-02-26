@@ -1,5 +1,7 @@
 package com.ndanhkhoi.telegram.bot.core;
 
+import com.ndanhkhoi.telegram.bot.model.BotCommand;
+
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;

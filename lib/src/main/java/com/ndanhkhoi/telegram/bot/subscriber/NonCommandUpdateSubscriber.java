@@ -1,4 +1,4 @@
-package com.ndanhkhoi.telegram.bot.core;
+package com.ndanhkhoi.telegram.bot.subscriber;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
 
