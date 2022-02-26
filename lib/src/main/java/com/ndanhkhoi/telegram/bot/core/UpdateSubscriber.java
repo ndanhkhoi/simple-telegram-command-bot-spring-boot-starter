@@ -1,10 +1,7 @@
 package com.ndanhkhoi.telegram.bot.core;
 
-import com.fatboyindustrial.gsonjavatime.Converters;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.ndanhkhoi.telegram.bot.annotation.AnnotaionArg;
 import com.ndanhkhoi.telegram.bot.annotation.TypeArg;
 import com.ndanhkhoi.telegram.bot.constant.CommonConstant;
@@ -46,13 +43,6 @@ public class UpdateSubscriber implements Consumer<Update> {
     private final BotProperties botProperties;
     private final SimpleTelegramLongPollingCommandBot telegramLongPollingBot;
     private final ApplicationContext applicationContext;
-    private final Gson gson;
-    {
-        GsonBuilder builder = new GsonBuilder()
-                .serializeNulls()
-                .setPrettyPrinting();
-        gson = Converters.registerAll(builder).create();
-    }
 
     public UpdateSubscriber(BotProperties botProperties, SimpleTelegramLongPollingCommandBot telegramLongPollingBot, ApplicationContext applicationContext) {
         this.botProperties = botProperties;
@@ -106,7 +96,7 @@ public class UpdateSubscriber implements Consumer<Update> {
                     .put("fileId", sticker.getFileId())
                     .put("setName", sticker.getSetName())
                     .build();
-            String stickerJson = gson.toJson(stickerInfo);
+            String stickerJson = stickerInfo.toString();
             log.info("Received Sticker: -> {}", stickerJson);
             return stickerJson;
         }
