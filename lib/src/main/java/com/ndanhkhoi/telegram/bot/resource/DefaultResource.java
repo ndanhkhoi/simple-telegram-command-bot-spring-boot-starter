@@ -23,7 +23,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -100,7 +99,7 @@ public class DefaultResource {
 
     @CommandDescription("Get an application log file")
     @CommandMapping(value = "/getLogFile", sendFile = MediaType.DOCUMENT, allowAllUserAccess = true, onlyForOwner = true)
-    public Object getLog(Update update, @ChatId Long chatId) throws FileNotFoundException {
+    public Object getLog(Update update, @ChatId Long chatId) {
         if (botProperties.getBotOwnerChatId().contains(String.valueOf(chatId))) {
             if (StringUtils.isNotBlank(logFile)) {
                 return FileUtils.getInputFile(new File(logFile));

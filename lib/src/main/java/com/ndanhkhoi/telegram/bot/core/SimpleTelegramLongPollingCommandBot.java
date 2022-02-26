@@ -6,6 +6,7 @@ import com.ndanhkhoi.telegram.bot.annotation.CommandDescription;
 import com.ndanhkhoi.telegram.bot.annotation.CommandMapping;
 import com.ndanhkhoi.telegram.bot.constant.ChatMemberStatus;
 import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.reflections.Reflections;
@@ -139,7 +140,8 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
         return false;
     }
 
-    private String truncatedBotUsername(String command) throws TelegramApiException {
+    @SneakyThrows
+    private String truncatedBotUsername(String command) {
         String posfix = "@" + this.getMe().getUserName();
         if (command.endsWith(posfix)) {
             return command.split(posfix)[0];
@@ -152,7 +154,7 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
                 .filter(botCommand -> this.hasPermission(update, botCommand));
     }
 
-    public Mono<BotCommand> getBotCommandByAgrs(BotCommandAgrs botCommandAgrs) throws TelegramApiException {
+    public Mono<BotCommand> getBotCommandByAgrs(BotCommandAgrs botCommandAgrs) {
         BotCommand botCommand = null;
         String truncatedCmd = truncatedBotUsername(botCommandAgrs.getCommand());
         if (commandRegistry.hasCommand(truncatedCmd) && hasPermission(botCommandAgrs.getUpdate(), commandRegistry.getCommand(truncatedCmd))) {

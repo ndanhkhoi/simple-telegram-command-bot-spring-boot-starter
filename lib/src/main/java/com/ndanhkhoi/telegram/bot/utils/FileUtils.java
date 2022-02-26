@@ -1,5 +1,6 @@
 package com.ndanhkhoi.telegram.bot.utils;
 
+import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
@@ -7,7 +8,6 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -17,7 +17,8 @@ import java.time.format.DateTimeFormatter;
 @UtilityClass
 public final class FileUtils {
 
-    public static InputFile getInputFile(File file) throws FileNotFoundException {
+    @SneakyThrows
+    public static InputFile getInputFile(File file) {
         InputFile inputFile = new InputFile();
         inputFile.setMedia(new FileInputStream(file), file.getName());
         return inputFile;
