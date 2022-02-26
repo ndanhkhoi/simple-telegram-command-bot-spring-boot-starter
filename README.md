@@ -40,7 +40,6 @@ dependencies {
     implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:0.1'
 }
 ```
-3. Download the jar(including all dependencies) from [here](https://github.com/ndanhkhoi/simple-telegram-command-bot-spring-boot-starter/releases/)
 
 ## How to use
 
