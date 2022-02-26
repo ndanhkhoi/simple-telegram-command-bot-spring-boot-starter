@@ -19,5 +19,4 @@ public class BotProperties {
     private String loggerChatId;
     private String botOwnerChatId;
     private String botRoutePackages;
-    private String startTemplateFile;
 }

@@ -1,7 +1,7 @@
 package com.ndanhkhoi.telegram.bot.utils;
 
 import com.ndanhkhoi.telegram.bot.constant.TelegramTextStyled;
-import com.ndanhkhoi.telegram.bot.exception.BotException;
+import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +29,7 @@ public final class TelegramMessageUtils {
         return styled.getOpenTag() + raw + styled.getCloseTag();
     }
 
+    @SneakyThrows
     public static void replyMessage(TelegramLongPollingBot bot, Message messageToReply, String replyContent, boolean useHtml, boolean disableWebPagePreview) {
         SendMessage message = new SendMessage();
         if (useHtml) {
@@ -40,12 +41,7 @@ public final class TelegramMessageUtils {
         if (disableWebPagePreview) {
             message.setDisableWebPagePreview(true);
         }
-        try {
-            bot.execute(message);
-        }
-        catch (Exception ex) {
-            throw new BotException(ex);
-        }
+        bot.execute(message);
     }
 
     public static void replyMessage(TelegramLongPollingBot bot, Message messageToReply, String replyContent, boolean useHtml) {

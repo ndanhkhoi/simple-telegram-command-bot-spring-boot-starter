@@ -4,7 +4,6 @@ import com.ndanhkhoi.telegram.bot.annotation.BotRoute;
 import com.ndanhkhoi.telegram.bot.annotation.ChatId;
 import com.ndanhkhoi.telegram.bot.annotation.CommandDescription;
 import com.ndanhkhoi.telegram.bot.annotation.CommandMapping;
-import com.ndanhkhoi.telegram.bot.constant.CommonConstant;
 import com.ndanhkhoi.telegram.bot.constant.MediaType;
 import com.ndanhkhoi.telegram.bot.constant.TelegramTextStyled;
 import com.ndanhkhoi.telegram.bot.core.BotCommand;
@@ -14,16 +13,13 @@ import com.ndanhkhoi.telegram.bot.utils.FileUtils;
 import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -80,21 +76,9 @@ public class DefaultResource {
     }
 
     @CommandDescription("Start chat")
-    @CommandMapping(value = "/start", allowAllUserAccess = true, useHtml = true)
+    @CommandMapping(value = "/start", allowAllUserAccess = true)
     public String start(Update update) {
-        String startTemplateFile = StringUtils.defaultString(botProperties.getStartTemplateFile(), CommonConstant.DEFAULT_START_TEMPLATE);
-        ClassPathResource classPathResource = new ClassPathResource(startTemplateFile);
-        if (classPathResource.exists()) {
-            try {
-                String content = IOUtils.toString(classPathResource.getInputStream(), StandardCharsets.UTF_8);
-                content = StringUtils.replace(content, "${sender}", update.getMessage().getFrom().getFirstName());
-                return content;
-            }
-            catch (Exception ex) {
-                log.error("Error", ex);
-            }
-        }
-        return "Yes, i am here. Please use /cmd or /help to know all I can do";
+        return String.format("Hi, %s. Please use /cmd or /help to know all I can do", update.getMessage().getFrom().getFirstName());
     }
 
     @CommandDescription("Get an application log file")

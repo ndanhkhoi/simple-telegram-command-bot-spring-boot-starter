@@ -3,7 +3,6 @@ package com.ndanhkhoi.telegram.bot.core;
 import com.ndanhkhoi.telegram.bot.annotation.CommandBody;
 import com.ndanhkhoi.telegram.bot.annotation.CommandMapping;
 import com.ndanhkhoi.telegram.bot.constant.MediaType;
-import com.ndanhkhoi.telegram.bot.exception.BotException;
 import com.ndanhkhoi.telegram.bot.utils.SendMediaUtils;
 import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
 import lombok.*;
@@ -94,13 +93,9 @@ public class BotCommand implements Consumer4<Object, Object[], BotCommandAgrs, T
      * */
     private String bodyDescription;
 
+    @SneakyThrows
     private Object invokeMethod(Object resource, Object[] agrs) {
-        try {
-            return method.invoke(resource, agrs);
-        }
-        catch (Exception ex) {
-            throw new BotException(ex);
-        }
+        return method.invoke(resource, agrs);
     }
 
     private void reply(Object replyContent, BotCommandAgrs params, TelegramLongPollingBot telegramLongPollingBot) {

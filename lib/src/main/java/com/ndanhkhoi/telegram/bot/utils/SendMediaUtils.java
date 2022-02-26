@@ -2,7 +2,7 @@ package com.ndanhkhoi.telegram.bot.utils;
 
 import com.google.common.collect.ImmutableMap;
 import com.ndanhkhoi.telegram.bot.constant.MediaType;
-import com.ndanhkhoi.telegram.bot.exception.BotException;
+import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -32,6 +32,7 @@ public class SendMediaUtils {
             .put(MediaType.VOICE, SendMediaUtils::sendVoice)
             .build();
 
+    @SneakyThrows
     public static void sendDocument(@Nullable Message messageToReply, InputFile inputFile, Long chatId, TelegramLongPollingBot bot) {
         SendDocument sendDocument = new SendDocument();
         sendDocument.setDocument(inputFile);
@@ -39,13 +40,10 @@ public class SendMediaUtils {
             sendDocument.setReplyToMessageId(messageToReply.getMessageId());
         }
         sendDocument.setChatId(String.valueOf(chatId));
-        try {
-            bot.execute(sendDocument);
-        } catch (Exception ex) {
-            throw new BotException(ex);
-        }
+        bot.execute(sendDocument);
     }
 
+    @SneakyThrows
     public static void sendPhoto(@Nullable Message messageToReply, InputFile inputFile, Long chatId, TelegramLongPollingBot bot) {
         SendPhoto sendPhoto = new SendPhoto();
         sendPhoto.setPhoto(inputFile);
@@ -53,13 +51,10 @@ public class SendMediaUtils {
             sendPhoto.setReplyToMessageId(messageToReply.getMessageId());
         }
         sendPhoto.setChatId(String.valueOf(chatId));
-        try {
-            bot.execute(sendPhoto);
-        } catch (Exception ex) {
-            throw new BotException(ex);
-        }
+        bot.execute(sendPhoto);
     }
 
+    @SneakyThrows
     public static void sendVoice(@Nullable Message messageToReply, InputFile inputFile, Long chatId, TelegramLongPollingBot bot) {
         SendVoice sendVoice = new SendVoice();
         sendVoice.setVoice(inputFile);
@@ -67,13 +62,10 @@ public class SendMediaUtils {
             sendVoice.setReplyToMessageId(messageToReply.getMessageId());
         }
         sendVoice.setChatId(String.valueOf(chatId));
-        try {
-            bot.execute(sendVoice);
-        } catch (Exception ex) {
-            throw new BotException(ex);
-        }
+        bot.execute(sendVoice);
     }
 
+    @SneakyThrows
     public static void sendSticker(@Nullable Message messageToReply, InputFile sticker, Long chatId, TelegramLongPollingBot bot) {
         SendSticker sendSticker = new SendSticker();
         sendSticker.setSticker(sticker);
@@ -81,11 +73,7 @@ public class SendMediaUtils {
         if (messageToReply != null) {
             sendSticker.setReplyToMessageId(messageToReply.getMessageId());
         }
-        try {
-            bot.execute(sendSticker);
-        } catch (Exception ex) {
-            throw new BotException(ex);
-        }
+        bot.execute(sendSticker);
     }
 
     public static void sendMedia(@Nullable Message message, InputFile inputFile, Long chatId, MediaType mediaType, TelegramLongPollingBot bot) {
