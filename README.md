@@ -56,7 +56,8 @@ khoinda:
   bot:
     username: {YOUR_BOT_USERNAME}
     token: {YOUR_BOT_TOKEN}
-    botRoutePackages: {YOUR_BOT_ROUTES_PACKAGE}
+    botRoutePackages:
+        - {YOUR_BOT_ROUTES_PACKAGE}
 ```
 - Create your bot route
 
