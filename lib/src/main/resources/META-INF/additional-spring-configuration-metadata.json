@@ -2,7 +2,7 @@
   "properties": [
     {
       "name": "khoinda.bot.botOwnerChatId",
-      "type": "java.lang.String",
+      "type": "java.util.List<java.lang.String>",
       "description": "Chat id of bot owner."
     },
     {
@@ -22,7 +22,7 @@
     },
     {
       "name": "khoinda.bot.botRoutePackages",
-      "type": "java.lang.String",
+      "type": "java.util.List<java.lang.String>",
       "description": "Packages name of classes contains @BotRoute."
     }
   ] }

@@ -30,6 +30,7 @@ import reactor.core.scheduler.Schedulers;
 import javax.inject.Singleton;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -54,15 +55,13 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
     }
 
     private void loadBotRoutes() {
-        StringBuilder sb = new StringBuilder("com.ndanhkhoi.telegram.bot.route");
-        if (StringUtils.isNotBlank(botProperties.getBotRoutePackages())) {
-            sb.append(",").append(botProperties.getBotRoutePackages());
-        }
-        String[] packagesToScan = sb.toString().split(",");
+        List<String> packagesToScan = new ArrayList<>();
+        packagesToScan.add("com.ndanhkhoi.telegram.bot.route");
+        packagesToScan.addAll(botProperties.getBotRoutePackages());
 
-        log.info("Bot route's ackages: {}", Arrays.asList(packagesToScan));
+        log.info("Bot route's ackages: {}", packagesToScan);
 
-        Flux.fromArray(packagesToScan)
+        Flux.fromIterable(packagesToScan)
                 .map(packageToScan -> new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forPackage(packageToScan))))
                 .flatMap(reflections -> Flux.fromIterable(reflections.get(Scanners.TypesAnnotated.with(BotRoute.class).asClass())))
                 .flatMap(clazz -> Flux.fromArray(clazz.getDeclaredMethods()))
@@ -115,6 +114,9 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
             Long userSendId = message.getFrom().getId();
             boolean isMessageInGroup = TelegramMessageUtils.isMessageInGroup(message);
             if (isMessageInGroup) {
+                if (botCommand.getOnlyForOwner()) {
+                    return false;
+                }
                 boolean hasPermission = botCommand.getAllowAllUserAccess() ||
                         Arrays.stream(botCommand.getAccessGroupIds())
                                 .anyMatch(e -> e == chatId);
@@ -131,6 +133,9 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
                 }
             }
             else {
+                if (botCommand.getOnlyForOwner()) {
+                    return botProperties.getBotOwnerChatId().contains(String.valueOf(chatId));
+                }
                 if (botCommand.getAllowAllUserAccess()) {
                     return true;
                 }

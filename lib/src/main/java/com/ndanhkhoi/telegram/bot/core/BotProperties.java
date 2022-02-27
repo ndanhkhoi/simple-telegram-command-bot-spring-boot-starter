@@ -5,6 +5,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author ndanhkhoi
  * Created at 22:09:23 October 05, 2021
@@ -17,6 +20,6 @@ public class BotProperties {
     private String username;
     private String token;
     private String loggerChatId;
-    private String botOwnerChatId;
-    private String botRoutePackages;
+    private List<String> botOwnerChatId = new ArrayList<>();
+    private List<String> botRoutePackages = new ArrayList<>();
 }

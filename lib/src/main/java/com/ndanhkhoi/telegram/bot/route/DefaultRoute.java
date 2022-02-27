@@ -6,9 +6,9 @@ import com.ndanhkhoi.telegram.bot.annotation.CommandDescription;
 import com.ndanhkhoi.telegram.bot.annotation.CommandMapping;
 import com.ndanhkhoi.telegram.bot.constant.MediaType;
 import com.ndanhkhoi.telegram.bot.constant.TelegramTextStyled;
-import com.ndanhkhoi.telegram.bot.model.BotCommand;
 import com.ndanhkhoi.telegram.bot.core.BotProperties;
 import com.ndanhkhoi.telegram.bot.core.SimpleTelegramLongPollingCommandBot;
+import com.ndanhkhoi.telegram.bot.model.BotCommand;
 import com.ndanhkhoi.telegram.bot.utils.FileUtils;
 import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +20,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -65,9 +62,7 @@ public class DefaultRoute {
         boolean isMessageInGroup = TelegramMessageUtils.isMessageInGroup(update.getMessage());
         String title = TelegramMessageUtils.wrapByTag("List of available commands for this chat: ", TelegramTextStyled.BOLD);
         AtomicInteger index = new AtomicInteger(1);
-        List<String>  botOwnerChatId = StringUtils.isNotBlank(botProperties.getBotOwnerChatId()) ? Arrays.asList(botProperties.getBotOwnerChatId().split(",")) :  new ArrayList<>();
         Flux<String> result =  simpleTelegramLongPollingCommandBot.getAvailableBotCommands(update)
-                .filter(botCommand -> !botCommand.getOnlyForOwner() || botOwnerChatId.contains(String.valueOf(chatId)))
                 .map(botCommand -> described(botCommand, isMessageInGroup))
                 .sort()
                 .map(described -> index.getAndIncrement() + ". " + described);
