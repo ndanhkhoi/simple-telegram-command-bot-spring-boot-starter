@@ -63,7 +63,7 @@ khoinda:
 
 ```java
 @BotRoute
-public class HelloWorldBotResource {
+public class HelloWorldBotRoute {
 
     @CommandDescription("Say hello world")
     @CommandMapping(value = "/Hi", allowAllUserAccess = true)
