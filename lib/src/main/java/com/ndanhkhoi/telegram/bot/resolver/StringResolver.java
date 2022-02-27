@@ -1,7 +1,7 @@
 package com.ndanhkhoi.telegram.bot.resolver;
 
 import com.ndanhkhoi.telegram.bot.model.BotCommand;
-import com.ndanhkhoi.telegram.bot.model.BotCommandArgs;
+import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -13,17 +13,17 @@ import reactor.function.Consumer4;
  */
 public class StringResolver extends TypeResolver<String> {
 
-    private StringResolver(Class<String> type, Consumer4<Object, BotCommand, BotCommandArgs, TelegramLongPollingBot> resolver) {
+    private StringResolver(Class<String> type, Consumer4<Object, BotCommand, BotCommandParams, TelegramLongPollingBot> resolver) {
         super(type, resolver);
     }
 
     public final static StringResolver INSTANCE = new StringResolver (String.class,
-            (value, botCommand, botCommandArgs, telegramLongPollingBot) -> {
+            (value, botCommand, botCommandParams, telegramLongPollingBot) -> {
                 if (StringUtils.isBlank((String) value)) {
                     LOGGER.warn("Blank string returnd");
                     return;
                 }
-                TelegramMessageUtils.replyMessage(telegramLongPollingBot, botCommandArgs.getUpdate().getMessage(), (String) value, botCommand.getUseHtml(), botCommand.getDisableWebPagePreview());
+                TelegramMessageUtils.replyMessage(telegramLongPollingBot, botCommandParams.getUpdate().getMessage(), (String) value, botCommand.getUseHtml(), botCommand.getDisableWebPagePreview());
                 LOGGER.info("Reply Message: {}", value);
             }
         );

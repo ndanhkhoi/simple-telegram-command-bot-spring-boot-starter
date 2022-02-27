@@ -19,7 +19,7 @@ import java.util.List;
 @Setter
 @Builder(setterPrefix = "with")
 @AllArgsConstructor
-public class BotCommandArgs {
+public class BotCommandParams {
 
     /**
      * An update

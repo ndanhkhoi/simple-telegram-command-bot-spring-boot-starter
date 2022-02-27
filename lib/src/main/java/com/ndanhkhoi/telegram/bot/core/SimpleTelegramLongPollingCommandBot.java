@@ -6,7 +6,7 @@ import com.ndanhkhoi.telegram.bot.annotation.CommandDescription;
 import com.ndanhkhoi.telegram.bot.annotation.CommandMapping;
 import com.ndanhkhoi.telegram.bot.constant.ChatMemberStatus;
 import com.ndanhkhoi.telegram.bot.model.BotCommand;
-import com.ndanhkhoi.telegram.bot.model.BotCommandArgs;
+import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import com.ndanhkhoi.telegram.bot.model.MessageParser;
 import com.ndanhkhoi.telegram.bot.subscriber.UpdateSubscriber;
 import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
@@ -172,12 +172,12 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
         return Mono.justOrEmpty(botCommand);
     }
 
-    public BotCommandArgs getCommandArgs(Update update) {
+    public BotCommandParams getCommandParams(Update update) {
         Message message = update.getMessage();
-        MessageParser messageParser = new MessageParser(message.getText());
         if (message.hasText()) {
             Long chatId = message.getChat().getId();
-            return BotCommandArgs.builder()
+            MessageParser messageParser = new MessageParser(message.getText());
+            return BotCommandParams.builder()
                     .withUpdate(update)
                     .withCmdBody(messageParser.getRemainingText())
                     .withSendUserId(update.getMessage().getFrom().getId())
@@ -186,16 +186,16 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
                     .build();
         }
         else if (message.hasPhoto()) {
-            return getCommandArgsWithPhoto(update);
+            return getCommandParamsWithPhoto(update);
         }
         return null;
     }
 
-    private BotCommandArgs getCommandArgsWithPhoto(Update update) {
+    private BotCommandParams getCommandParamsWithPhoto(Update update) {
         Message message = update.getMessage();
         MessageParser messageParser = new MessageParser(message.getCaption());
         Long chatId = message.getChat().getId();
-        return BotCommandArgs.builder()
+        return BotCommandParams.builder()
                 .withUpdate(update)
                 .withCmdBody(messageParser.getRemainingText())
                 .withSendUserId(update.getMessage().getFrom().getId())

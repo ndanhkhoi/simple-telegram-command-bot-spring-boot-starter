@@ -79,10 +79,12 @@ This library uses following dependencies:
 2. [Telegram Bot Java Library](https://github.com/rubenlagus/TelegramBots)
 3. [Lombok](https://github.com/projectlombok/lombok)
 4. [Reactor Core](https://github.com/reactor/reactor-core)
-5. [Reflections](https://github.com/ronmamo/reflections)
-6. [Apache Commons Lang](https://github.com/apache/commons-lang)
-7. [Apache Commons IO](https://github.com/apache/commons-io)
-8. [Apache Commons BeanUtils](https://github.com/apache/commons-beanutils)
+5. [Reactor Extra Utilities](https://github.com/reactor/reactor-addons)
+6. [Reflections](https://github.com/ronmamo/reflections)
+7. [Google Guava](https://github.com/google/guava)
+8. [Apache Commons Lang](https://github.com/apache/commons-lang)
+9. [Apache Commons IO](https://github.com/apache/commons-io)
+10. [Apache Commons BeanUtils](https://github.com/apache/commons-beanutils)
 
 ## Telegram Bot API
 This library use [Telegram bot API](https://core.telegram.org/bots), you can find more information following the link.

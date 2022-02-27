@@ -8,7 +8,7 @@ import com.ndanhkhoi.telegram.bot.constant.CommonConstant;
 import com.ndanhkhoi.telegram.bot.core.BotProperties;
 import com.ndanhkhoi.telegram.bot.core.SimpleTelegramLongPollingCommandBot;
 import com.ndanhkhoi.telegram.bot.model.BotCommand;
-import com.ndanhkhoi.telegram.bot.model.BotCommandArgs;
+import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import com.ndanhkhoi.telegram.bot.resolver.ResolverRegistry;
 import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
 import lombok.SneakyThrows;
@@ -30,6 +30,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Map;
+import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
@@ -72,18 +73,18 @@ public class UpdateSubscriber implements Consumer<Update> {
     }
 
     @SneakyThrows
-    private Object[] getBotResourceArgs(Method method, BotCommandArgs botCommandArgs) {
+    private Object[] getBotCommandeArgs(Method method, BotCommandParams botCommandParams) {
         Parameter[] parameters = method.getParameters();
         Object[] args = new Object[parameters.length];
 
-        FieldUtils.getAllFieldsList(BotCommandArgs.class)
+        FieldUtils.getAllFieldsList(BotCommandParams.class)
                 .forEach(field -> {
                     TypeArg[] typeArgs = field.getDeclaredAnnotationsByType(TypeArg.class);
                     if (typeArgs.length > 0) {
                         Class<?> fieldType = field.getType();
                         OptionalInt idx = getIndexArgByType(parameters, fieldType);
                         if (idx.isPresent()) {
-                            args[idx.getAsInt()] = getProperty(botCommandArgs, field.getName());
+                            args[idx.getAsInt()] = getProperty(botCommandParams, field.getName());
                         }
                     }
                     AnnotaionArg[] annotaionArgs = field.getDeclaredAnnotationsByType(AnnotaionArg.class);
@@ -91,7 +92,7 @@ public class UpdateSubscriber implements Consumer<Update> {
                         AnnotaionArg annotaionArg = annotaionArgs[0];
                         OptionalInt idx = getIndexArgByAnnotation(parameters, annotaionArg.value());
                         if (idx.isPresent()) {
-                            args[idx.getAsInt()] = getProperty(botCommandArgs, field.getName());
+                            args[idx.getAsInt()] = getProperty(botCommandParams, field.getName());
                         }
                     }
                 });
@@ -99,18 +100,18 @@ public class UpdateSubscriber implements Consumer<Update> {
         return args;
     }
 
-    private String stickerDetect(Message message) {
+    private Optional<String> stickerDetect(Message message) {
+        String stickerDetect = null;
         if (message.hasSticker()) {
             Sticker sticker = message.getSticker();
             Map<String, Object> stickerInfo = ImmutableMap.<String, Object>builder()
                     .put("fileId", sticker.getFileId())
                     .put("setName", sticker.getSetName())
                     .build();
-            String stickerrInfo = stickerInfo.toString();
-            log.info("Received Sticker: -> {}", stickerrInfo);
-            return stickerrInfo;
+            stickerDetect = "[x] Sticker Detected: \n" + stickerInfo.toString();
+            log.info(stickerDetect);
         }
-        return null;
+        return Optional.ofNullable(stickerDetect);
     }
 
     private void logMessage(Update update) {
@@ -130,16 +131,13 @@ public class UpdateSubscriber implements Consumer<Update> {
             }
             log.info("\n{} \n\t {}", messageInfo, messageText);
 
-            String textToSend = "<code>" + messageInfo + "</code>\n\n" + messageText;
-            String stickerJson = stickerDetect(message);
-            if (StringUtils.isNotEmpty(stickerJson)) {
-                textToSend += "[x] Sticker Detected: \n" + stickerJson;
-            }
+            StringBuilder textToSend = new StringBuilder("<code>" + messageInfo + "</code>\n\n" + messageText);
+            stickerDetect(message).ifPresent(textToSend::append);
 
             if (StringUtils.isNotBlank(botProperties.getLoggerChatId())) {
                 SendMessage sendMessage = new SendMessage();
                 sendMessage.setParseMode(ParseMode.HTML);
-                sendMessage.setText(textToSend);
+                sendMessage.setText(textToSend.toString());
                 sendMessage.setChatId(botProperties.getLoggerChatId());
                 telegramLongPollingBot.execute(sendMessage);
             }
@@ -149,17 +147,12 @@ public class UpdateSubscriber implements Consumer<Update> {
         }
     }
 
-    private void handleCmd(BotCommand botCommand, BotCommandArgs botCommandArgs, Message message) {
-        try {
-            Object[] args = getBotResourceArgs(botCommand.getMethod(), botCommandArgs);
-            Object route = applicationContext.getBean(botCommand.getMethod().getDeclaringClass());
-            Object valueReturn = botCommand.getMethod().invoke(route, args);
-            ResolverRegistry.INSTANCE.resolve(valueReturn, botCommand, botCommandArgs, telegramLongPollingBot);
-        }
-        catch (Exception ex) {
-            log.error("Error!", ex);
-            TelegramMessageUtils.replyMessage(telegramLongPollingBot, message, CommonConstant.ERROR_NOTIFY_MESSAGE, false);
-        }
+    @SneakyThrows
+    private void handleCmd(BotCommand botCommand, BotCommandParams botCommandParams) {
+        Object[] args = getBotCommandeArgs(botCommand.getMethod(), botCommandParams);
+        Object route = applicationContext.getBean(botCommand.getMethod().getDeclaringClass());
+        Object returnValue = botCommand.getMethod().invoke(route, args);
+        ResolverRegistry.INSTANCE.resolve(returnValue, botCommand, botCommandParams, telegramLongPollingBot);
     }
 
     private void processNonCommandUpdate(Update update) {
@@ -187,12 +180,13 @@ public class UpdateSubscriber implements Consumer<Update> {
                 this.processNonCommandUpdate(update);
                 return;
             }
-            BotCommandArgs botCommandArgs = telegramLongPollingBot.getCommandArgs(update);
-            if (botCommandArgs != null) {
+            BotCommandParams botCommandParams = telegramLongPollingBot.getCommandParams(update);
+            if (botCommandParams != null) {
                 telegramLongPollingBot
                         .getCommand(update)
+                        .doOnError(ResolverRegistry.onErrorHandle(botCommandParams, telegramLongPollingBot))
                         .subscribeOn(Schedulers.parallel())
-                        .subscribe(botCommand -> handleCmd(botCommand, botCommandArgs, message));
+                        .subscribe(botCommand -> handleCmd(botCommand, botCommandParams));
             }
         }
     }

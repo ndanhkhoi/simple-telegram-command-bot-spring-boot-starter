@@ -3,7 +3,7 @@ package com.ndanhkhoi.telegram.bot.resolver;
 import com.google.common.collect.ImmutableMap;
 import com.ndanhkhoi.telegram.bot.constant.CommonConstant;
 import com.ndanhkhoi.telegram.bot.model.BotCommand;
-import com.ndanhkhoi.telegram.bot.model.BotCommandArgs;
+import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 @Slf4j
 public class ResolverRegistry {
 
-    private final ImmutableMap<Class<?>, Consumer4<Object, BotCommand, BotCommandArgs, TelegramLongPollingBot>> resolverMap;
+    private final ImmutableMap<Class<?>, Consumer4<Object, BotCommand, BotCommandParams, TelegramLongPollingBot>> resolverMap;
 
     public static final ResolverRegistry INSTANCE = new ResolverRegistry(ByteArrayResolver.INSTANCE, ByteArrayResourceResolver.INSTANCE, FileResolver.INSTANCE, InputFileResolver.INSTANCE, StringResolver.INSTANCE);
 
@@ -36,7 +36,7 @@ public class ResolverRegistry {
                 .collect(Collectors.toMap(TypeResolver::getType, TypeResolver::getResolver)));
     }
 
-    private Consumer4<Object, BotCommand, BotCommandArgs, TelegramLongPollingBot> getResolverByType(Class<?> type) {
+    private Consumer4<Object, BotCommand, BotCommandParams, TelegramLongPollingBot> getResolverByType(Class<?> type) {
         return resolverMap.get(type);
     }
 
@@ -55,21 +55,21 @@ public class ResolverRegistry {
         return resolverMap.containsKey(type);
     }
 
-    private Consumer<? super Throwable> onErrorHandle(BotCommandArgs params, TelegramLongPollingBot telegramLongPollingBot) {
+    public static Consumer<? super Throwable> onErrorHandle(BotCommandParams params, TelegramLongPollingBot telegramLongPollingBot) {
         return throwable -> {
             log.error("Error!", throwable);
             TelegramMessageUtils.replyMessage(telegramLongPollingBot, params.getUpdate().getMessage(), CommonConstant.ERROR_NOTIFY_MESSAGE,false);
         };
     }
 
-    private <T> void resolveCollection(Collection<T> valueCollection, BotCommand botCommand, BotCommandArgs botCommandArgs, TelegramLongPollingBot bot) {
+    private <T> void resolveCollection(Collection<T> valueCollection, BotCommand botCommand, BotCommandParams botCommandParams, TelegramLongPollingBot bot) {
         if (valueCollection.isEmpty()) {
             log.info("Nothing to reply. Cause return value(s) is empty collection/array");
         }
         else {
             Class<?> typeOfElement = valueCollection.stream().findFirst().get().getClass();
             if (isSupportedType(typeOfElement)) {
-                valueCollection.forEach(e -> resolve(e, botCommand, botCommandArgs, bot));
+                valueCollection.forEach(e -> resolve(e, botCommand, botCommandParams, bot));
             }
             else {
                 log.warn("Nothing to reply. Cause the return type is not supported ({}}). Supported types are: {}", typeOfElement.getSimpleName(), getSimpleNameSupportedTypes());
@@ -77,7 +77,7 @@ public class ResolverRegistry {
         }
     }
 
-    private void resolveByType(Object value, BotCommand botCommand, BotCommandArgs botCommandArgs, TelegramLongPollingBot bot) {
+    private void resolveByType(Object value, BotCommand botCommand, BotCommandParams botCommandParams, TelegramLongPollingBot bot) {
         if (value == null) {
             log.info("Nothing to reply. Cause return value is null or it's type is Void");
             return;
@@ -87,34 +87,34 @@ public class ResolverRegistry {
             Collection<Object> collection = Arrays.stream((Object[]) value)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
-            resolveCollection(collection, botCommand, botCommandArgs, bot);
+            resolveCollection(collection, botCommand, botCommandParams, bot);
             return;
         }
         if (value instanceof Collection) {
-            resolveCollection((Collection<?>) value, botCommand, botCommandArgs, bot);
+            resolveCollection((Collection<?>) value, botCommand, botCommandParams, bot);
             return;
         }
         getSupportedTypes()
                 .stream()
                 .filter(e -> e.isAssignableFrom(type))
                 .findFirst()
-                .ifPresent(e -> getResolverByType(e).accept(value, botCommand, botCommandArgs, bot));
+                .ifPresent(e -> getResolverByType(e).accept(value, botCommand, botCommandParams, bot));
     }
 
-    public void resolve(Object value, BotCommand botCommand, BotCommandArgs botCommandArgs, TelegramLongPollingBot bot) {
+    public void resolve(Object value, BotCommand botCommand, BotCommandParams botCommandParams, TelegramLongPollingBot bot) {
         if (value instanceof Mono) {
             ((Mono<?>) value)
-                    .doOnError(onErrorHandle(botCommandArgs, bot))
-                    .subscribe(e -> resolveByType(e, botCommand, botCommandArgs, bot));
+                    .doOnError(onErrorHandle(botCommandParams, bot))
+                    .subscribe(e -> resolveByType(e, botCommand, botCommandParams, bot));
         }
         else if (value instanceof Flux) {
             ((Flux<?>) value)
                     .subscribeOn(Schedulers.parallel())
-                    .doOnError(onErrorHandle(botCommandArgs, bot))
-                    .subscribe(e -> resolveByType(e, botCommand, botCommandArgs, bot));
+                    .doOnError(onErrorHandle(botCommandParams, bot))
+                    .subscribe(e -> resolveByType(e, botCommand, botCommandParams, bot));
         }
         else {
-            resolveByType(value, botCommand, botCommandArgs, bot);
+            resolveByType(value, botCommand, botCommandParams, bot);
         }
     }
 

@@ -1,7 +1,7 @@
 package com.ndanhkhoi.telegram.bot.resolver;
 
 import com.ndanhkhoi.telegram.bot.model.BotCommand;
-import com.ndanhkhoi.telegram.bot.model.BotCommandArgs;
+import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +18,9 @@ public abstract class TypeResolver<T> {
     protected static final Logger LOGGER = LoggerFactory.getLogger(TypeResolver.class);
 
     private final Class<T> type;
-    private final Consumer4<Object, BotCommand, BotCommandArgs, TelegramLongPollingBot> resolver;
+    private final Consumer4<Object, BotCommand, BotCommandParams, TelegramLongPollingBot> resolver;
 
-    TypeResolver(Class<T> type, Consumer4<Object, BotCommand, BotCommandArgs, TelegramLongPollingBot> resolver) {
+    TypeResolver(Class<T> type, Consumer4<Object, BotCommand, BotCommandParams, TelegramLongPollingBot> resolver) {
         this.type = type;
         this.resolver = resolver;
     }
