@@ -37,7 +37,7 @@ repositories {
 - Step 2. Add the dependency
 ```gradle
 dependencies {
-    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:0.1'
+    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:${latest_version}'
 }
 ```
 
