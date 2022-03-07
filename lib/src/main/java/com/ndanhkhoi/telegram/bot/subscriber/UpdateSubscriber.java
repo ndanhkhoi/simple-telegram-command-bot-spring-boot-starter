@@ -1,7 +1,7 @@
 package com.ndanhkhoi.telegram.bot.subscriber;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableMap;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ndanhkhoi.telegram.bot.annotation.AnnotaionArg;
 import com.ndanhkhoi.telegram.bot.annotation.TypeArg;
 import com.ndanhkhoi.telegram.bot.constant.CommonConstant;
@@ -18,19 +18,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
-import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.stickers.Sticker;
 import reactor.core.scheduler.Schedulers;
 
 import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.Map;
-import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
@@ -44,6 +40,7 @@ import java.util.stream.IntStream;
 @Singleton
 public class UpdateSubscriber implements Consumer<Update> {
 
+    private final ObjectMapper objectMapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
     private final DefaultNonCommandUpdateSubscriber defaultNonCommandUpdateSubscriber = new DefaultNonCommandUpdateSubscriber();
     private final BotProperties botProperties;
     private final SimpleTelegramLongPollingCommandBot telegramLongPollingBot;
@@ -100,44 +97,12 @@ public class UpdateSubscriber implements Consumer<Update> {
         return args;
     }
 
-    private Optional<String> stickerDetect(Message message) {
-        String stickerDetect = null;
-        if (message.hasSticker()) {
-            Sticker sticker = message.getSticker();
-            Map<String, Object> stickerInfo = ImmutableMap.<String, Object>builder()
-                    .put("fileId", sticker.getFileId())
-                    .put("setName", sticker.getSetName())
-                    .build();
-            stickerDetect = "[x] Sticker Detected: \n" + stickerInfo.toString();
-            log.info(stickerDetect);
-        }
-        return Optional.ofNullable(stickerDetect);
-    }
-
     private void logMessage(Update update) {
         try {
-            Message message = update.getMessage();
-            String sendUsername = message.getFrom().getUserName();
-            Long sendUserId = message.getFrom().getId();
-            String messageInfo;
-            String messageText =  Strings.nullToEmpty(message.getText());
-            if (TelegramMessageUtils.isMessageInGroup(message)) {
-                Long groupId = message.getChatId();
-                String groupName = message.getChat().getTitle();
-                messageInfo = String.format("New message from: %s, id: %s (in group %s, id: %s)", sendUsername, sendUserId, groupName, groupId);
-            }
-            else {
-                messageInfo = String.format("New message from: %s, id: %s", sendUsername, sendUserId);
-            }
-            log.info("\n{} \n\t {}", messageInfo, messageText);
-
-            StringBuilder textToSend = new StringBuilder("<code>" + messageInfo + "</code>\n\n" + messageText);
-            stickerDetect(message).ifPresent(textToSend::append);
-
+            log.info("New update detected -> \n\t {}", objectMapper.writeValueAsString(update));
             if (StringUtils.isNotBlank(botProperties.getLoggerChatId())) {
                 SendMessage sendMessage = new SendMessage();
-                sendMessage.setParseMode(ParseMode.HTML);
-                sendMessage.setText(textToSend.toString());
+                sendMessage.setText("New update detected -> \n" + objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(update));
                 sendMessage.setChatId(botProperties.getLoggerChatId());
                 telegramLongPollingBot.execute(sendMessage);
             }
