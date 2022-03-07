@@ -115,9 +115,9 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
                     throw new BotException("Command cannot be longer than 32 (including /)");
                 }
                 String cmdValue = cmd.substring(1);
-                Pattern pattern = Pattern.compile("^[a-zA-Z0-9_]*$");
+                Pattern pattern = Pattern.compile("^[a-z0-9_]*$");
                 if (!pattern.matcher(cmdValue).matches()) {
-                    throw new BotException("Command must contains only upper and lowercase letters, numbers, and underscores (_).");
+                    throw new BotException("Command must contain only lowercase English letters, digits and underscores.");
                 }
             }
             else {
