@@ -2,6 +2,8 @@ package com.ndanhkhoi.telegram.bot.subscriber;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.ndanhkhoi.telegram.bot.annotation.AnnotaionArg;
 import com.ndanhkhoi.telegram.bot.annotation.TypeArg;
 import com.ndanhkhoi.telegram.bot.constant.CommonConstant;
@@ -40,7 +42,10 @@ import java.util.stream.IntStream;
 @Singleton
 public class UpdateSubscriber implements Consumer<Update> {
 
-    private final ObjectMapper objectMapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    private final ObjectMapper mapper = new ObjectMapper()
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .setDateFormat(new StdDateFormat());
     private final DefaultNonCommandUpdateSubscriber defaultNonCommandUpdateSubscriber = new DefaultNonCommandUpdateSubscriber();
     private final BotProperties botProperties;
     private final SimpleTelegramLongPollingCommandBot telegramLongPollingBot;
@@ -99,10 +104,10 @@ public class UpdateSubscriber implements Consumer<Update> {
 
     private void logMessage(Update update) {
         try {
-            log.info("New update detected -> \n\t {}", objectMapper.writeValueAsString(update));
+            log.info("New update detected -> \n\t {}", mapper.writeValueAsString(update));
             if (StringUtils.isNotBlank(botProperties.getLoggerChatId())) {
                 SendMessage sendMessage = new SendMessage();
-                sendMessage.setText("New update detected -> \n" + objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(update));
+                sendMessage.setText("New update detected -> \n" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(update));
                 sendMessage.setChatId(botProperties.getLoggerChatId());
                 telegramLongPollingBot.execute(sendMessage);
             }
