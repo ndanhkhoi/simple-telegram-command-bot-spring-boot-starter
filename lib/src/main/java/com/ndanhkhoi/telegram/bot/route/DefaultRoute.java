@@ -77,7 +77,7 @@ public class DefaultRoute {
     }
 
     @CommandDescription("Get an application log file")
-    @CommandMapping(value = "/getLogFile", sendFile = MediaType.DOCUMENT, onlyForOwner = true)
+    @CommandMapping(value = "/get_log_file, sendFile = MediaType.DOCUMENT, onlyForOwner = true)
     public Object getLog(Update update, @ChatId Long chatId) {
         if (botProperties.getBotOwnerChatId().contains(String.valueOf(chatId))) {
             if (StringUtils.isNotBlank(logFile)) {
