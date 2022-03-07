@@ -35,7 +35,7 @@ public class CommandRegistry {
     public void register(BotCommand botCommand) {
         this.botCommandMap.put(botCommand.getCmd(), botCommand);
         List<BotCommandScope> scopes = getScopes(botCommand);
-        scopes.forEach(scope -> commandMapByScope.put(scope, new org.telegram.telegrambots.meta.api.objects.commands.BotCommand(botCommand.getCmd(), botCommand.getDescription())));
+        scopes.forEach(scope -> commandMapByScope.put(scope, new org.telegram.telegrambots.meta.api.objects.commands.BotCommand(botCommand.getCmd().replace("/", ""), botCommand.getDescription())));
     }
 
     public Collection<BotCommand> getAllCommands() {

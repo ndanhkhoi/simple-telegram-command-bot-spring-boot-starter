@@ -5,6 +5,7 @@ import com.ndanhkhoi.telegram.bot.annotation.CommandBody;
 import com.ndanhkhoi.telegram.bot.annotation.CommandDescription;
 import com.ndanhkhoi.telegram.bot.annotation.CommandMapping;
 import com.ndanhkhoi.telegram.bot.constant.ChatMemberStatus;
+import com.ndanhkhoi.telegram.bot.exception.BotException;
 import com.ndanhkhoi.telegram.bot.model.BotCommand;
 import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import com.ndanhkhoi.telegram.bot.model.MessageParser;
@@ -37,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 /**
  * @author ndanhkhoi
@@ -107,6 +109,24 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
     }
 
     private BotCommand extractBotCommand(Method method, String cmd, CommandMapping mapping, String commandDescription, String bodyDescription) {
+        if (StringUtils.isNotBlank(cmd)) {
+            if (StringUtils.startsWith(cmd, "/")) {
+                if (cmd.length() > 32) {
+                    throw new BotException("Command cannot be longer than 32 (including /)");
+                }
+                String cmdValue = cmd.substring(1);
+                Pattern pattern = Pattern.compile("^[a-zA-Z0-9_]*$");
+                if (!pattern.matcher(cmdValue).matches()) {
+                    throw new BotException("Command must contains only upper and lowercase letters, numbers, and underscores (_).");
+                }
+            }
+            else {
+                throw new BotException("Command must be start with /");
+            }
+        }
+        else {
+            throw new BotException("Command cannot be null or empty");
+        }
         return BotCommand.builder()
                 .withCmd(cmd)
                 .withUseHtml(mapping.useHtml())

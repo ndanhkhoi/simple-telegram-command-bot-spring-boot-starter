@@ -14,4 +14,8 @@ public class BotException extends RuntimeException {
         super(throwable);
     }
 
+    public BotException(String msg) {
+        super(msg);
+    }
+
 }
