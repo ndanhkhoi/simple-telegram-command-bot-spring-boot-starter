@@ -19,6 +19,8 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.springframework.context.ApplicationContext;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMember;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -28,6 +30,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import javax.inject.Singleton;
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -49,7 +52,7 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
 
     public SimpleTelegramLongPollingCommandBot(BotProperties botProperties, ApplicationContext applicationContext) {
         this.botProperties = botProperties;
-        this.commandRegistry = new CommandRegistry();
+        this.commandRegistry = new CommandRegistry(botProperties);
         this.updateSubscriber = new UpdateSubscriber(botProperties, this, applicationContext);
         this.loadBotRoutes();
     }
@@ -67,9 +70,22 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
                 .flatMap(clazz -> Flux.fromArray(clazz.getDeclaredMethods()))
                 .filter(method -> Modifier.isPublic(method.getModifiers()) && method.getDeclaredAnnotationsByType(CommandMapping.class).length > 0)
                 .flatMap(this::extractBotCommands)
-                .doAfterTerminate(() -> log.info("{} bot command(s) has bean loaded: {}", commandRegistry.getSize(), commandRegistry.getCommandNames()))
+                .doAfterTerminate(() -> {
+                    commandRegistry.getCommandMapByScope()
+                            .asMap()
+                            .forEach((scope, commands) -> {
+                                SetMyCommands setMyCommands = new SetMyCommands(new ArrayList<>(commands), scope, null);
+                                this.executeSneakyThrows(setMyCommands);
+                            });
+                    log.info("{} bot command(s) has bean loaded: {}", commandRegistry.getSize(), commandRegistry.getCommandNames());
+                })
                 .subscribeOn(Schedulers.parallel())
                 .subscribe(commandRegistry::register);
+    }
+
+    @SneakyThrows
+    public <T extends Serializable, MethodType extends BotApiMethod<T>> T executeSneakyThrows(MethodType method) {
+        return super.execute(method);
     }
 
     private Flux<BotCommand> extractBotCommands(Method method) {
