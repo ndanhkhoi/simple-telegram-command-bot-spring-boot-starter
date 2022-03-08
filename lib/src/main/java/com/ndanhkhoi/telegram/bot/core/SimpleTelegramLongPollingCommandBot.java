@@ -21,7 +21,6 @@ import org.reflections.util.ConfigurationBuilder;
 import org.springframework.context.ApplicationContext;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMember;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -54,7 +53,7 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
 
     public SimpleTelegramLongPollingCommandBot(BotProperties botProperties, ApplicationContext applicationContext) {
         this.botProperties = botProperties;
-        this.commandRegistry = new CommandRegistry(botProperties);
+        this.commandRegistry = new CommandRegistry();
         this.updateSubscriber = new UpdateSubscriber(botProperties, this, applicationContext);
         this.loadBotRoutes();
     }
@@ -72,15 +71,8 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
                 .flatMap(clazz -> Flux.fromArray(clazz.getDeclaredMethods()))
                 .filter(method -> Modifier.isPublic(method.getModifiers()) && method.getDeclaredAnnotationsByType(CommandMapping.class).length > 0)
                 .flatMap(this::extractBotCommands)
-                .doAfterTerminate(() -> {
-                    commandRegistry.getCommandMapByScope()
-                            .asMap()
-                            .forEach((scope, commands) -> {
-                                SetMyCommands setMyCommands = new SetMyCommands(new ArrayList<>(commands), scope, null);
-                                this.executeSneakyThrows(setMyCommands);
-                            });
-                    log.info("{} bot command(s) has bean loaded: {}", commandRegistry.getSize(), commandRegistry.getCommandNames());
-                })
+                .onErrorStop()
+                .doAfterTerminate(() -> log.info("{} bot command(s) has bean loaded: {}", commandRegistry.getSize(), commandRegistry.getCommandNames()))
                 .subscribeOn(Schedulers.parallel())
                 .subscribe(commandRegistry::register);
     }
@@ -109,6 +101,25 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
     }
 
     private BotCommand extractBotCommand(Method method, String cmd, CommandMapping mapping, String commandDescription, String bodyDescription) {
+        this.validateCommand(cmd);
+        return BotCommand.builder()
+                .withCmd(cmd)
+                .withUseHtml(mapping.useHtml())
+                .withDisableWebPagePreview(mapping.disableWebPagePreview())
+                .withAccessUserIds(mapping.accessUserIds())
+                .withAccessMemberIds(mapping.accessMemberIds())
+                .withAccessGroupIds(mapping.accessGroupIds())
+                .withAllowAllUserAccess(mapping.allowAllUserAccess())
+                .withOnlyAdmin(mapping.onlyAdmin())
+                .withSendFile(mapping.sendFile())
+                .withMethod(method)
+                .withDescription(commandDescription)
+                .withBodyDescription(bodyDescription)
+                .withOnlyForOwner(mapping.onlyForOwner())
+                .build();
+    }
+
+    private void validateCommand(String cmd) {
         if (StringUtils.isNotBlank(cmd)) {
             if (StringUtils.startsWith(cmd, "/")) {
                 if (cmd.length() > 32) {
@@ -127,20 +138,6 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
         else {
             throw new BotException("Command cannot be null or empty");
         }
-        return BotCommand.builder()
-                .withCmd(cmd)
-                .withUseHtml(mapping.useHtml())
-                .withDisableWebPagePreview(mapping.disableWebPagePreview())
-                .withAccessUserIds(mapping.accessUserIds())
-                .withAccessGroupIds(mapping.accessGroupIds())
-                .withAllowAllUserAccess(mapping.allowAllUserAccess())
-                .withOnlyAdmin(mapping.onlyAdmin())
-                .withSendFile(mapping.sendFile())
-                .withMethod(method)
-                .withDescription(commandDescription)
-                .withBodyDescription(bodyDescription)
-                .withOnlyForOwner(mapping.onlyForOwner())
-                .build();
     }
 
     private boolean hasPermission(Update update, BotCommand botCommand) {
@@ -154,15 +151,16 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
                     return false;
                 }
                 boolean hasPermission = botCommand.getAllowAllUserAccess() ||
-                        Arrays.stream(botCommand.getAccessGroupIds())
-                                .anyMatch(e -> e == chatId);
+                        ((Arrays.stream(botCommand.getAccessGroupIds())
+                                .anyMatch(e -> e == chatId))
+                                && (botCommand.getAccessMemberIds().length == 0 || Arrays.stream(botCommand.getAccessMemberIds()).anyMatch(e -> e == userSendId)));
                 if (hasPermission) {
                     if (!botCommand.getOnlyAdmin()) {
                         return true;
                     }
                     else {
                         GetChatMember getChatMember = new GetChatMember(chatId + "", userSendId);
-                        ChatMember chatMember = this.execute(getChatMember);
+                        ChatMember chatMember = this.executeSneakyThrows(getChatMember);
                         ChatMemberStatus status = ChatMemberStatus.fromStatusString(chatMember.getStatus());
                         return status == ChatMemberStatus.ADMINISTRATOR || status == ChatMemberStatus.CREATOR;
                     }
@@ -170,13 +168,13 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
             }
             else {
                 if (botCommand.getOnlyForOwner()) {
-                    return botProperties.getBotOwnerChatId().contains(String.valueOf(chatId));
+                    return botProperties.getBotOwnerChatId().contains(String.valueOf(userSendId));
                 }
                 if (botCommand.getAllowAllUserAccess()) {
                     return true;
                 }
                 return Arrays.stream(botCommand.getAccessUserIds())
-                        .anyMatch(e -> e == chatId);
+                        .anyMatch(e -> e == userSendId);
             }
         }
         catch (Exception ex) {

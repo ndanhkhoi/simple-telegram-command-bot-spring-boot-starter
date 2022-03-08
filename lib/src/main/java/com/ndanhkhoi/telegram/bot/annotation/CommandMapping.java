@@ -38,6 +38,11 @@ public @interface CommandMapping {
     long[] accessUserIds() default {};
 
     /**
+     * An id array of users in group can call a command
+     * */
+    long[] accessMemberIds() default {};
+
+    /**
      * An id array of groups can call a command
      * */
     long[] accessGroupIds() default {};

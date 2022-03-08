@@ -43,6 +43,11 @@ public class BotCommand {
     private long[] accessUserIds;
 
     /**
+     * @see CommandMapping#accessMemberIds()
+     * */
+    private long[] accessMemberIds;
+
+    /**
      * @see CommandMapping#accessGroupIds()
      * */
     private long[] accessGroupIds;
