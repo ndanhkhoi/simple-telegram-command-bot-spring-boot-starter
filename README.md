@@ -66,7 +66,7 @@ khoinda:
 public class HelloWorldBotRoute {
 
     @CommandDescription("Say hello world")
-    @CommandMapping(value = "/Hi", allowAllUserAccess = true)
+    @CommandMapping(value = "/hi", allowAllUserAccess = true)
     public String hi(Update update) {
         return "Hello world";
     }
