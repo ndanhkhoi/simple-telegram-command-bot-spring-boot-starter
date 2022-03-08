@@ -47,6 +47,9 @@ import java.util.regex.Pattern;
 @Singleton
 public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot {
 
+    private static final int CMD_MAX_LENGTH = 32;
+    private static final String CMD_PREFIX = "/";
+    private static final Pattern CMD_PATTERN = Pattern.compile("^[a-z0-9_]*$");
     private final BotProperties botProperties;
     private final UpdateSubscriber updateSubscriber;
     private final CommandRegistry commandRegistry;
@@ -121,13 +124,12 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
 
     private void validateCommand(String cmd) {
         if (StringUtils.isNotBlank(cmd)) {
-            if (StringUtils.startsWith(cmd, "/")) {
-                if (cmd.length() > 32) {
+            if (StringUtils.startsWith(cmd, CMD_PREFIX)) {
+                if (cmd.length() > CMD_MAX_LENGTH) {
                     throw new BotException("Command cannot be longer than 32 (including /)");
                 }
                 String cmdValue = cmd.substring(1);
-                Pattern pattern = Pattern.compile("^[a-z0-9_]*$");
-                if (!pattern.matcher(cmdValue).matches()) {
+                if (!CMD_PATTERN.matcher(cmdValue).matches()) {
                     throw new BotException("Command must contain only lowercase English letters, digits and underscores.");
                 }
             }
