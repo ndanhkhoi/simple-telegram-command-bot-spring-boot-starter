@@ -16,7 +16,7 @@ plugins {
 }
 
 group = "com.ndanhkhoi"
-version = "0.4.2"
+version = "0.5.0"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
@@ -55,7 +55,7 @@ configure<PublishingExtension> {
         publications.create<MavenPublication>("mavenJava") {
             groupId = "com.github.ndanhkhoi"
             artifactId = "simple-telegram-command-bot-spring-boot-starter"
-            version = "0.4.2"
+            version = "0.5.0"
             from(components["java"])
         }
     }

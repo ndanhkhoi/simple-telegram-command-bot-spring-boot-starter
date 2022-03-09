@@ -5,6 +5,7 @@ import com.ndanhkhoi.telegram.bot.annotation.CommandBody;
 import com.ndanhkhoi.telegram.bot.annotation.CommandDescription;
 import com.ndanhkhoi.telegram.bot.annotation.CommandMapping;
 import com.ndanhkhoi.telegram.bot.constant.ChatMemberStatus;
+import com.ndanhkhoi.telegram.bot.constant.CommonConstant;
 import com.ndanhkhoi.telegram.bot.exception.BotException;
 import com.ndanhkhoi.telegram.bot.model.BotCommand;
 import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
@@ -21,10 +22,12 @@ import org.reflections.util.ConfigurationBuilder;
 import org.springframework.context.ApplicationContext;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMember;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMember;
+import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -33,11 +36,7 @@ import javax.inject.Singleton;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.regex.Pattern;
+import java.util.*;
 
 /**
  * @author ndanhkhoi
@@ -47,9 +46,6 @@ import java.util.regex.Pattern;
 @Singleton
 public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot {
 
-    private static final int CMD_MAX_LENGTH = 32;
-    private static final String CMD_PREFIX = "/";
-    private static final Pattern CMD_PATTERN = Pattern.compile("^[a-z0-9_]*$");
     private final BotProperties botProperties;
     private final UpdateSubscriber updateSubscriber;
     private final CommandRegistry commandRegistry;
@@ -124,12 +120,12 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
 
     private void validateCommand(String cmd) {
         if (StringUtils.isNotBlank(cmd)) {
-            if (StringUtils.startsWith(cmd, CMD_PREFIX)) {
-                if (cmd.length() > CMD_MAX_LENGTH) {
+            if (StringUtils.startsWith(cmd, CommonConstant.CMD_PREFIX)) {
+                if (cmd.length() > CommonConstant.CMD_MAX_LENGTH) {
                     throw new BotException("Command cannot be longer than 32 (including /)");
                 }
                 String cmdValue = cmd.substring(1);
-                if (!CMD_PATTERN.matcher(cmdValue).matches()) {
+                if (!CommonConstant.CMD_PATTERN.matcher(cmdValue).matches()) {
                     throw new BotException("Command must contain only lowercase English letters, digits and underscores.");
                 }
             }
@@ -259,6 +255,8 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
     @Override
     public void onRegister() {
         super.onRegister();
+        SetMyCommands setMyCommands = new SetMyCommands(Collections.singletonList(CommonConstant.HELP_BOT_COMMAND), new BotCommandScopeDefault(), null);
+        executeSneakyThrows(setMyCommands);
         log.info("Bot {} has started successfully", botProperties.getUsername());
     }
 

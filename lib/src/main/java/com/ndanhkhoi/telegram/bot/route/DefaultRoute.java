@@ -4,6 +4,7 @@ import com.ndanhkhoi.telegram.bot.annotation.BotRoute;
 import com.ndanhkhoi.telegram.bot.annotation.ChatId;
 import com.ndanhkhoi.telegram.bot.annotation.CommandDescription;
 import com.ndanhkhoi.telegram.bot.annotation.CommandMapping;
+import com.ndanhkhoi.telegram.bot.constant.CommonConstant;
 import com.ndanhkhoi.telegram.bot.constant.MediaType;
 import com.ndanhkhoi.telegram.bot.constant.TelegramTextStyled;
 import com.ndanhkhoi.telegram.bot.core.BotProperties;
@@ -56,8 +57,8 @@ public class DefaultRoute {
         return result.toString();
     }
 
-    @CommandDescription("List of available command(s) for this chat")
-    @CommandMapping(value = {"/cmd", "/help"}, allowAllUserAccess = true, useHtml = true)
+    @CommandDescription(CommonConstant.HELP_CMD_DESCRIPTION)
+    @CommandMapping(value = CommonConstant.HELP_CMD, allowAllUserAccess = true, useHtml = true)
     public Mono<String> getCmdByChat(Update update, @ChatId Long chatId) {
         boolean isMessageInGroup = TelegramMessageUtils.isMessageInGroup(update.getMessage());
         String title = TelegramMessageUtils.wrapByTag("List of available commands for this chat: ", TelegramTextStyled.BOLD);
@@ -70,14 +71,14 @@ public class DefaultRoute {
             .collect(Collectors.joining(System.lineSeparator()));
     }
 
-    @CommandDescription("Start chat")
-    @CommandMapping(value = "/start", allowAllUserAccess = true)
+    @CommandDescription(CommonConstant.START_CMD_DESCRIPTION)
+    @CommandMapping(value = CommonConstant.START_CMD, allowAllUserAccess = true)
     public String start(Update update) {
         return String.format("Hi, %s. Please use /cmd or /help to know all I can do", update.getMessage().getFrom().getFirstName());
     }
 
-    @CommandDescription("Get an application log file")
-    @CommandMapping(value = "/get_log_file", sendFile = MediaType.DOCUMENT, onlyForOwner = true)
+    @CommandDescription(CommonConstant.GET_LOG_FILE_CMD)
+    @CommandMapping(value = CommonConstant.GET_LOG_FILE_DESCRIPTION, sendFile = MediaType.DOCUMENT, onlyForOwner = true)
     public Object getLog(Update update, @ChatId Long chatId) {
         if (botProperties.getBotOwnerChatId().contains(String.valueOf(chatId))) {
             if (StringUtils.isNotBlank(logFile)) {
