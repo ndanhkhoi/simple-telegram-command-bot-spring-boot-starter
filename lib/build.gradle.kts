@@ -69,10 +69,6 @@ configure<PublishingExtension> {
     }
 }
 
-tasks.withType<Jar> {
-    archiveBaseName.set("simple-telegram-command-bot-spring-boot-starter")
-}
-
 tasks {
     register("fatJar", Jar::class.java) {
         archiveBaseName.set("simple-telegram-command-bot-spring-boot-starter-full-dependencies")
