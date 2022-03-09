@@ -28,6 +28,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMember;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
+import reactor.core.Exceptions;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -70,9 +71,10 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
                 .flatMap(clazz -> Flux.fromArray(clazz.getDeclaredMethods()))
                 .filter(method -> Modifier.isPublic(method.getModifiers()) && method.getDeclaredAnnotationsByType(CommandMapping.class).length > 0)
                 .flatMap(this::extractBotCommands)
-                .onErrorStop()
+                .doOnError(ex -> {
+                    throw Exceptions.errorCallbackNotImplemented(ex);
+                })
                 .doAfterTerminate(() -> log.info("{} bot command(s) has bean loaded: {}", commandRegistry.getSize(), commandRegistry.getCommandNames()))
-                .subscribeOn(Schedulers.parallel())
                 .subscribe(commandRegistry::register);
     }
 

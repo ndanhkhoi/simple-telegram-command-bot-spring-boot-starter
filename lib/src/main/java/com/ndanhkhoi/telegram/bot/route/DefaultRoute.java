@@ -77,8 +77,8 @@ public class DefaultRoute {
         return String.format("Hi, %s. Please use /cmd or /help to know all I can do", update.getMessage().getFrom().getFirstName());
     }
 
-    @CommandDescription(CommonConstant.GET_LOG_FILE_CMD)
-    @CommandMapping(value = CommonConstant.GET_LOG_FILE_DESCRIPTION, sendFile = MediaType.DOCUMENT, onlyForOwner = true)
+    @CommandDescription(CommonConstant.GET_LOG_FILE_DESCRIPTION)
+    @CommandMapping(value = CommonConstant.GET_LOG_FILE_CMD, sendFile = MediaType.DOCUMENT, onlyForOwner = true)
     public Object getLog(Update update, @ChatId Long chatId) {
         if (botProperties.getBotOwnerChatId().contains(String.valueOf(chatId))) {
             if (StringUtils.isNotBlank(logFile)) {
