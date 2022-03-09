@@ -58,7 +58,7 @@ configure<PublishingExtension> {
             repositories {
                 maven {
                     name = "GitHubPackages"
-                    url = uri("https://maven.pkg.github.com/my-username/my-library")
+                    url = uri("https://maven.pkg.github.com/ndanhkhoi/simple-telegram-command-bot-spring-boot-starter")
                     credentials {
                         username = System.getenv("GITHUB_ACTOR")
                         password = System.getenv("GITHUB_TOKEN")
