@@ -15,8 +15,6 @@ plugins {
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
 }
 
-group = "com.ndanhkhoi"
-version = "0.5.1"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
@@ -57,6 +55,16 @@ configure<PublishingExtension> {
             artifactId = "simple-telegram-command-bot-spring-boot-starter"
             version = "0.5.1"
             from(components["java"])
+            repositories {
+                maven {
+                    name = "GitHubPackages"
+                    url = uri("https://maven.pkg.github.com/my-username/my-library")
+                    credentials {
+                        username = System.getenv("GITHUB_ACTOR")
+                        password = System.getenv("GITHUB_TOKEN")
+                    }
+                }
+            }
         }
     }
 }
