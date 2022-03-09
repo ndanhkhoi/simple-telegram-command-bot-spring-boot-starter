@@ -74,7 +74,7 @@ public class DefaultRoute {
     @CommandDescription(CommonConstant.START_CMD_DESCRIPTION)
     @CommandMapping(value = CommonConstant.START_CMD, allowAllUserAccess = true)
     public String start(Update update) {
-        return String.format("Hi, %s. Please use /cmd or /help to know all I can do", update.getMessage().getFrom().getFirstName());
+        return String.format("Hi, %s. Please use /help to know all I can do", update.getMessage().getFrom().getFirstName());
     }
 
     @CommandDescription(CommonConstant.GET_LOG_FILE_DESCRIPTION)
