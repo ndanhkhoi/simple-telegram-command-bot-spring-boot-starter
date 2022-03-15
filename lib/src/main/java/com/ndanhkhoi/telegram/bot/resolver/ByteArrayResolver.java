@@ -16,16 +16,16 @@ import java.time.ZoneId;
  */
 public class ByteArrayResolver extends TypeResolver<byte[]> {
 
-    private ByteArrayResolver(Class<byte[]> type, Consumer4<Object, BotCommand, BotCommandParams, TelegramLongPollingBot> resolver) {
-        super(type, resolver);
-    }
-
     public static final ByteArrayResolver INSTANCE = new ByteArrayResolver(byte[].class,
             (value, botCommand, botCommandParams, telegramLongPollingBot) -> {
                 MediaType sendFile = botCommand.getSendFile();
                 SendMediaUtils.sendMedia(botCommandParams.getUpdate().getMessage(), FileUtils.getInputFile((byte[]) value, "temp_" + FileUtils.getPosfixFileInstantByTime(ZoneId.systemDefault())), botCommandParams.getUpdate().getMessage().getChatId(), sendFile, telegramLongPollingBot);
                 LOGGER.info("Reply Media: [{}]", sendFile);
             }
-        );
+    );
+
+    private ByteArrayResolver(Class<byte[]> type, Consumer4<Object, BotCommand, BotCommandParams, TelegramLongPollingBot> resolver) {
+        super(type, resolver);
+    }
 
 }

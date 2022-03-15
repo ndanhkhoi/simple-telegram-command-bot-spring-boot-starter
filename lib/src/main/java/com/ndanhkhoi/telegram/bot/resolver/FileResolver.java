@@ -16,16 +16,16 @@ import java.io.File;
  */
 public class FileResolver extends TypeResolver<File> {
 
-    private FileResolver(Class<File> type, Consumer4<Object, BotCommand, BotCommandParams, TelegramLongPollingBot> resolver) {
-        super(type, resolver);
-    }
-
     public static final FileResolver INSTANCE = new FileResolver(File.class,
             (value, botCommand, botCommandParams, telegramLongPollingBot) -> {
                 MediaType sendFile = botCommand.getSendFile();
                 SendMediaUtils.sendMedia(botCommandParams.getUpdate().getMessage(), FileUtils.getInputFile((File) value), botCommandParams.getUpdate().getMessage().getChatId(), sendFile, telegramLongPollingBot);
                 LOGGER.info("Reply Media: [{}]", sendFile);
             }
-        );
+    );
+
+    private FileResolver(Class<File> type, Consumer4<Object, BotCommand, BotCommandParams, TelegramLongPollingBot> resolver) {
+        super(type, resolver);
+    }
 
 }
