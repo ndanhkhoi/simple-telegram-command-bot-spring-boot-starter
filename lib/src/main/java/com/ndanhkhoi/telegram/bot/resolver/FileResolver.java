@@ -14,7 +14,7 @@ import java.io.File;
  * @author ndanhkhoi
  * Created at 22:21:06 February 26, 2022
  */
-public class FileResolver extends TypeResolver<File> {
+public final class FileResolver extends TypeResolver<File> {
 
     public static final FileResolver INSTANCE = new FileResolver(File.class,
             (value, botCommand, botCommandParams, telegramLongPollingBot) -> {

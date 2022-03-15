@@ -14,7 +14,7 @@ import java.time.ZoneId;
  * @author ndanhkhoi
  * Created at 22:21:06 February 26, 2022
  */
-public class ByteArrayResolver extends TypeResolver<byte[]> {
+public final class ByteArrayResolver extends TypeResolver<byte[]> {
 
     public static final ByteArrayResolver INSTANCE = new ByteArrayResolver(byte[].class,
             (value, botCommand, botCommandParams, telegramLongPollingBot) -> {

@@ -13,7 +13,7 @@ import reactor.function.Consumer4;
  * @author ndanhkhoi
  * Created at 22:21:06 February 26, 2022
  */
-public class ByteArrayResourceResolver extends TypeResolver<ByteArrayResource> {
+public final class ByteArrayResourceResolver extends TypeResolver<ByteArrayResource> {
 
     public static final ByteArrayResourceResolver INSTANCE = new ByteArrayResourceResolver(ByteArrayResource.class,
             (value, botCommand, botCommandParams, telegramLongPollingBot) -> {
