@@ -2,8 +2,9 @@
 
 [![Jitpack](https://jitpack.io/v/ndanhkhoi/simple-telegram-command-bot-spring-boot-starter.svg)](https://jitpack.io/#ndanhkhoi/simple-telegram-command-bot-spring-boot-starter)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/ndanhkhoi/simple-telegram-command-bot-spring-boot-starter/blob/master/LICENSE)
+[![Publish Action Status](https://github.com/ndanhkhoi/simple-telegram-command-bot-spring-boot-starter/workflows/gradle-publish/badge.svg)](https://github.com/ndanhkhoi/simple-telegram-command-bot-spring-boot-starter/actions)
 
-A simple-to-use library to create Telegram Long Polling Bots in Java and Spring Boot
+A simple-to-use library to create Telegram Long Polling Bots in Java and Spring Boot with syntax like Spring MVC
 
 ## Usage
 
@@ -24,7 +25,7 @@ Just import add the library to your project with one of these options:
 <dependency>
     <groupId>com.github.ndanhkhoi</groupId>
     <artifactId>simple-telegram-command-bot-spring-boot-starter</artifactId>
-    <version>0.5.1</version>
+    <version>0.6.0</version>
 </dependency>
 ```
 2. Using Gradle:
@@ -37,7 +38,7 @@ repositories {
 - Step 2. Add the dependency
 ```gradle
 dependencies {
-    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:0.5.1'
+    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:0.6.0'
 }
 ```
 
