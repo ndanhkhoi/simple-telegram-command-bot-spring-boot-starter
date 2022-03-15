@@ -29,7 +29,14 @@ public class ResolverRegistry {
 
     private final ImmutableMap<Class<?>, Consumer4<Object, BotCommand, BotCommandParams, TelegramLongPollingBot>> resolverMap;
 
-    public static final ResolverRegistry INSTANCE = new ResolverRegistry(ByteArrayResolver.INSTANCE, ByteArrayResourceResolver.INSTANCE, FileResolver.INSTANCE, InputFileResolver.INSTANCE, StringResolver.INSTANCE);
+    public static final ResolverRegistry INSTANCE = new ResolverRegistry(
+            ByteArrayResolver.INSTANCE,
+            ByteArrayResourceResolver.INSTANCE,
+            FileResolver.INSTANCE,
+            InputFileResolver.INSTANCE,
+            StringResolver.INSTANCE,
+            BotApiMethodResolver.INSTANCE
+    );
 
     private ResolverRegistry(TypeResolver<?> ... typeResolvers) {
         this.resolverMap = ImmutableMap.copyOf(Stream.of(typeResolvers)
