@@ -49,10 +49,8 @@ public class DefaultRoute {
         if (StringUtils.isNotBlank(botCommand.getDescription())) {
             result.append(": ").append(botCommand.getDescription());
         }
-        if (isMessageInGroup) {
-            if (botCommand.getOnlyAdmin()) {
-                result.append(" (").append("only admin group has permission").append(")");
-            }
+        if (isMessageInGroup && botCommand.isOnlyAdmin()) {
+            result.append(" (").append("only admin group has permission").append(")");
         }
         return result.toString();
     }

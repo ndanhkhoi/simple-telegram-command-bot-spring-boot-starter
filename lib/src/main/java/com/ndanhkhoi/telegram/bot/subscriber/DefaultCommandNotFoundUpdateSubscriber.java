@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
  * Default handler for non command update
  */
 @Slf4j
-public class DefaultCommandNotFoundUpdateSubscriber extends CommandNotFoundUpdateSubscriber {
+public class DefaultCommandNotFoundUpdateSubscriber implements CommandNotFoundUpdateSubscriber {
 
     @Override
     public void accept(Update update, String cmd) {

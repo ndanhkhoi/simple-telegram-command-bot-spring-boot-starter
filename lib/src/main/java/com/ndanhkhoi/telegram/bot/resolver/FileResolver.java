@@ -20,7 +20,7 @@ public class FileResolver extends TypeResolver<File> {
         super(type, resolver);
     }
 
-    public final static FileResolver INSTANCE = new FileResolver(File.class,
+    public static final FileResolver INSTANCE = new FileResolver(File.class,
             (value, botCommand, botCommandParams, telegramLongPollingBot) -> {
                 MediaType sendFile = botCommand.getSendFile();
                 SendMediaUtils.sendMedia(botCommandParams.getUpdate().getMessage(), FileUtils.getInputFile((File) value), botCommandParams.getUpdate().getMessage().getChatId(), sendFile, telegramLongPollingBot);

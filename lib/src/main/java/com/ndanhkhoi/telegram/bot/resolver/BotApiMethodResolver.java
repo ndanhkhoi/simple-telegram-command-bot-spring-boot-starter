@@ -20,7 +20,7 @@ public class BotApiMethodResolver extends TypeResolver<BotApiMethod> {
         super(type, resolver);
     }
 
-    public final static BotApiMethodResolver INSTANCE = new BotApiMethodResolver(BotApiMethod.class,
+    public static final BotApiMethodResolver INSTANCE = new BotApiMethodResolver(BotApiMethod.class,
             (value, botCommand, botCommandParams, telegramLongPollingBot) -> {
                 excute(telegramLongPollingBot, (BotApiMethod) value);
                 LOGGER.info("Excuted API method {}", value);

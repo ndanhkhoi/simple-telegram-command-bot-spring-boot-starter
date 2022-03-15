@@ -20,7 +20,7 @@ public class ByteArrayResolver extends TypeResolver<byte[]> {
         super(type, resolver);
     }
 
-    public final static ByteArrayResolver INSTANCE = new ByteArrayResolver(byte[].class,
+    public static final ByteArrayResolver INSTANCE = new ByteArrayResolver(byte[].class,
             (value, botCommand, botCommandParams, telegramLongPollingBot) -> {
                 MediaType sendFile = botCommand.getSendFile();
                 SendMediaUtils.sendMedia(botCommandParams.getUpdate().getMessage(), FileUtils.getInputFile((byte[]) value, "temp_" + FileUtils.getPosfixFileInstantByTime(ZoneId.systemDefault())), botCommandParams.getUpdate().getMessage().getChatId(), sendFile, telegramLongPollingBot);
