@@ -10,7 +10,10 @@ import com.ndanhkhoi.telegram.bot.exception.BotException;
 import com.ndanhkhoi.telegram.bot.model.BotCommand;
 import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import com.ndanhkhoi.telegram.bot.model.MessageParser;
+import com.ndanhkhoi.telegram.bot.subscriber.CommandNotFoundUpdateSubscriber;
+import com.ndanhkhoi.telegram.bot.subscriber.DefaultCommandNotFoundUpdateSubscriber;
 import com.ndanhkhoi.telegram.bot.subscriber.UpdateSubscriber;
+import com.ndanhkhoi.telegram.bot.utils.SpringBeanUtils;
 import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +22,6 @@ import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
-import org.springframework.context.ApplicationContext;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
@@ -49,12 +51,14 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
 
     private final BotProperties botProperties;
     private final UpdateSubscriber updateSubscriber;
-    private final CommandRegistry commandRegistry;
+    private final SpringBeanUtils springBeanUtils;
+    private final CommandRegistry commandRegistry = new CommandRegistry();
+    private final DefaultCommandNotFoundUpdateSubscriber defaultNonCommandUpdateSubscriber = new DefaultCommandNotFoundUpdateSubscriber();
 
-    public SimpleTelegramLongPollingCommandBot(BotProperties botProperties, ApplicationContext applicationContext) {
+    public SimpleTelegramLongPollingCommandBot(BotProperties botProperties, SpringBeanUtils springBeanUtils) {
         this.botProperties = botProperties;
-        this.commandRegistry = new CommandRegistry();
-        this.updateSubscriber = new UpdateSubscriber(botProperties, this, applicationContext);
+        this.springBeanUtils = springBeanUtils;
+        this.updateSubscriber = new UpdateSubscriber(botProperties, this, springBeanUtils);
         this.loadBotRoutes();
     }
 
@@ -206,7 +210,13 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
             botCommand = commandRegistry.getCommand(truncatedCmd);
         }
         else {
-            log.warn("No route match for command: {}", messageParser.getFirstWord());
+            if (springBeanUtils.existBean(CommandNotFoundUpdateSubscriber.class)) {
+                CommandNotFoundUpdateSubscriber nonCommandUpdateSubscriber = springBeanUtils.getBean(CommandNotFoundUpdateSubscriber.class);
+                nonCommandUpdateSubscriber.accept(update, messageParser.getFirstWord());
+            }
+            else {
+                defaultNonCommandUpdateSubscriber.accept(update, messageParser.getFirstWord());
+            }
         }
         return Mono.justOrEmpty(botCommand);
     }

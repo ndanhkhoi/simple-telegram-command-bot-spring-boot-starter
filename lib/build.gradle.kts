@@ -53,7 +53,7 @@ configure<PublishingExtension> {
         publications.create<MavenPublication>("mavenJava") {
             groupId = "com.github.ndanhkhoi"
             artifactId = "simple-telegram-command-bot-spring-boot-starter"
-            version = "0.5.1"
+            version = "0.6.0"
             from(components["java"])
             repositories {
                 maven {
@@ -65,8 +65,30 @@ configure<PublishingExtension> {
                     }
                 }
             }
+            pom {
+                name.set("Simple Telegram Command Bot Spring Boot Starter")
+                description.set("A simple-to-use library to create Telegram Long Polling Bots in Java and Spring Boot with syntax like Spring MVC")
+                licenses {
+                    license {
+                        name.set("MIT License")
+                        url.set("https://github.com/ndanhkhoi/simple-telegram-command-bot-spring-boot-starter/blob/master/LICENSE")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("ndanhkhoi")
+                        name.set("Nguyen Duc Anh Khoi")
+                        email.set("ngducanhkhoiii@gmail.com")
+                    }
+                }
+            }
         }
     }
+}
+
+tasks.withType<Jar> {
+    archiveBaseName.set("simple-telegram-command-bot-spring-boot-starter")
+    archiveVersion.set("0.6.0")
 }
 
 tasks {

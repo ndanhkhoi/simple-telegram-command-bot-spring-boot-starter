@@ -12,14 +12,13 @@ import com.ndanhkhoi.telegram.bot.core.SimpleTelegramLongPollingCommandBot;
 import com.ndanhkhoi.telegram.bot.model.BotCommand;
 import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import com.ndanhkhoi.telegram.bot.resolver.ResolverRegistry;
+import com.ndanhkhoi.telegram.bot.utils.SpringBeanUtils;
 import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.context.ApplicationContext;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -49,12 +48,12 @@ public class UpdateSubscriber implements Consumer<Update> {
     private final DefaultNonCommandUpdateSubscriber defaultNonCommandUpdateSubscriber = new DefaultNonCommandUpdateSubscriber();
     private final BotProperties botProperties;
     private final SimpleTelegramLongPollingCommandBot telegramLongPollingBot;
-    private final ApplicationContext applicationContext;
+    private final SpringBeanUtils springBeanUtils;
 
-    public UpdateSubscriber(BotProperties botProperties, SimpleTelegramLongPollingCommandBot telegramLongPollingBot, ApplicationContext applicationContext) {
+    public UpdateSubscriber(BotProperties botProperties, SimpleTelegramLongPollingCommandBot telegramLongPollingBot, SpringBeanUtils springBeanUtils) {
         this.botProperties = botProperties;
         this.telegramLongPollingBot = telegramLongPollingBot;
-        this.applicationContext = applicationContext;
+        this.springBeanUtils = springBeanUtils;
     }
 
     private <T> OptionalInt getIndexArgByType(Parameter[] parameters, Class<T> clazz) {
@@ -120,17 +119,17 @@ public class UpdateSubscriber implements Consumer<Update> {
     @SneakyThrows
     private void handleCmd(BotCommand botCommand, BotCommandParams botCommandParams) {
         Object[] args = getBotCommandeArgs(botCommand.getMethod(), botCommandParams);
-        Object route = applicationContext.getBean(botCommand.getMethod().getDeclaringClass());
+        Object route = springBeanUtils.getBean(botCommand.getMethod().getDeclaringClass());
         Object returnValue = botCommand.getMethod().invoke(route, args);
         ResolverRegistry.INSTANCE.resolve(returnValue, botCommand, botCommandParams, telegramLongPollingBot);
     }
 
     private void processNonCommandUpdate(Update update) {
-        try {
-            NonCommandUpdateSubscriber nonCommandUpdateSubscriber = applicationContext.getBean(NonCommandUpdateSubscriber.class);
+        if (springBeanUtils.existBean(NonCommandUpdateSubscriber.class)) {
+            NonCommandUpdateSubscriber nonCommandUpdateSubscriber = springBeanUtils.getBean(NonCommandUpdateSubscriber.class);
             nonCommandUpdateSubscriber.accept(update);
         }
-        catch (NoSuchBeanDefinitionException ex) {
+        else {
             defaultNonCommandUpdateSubscriber.accept(update);
         }
     }
