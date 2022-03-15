@@ -14,7 +14,7 @@ import java.io.Serializable;
  * Created at 22:21:06 February 26, 2022
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
-public class BotApiMethodResolver extends TypeResolver<BotApiMethod> {
+public final class BotApiMethodResolver extends TypeResolver<BotApiMethod> {
 
     public static final BotApiMethodResolver INSTANCE = new BotApiMethodResolver(BotApiMethod.class,
             (value, botCommand, botCommandParams, telegramLongPollingBot) -> {

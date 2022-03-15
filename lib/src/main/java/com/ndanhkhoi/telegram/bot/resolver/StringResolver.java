@@ -11,7 +11,7 @@ import reactor.function.Consumer4;
  * @author ndanhkhoi
  * Created at 22:21:06 February 26, 2022
  */
-public class StringResolver extends TypeResolver<String> {
+public final class StringResolver extends TypeResolver<String> {
 
     public static final StringResolver INSTANCE = new StringResolver (String.class,
             (value, botCommand, botCommandParams, telegramLongPollingBot) -> {

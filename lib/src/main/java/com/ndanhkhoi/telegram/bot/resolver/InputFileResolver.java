@@ -12,7 +12,7 @@ import reactor.function.Consumer4;
  * @author ndanhkhoi
  * Created at 22:21:06 February 26, 2022
  */
-public class InputFileResolver extends TypeResolver<InputFile> {
+public final class InputFileResolver extends TypeResolver<InputFile> {
 
     public static final InputFileResolver INSTANCE = new InputFileResolver(InputFile.class,
             (value, botCommand, botCommandParams, telegramLongPollingBot) -> {

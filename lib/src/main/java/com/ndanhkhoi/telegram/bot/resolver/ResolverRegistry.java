@@ -25,7 +25,7 @@ import java.util.stream.Stream;
  * Created at 22:02:59 February 26, 2022
  */
 @Slf4j
-public class ResolverRegistry {
+public final class ResolverRegistry {
 
     private final ImmutableMap<Class<?>, Consumer4<Object, BotCommand, BotCommandParams, TelegramLongPollingBot>> resolverMap;
 
