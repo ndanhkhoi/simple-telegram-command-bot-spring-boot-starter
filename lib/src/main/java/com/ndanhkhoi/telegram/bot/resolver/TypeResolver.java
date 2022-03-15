@@ -13,7 +13,7 @@ import reactor.function.Consumer4;
  * Created at 21:59:44 February 26, 2022
  */
 @Getter
-public abstract class TypeResolver<T> {
+public class TypeResolver<T> {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(TypeResolver.class);
 
