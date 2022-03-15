@@ -30,12 +30,12 @@ public class BotCommand {
     /**
      * @see CommandMapping#useHtml()
      * */
-    private Boolean useHtml;
+    private boolean useHtml;
 
     /**
      * @see CommandMapping#disableWebPagePreview()
      * */
-    private Boolean disableWebPagePreview;
+    private boolean disableWebPagePreview;
 
     /**
      * @see CommandMapping#accessUserIds()
@@ -55,12 +55,12 @@ public class BotCommand {
     /**
      * @see CommandMapping#allowAllUserAccess()
      * */
-    private Boolean allowAllUserAccess;
+    private boolean allowAllUserAccess;
 
     /**
      * @see CommandMapping#onlyAdmin()
      * */
-    private Boolean onlyAdmin;
+    private boolean onlyAdmin;
 
     /**
      * @see CommandMapping#sendFile()
@@ -70,7 +70,7 @@ public class BotCommand {
     /**
      * @see CommandMapping#onlyForOwner()
      * */
-    private Boolean onlyForOwner;
+    private boolean onlyForOwner;
 
     /**
      * A method that is marked by {@link CommandMapping} annotation

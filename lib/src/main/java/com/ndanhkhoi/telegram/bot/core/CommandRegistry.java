@@ -1,6 +1,7 @@
 package com.ndanhkhoi.telegram.bot.core;
 
 import com.ndanhkhoi.telegram.bot.model.BotCommand;
+import lombok.NoArgsConstructor;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -11,12 +12,10 @@ import java.util.Set;
  * @author ndanhkhoi
  * Created at 20:31:09 December 28, 2021
  */
+@NoArgsConstructor
 public class CommandRegistry {
 
     private final Map<String, BotCommand> botCommandMap = new LinkedHashMap<>();
-
-    public CommandRegistry() {
-    }
 
     public int getSize() {
         return this.botCommandMap.keySet().size();

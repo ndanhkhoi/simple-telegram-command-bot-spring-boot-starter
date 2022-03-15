@@ -18,7 +18,7 @@ public class InputFileResolver extends TypeResolver<InputFile> {
         super(type, resolver);
     }
 
-    public final static InputFileResolver INSTANCE = new InputFileResolver(InputFile.class,
+    public static final InputFileResolver INSTANCE = new InputFileResolver(InputFile.class,
             (value, botCommand, botCommandParams, telegramLongPollingBot) -> {
                 MediaType sendFile = botCommand.getSendFile();
                 SendMediaUtils.sendMedia(botCommandParams.getUpdate().getMessage(), (InputFile) value, botCommandParams.getUpdate().getMessage().getChatId(), sendFile, telegramLongPollingBot);

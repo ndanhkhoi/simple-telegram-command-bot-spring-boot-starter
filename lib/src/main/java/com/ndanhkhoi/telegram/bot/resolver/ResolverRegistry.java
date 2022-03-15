@@ -62,7 +62,7 @@ public class ResolverRegistry {
         return resolverMap.containsKey(type);
     }
 
-    public static Consumer<? super Throwable> onErrorHandle(BotCommandParams params, TelegramLongPollingBot telegramLongPollingBot) {
+    public static Consumer<Throwable> onErrorHandle(BotCommandParams params, TelegramLongPollingBot telegramLongPollingBot) {
         return throwable -> {
             log.error("Error!", throwable);
             TelegramMessageUtils.replyMessage(telegramLongPollingBot, params.getUpdate().getMessage(), CommonConstant.ERROR_NOTIFY_MESSAGE,false);
@@ -74,13 +74,16 @@ public class ResolverRegistry {
             log.info("Nothing to reply. Cause return value(s) is empty collection/array");
         }
         else {
-            Class<?> typeOfElement = valueCollection.stream().findFirst().get().getClass();
-            if (isSupportedType(typeOfElement)) {
-                valueCollection.forEach(e -> resolve(e, botCommand, botCommandParams, bot));
-            }
-            else {
-                log.warn("Nothing to reply. Cause the return type is not supported ({}}). Supported types are: {}", typeOfElement.getSimpleName(), getSimpleNameSupportedTypes());
-            }
+            valueCollection.stream().findFirst()
+                    .ifPresent(e -> {
+                        Class<?> typeOfElement =  e.getClass();
+                        if (isSupportedType(typeOfElement)) {
+                            valueCollection.forEach(value -> resolve(value, botCommand, botCommandParams, bot));
+                        }
+                        else {
+                            log.warn("Nothing to reply. Cause the return type is not supported ({}}). Supported types are: {}", typeOfElement.getSimpleName(), getSimpleNameSupportedTypes());
+                        }
+                    });
         }
     }
 

@@ -8,5 +8,5 @@ import java.util.function.BiConsumer;
  * @author ndanhkhoi
  * Created at 20:18:05 March 15, 2022
  */
-public abstract class CommandNotFoundUpdateSubscriber implements BiConsumer<Update, String> {
+public interface CommandNotFoundUpdateSubscriber extends BiConsumer<Update, String> {
 }

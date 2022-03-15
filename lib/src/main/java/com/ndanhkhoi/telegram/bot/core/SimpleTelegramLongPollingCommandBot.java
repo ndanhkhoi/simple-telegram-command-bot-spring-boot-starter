@@ -83,7 +83,7 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
     }
 
     @SneakyThrows
-    public <T extends Serializable, MethodType extends BotApiMethod<T>> T executeSneakyThrows(MethodType method) {
+    public <T extends Serializable, M extends BotApiMethod<T>> T executeSneakyThrows(M method) {
         return super.execute(method);
     }
 
@@ -150,39 +150,30 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
             Long chatId = message.getChatId();
             Long userSendId = message.getFrom().getId();
             boolean isMessageInGroup = TelegramMessageUtils.isMessageInGroup(message);
-            if (isMessageInGroup) {
-                if (botCommand.getOnlyForOwner()) {
-                    return false;
-                }
-                boolean hasPermission = botCommand.getAllowAllUserAccess() ||
-                        ((Arrays.stream(botCommand.getAccessGroupIds())
-                                .anyMatch(e -> e == chatId))
-                                && (botCommand.getAccessMemberIds().length == 0 || Arrays.stream(botCommand.getAccessMemberIds()).anyMatch(e -> e == userSendId)));
-                if (hasPermission) {
-                    if (!botCommand.getOnlyAdmin()) {
-                        return true;
-                    }
-                    else {
-                        GetChatMember getChatMember = new GetChatMember(chatId + "", userSendId);
-                        ChatMember chatMember = this.executeSneakyThrows(getChatMember);
-                        ChatMemberStatus status = ChatMemberStatus.fromStatusString(chatMember.getStatus());
-                        return status == ChatMemberStatus.ADMINISTRATOR || status == ChatMemberStatus.CREATOR;
-                    }
-                }
+            if (isMessageInGroup && botCommand.isOnlyForOwner()) {
+                return false;
             }
-            else {
-                if (botCommand.getOnlyForOwner()) {
-                    return botProperties.getBotOwnerChatId().contains(String.valueOf(userSendId));
-                }
-                if (botCommand.getAllowAllUserAccess()) {
-                    return true;
-                }
-                return Arrays.stream(botCommand.getAccessUserIds())
-                        .anyMatch(e -> e == userSendId);
+            else if (isMessageInGroup && botCommand.isOnlyAdmin()) {
+                GetChatMember getChatMember = new GetChatMember(chatId + "", userSendId);
+                ChatMember chatMember = this.executeSneakyThrows(getChatMember);
+                ChatMemberStatus status = ChatMemberStatus.fromStatusString(chatMember.getStatus());
+                return status == ChatMemberStatus.ADMINISTRATOR || status == ChatMemberStatus.CREATOR;
             }
-        }
-        catch (Exception ex) {
-            log.error("Error !" ,ex);
+            else if (isMessageInGroup) {
+                boolean isAcceptedGroup = Arrays.stream(botCommand.getAccessGroupIds()).anyMatch(e -> e == chatId);
+                boolean isAcceptedMember = botCommand.getAccessMemberIds().length == 0 || Arrays.stream(botCommand.getAccessMemberIds()).anyMatch(e -> e == userSendId);
+                return botCommand.isAllowAllUserAccess() || (isAcceptedGroup && isAcceptedMember);
+            }
+            else if (botCommand.isOnlyForOwner()) {
+                return botProperties.getBotOwnerChatId().contains(String.valueOf(userSendId));
+            }
+            else if (botCommand.isAllowAllUserAccess()) {
+                return true;
+            }
+            return Arrays.stream(botCommand.getAccessUserIds())
+                    .anyMatch(e -> e == userSendId);
+        } catch (Exception ex) {
+            log.error("Error !", ex);
         }
         return false;
     }
@@ -208,13 +199,11 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
         String truncatedCmd = truncatedBotUsername(messageParser.getFirstWord());
         if (commandRegistry.hasCommand(truncatedCmd) && hasPermission(update, commandRegistry.getCommand(truncatedCmd))) {
             botCommand = commandRegistry.getCommand(truncatedCmd);
-        }
-        else {
+        } else {
             if (springBeanUtils.existBean(CommandNotFoundUpdateSubscriber.class)) {
                 CommandNotFoundUpdateSubscriber nonCommandUpdateSubscriber = springBeanUtils.getBean(CommandNotFoundUpdateSubscriber.class);
                 nonCommandUpdateSubscriber.accept(update, messageParser.getFirstWord());
-            }
-            else {
+            } else {
                 defaultNonCommandUpdateSubscriber.accept(update, messageParser.getFirstWord());
             }
         }
@@ -233,8 +222,7 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
                     .withSendUsername(Objects.toString(update.getMessage().getFrom().getUserName(), ""))
                     .withChatId(chatId)
                     .build();
-        }
-        else if (message.hasPhoto()) {
+        } else if (message.hasPhoto()) {
             return getCommandParamsWithPhoto(update);
         }
         return null;

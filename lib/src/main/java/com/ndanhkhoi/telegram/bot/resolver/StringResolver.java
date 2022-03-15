@@ -17,13 +17,13 @@ public class StringResolver extends TypeResolver<String> {
         super(type, resolver);
     }
 
-    public final static StringResolver INSTANCE = new StringResolver (String.class,
+    public static final StringResolver INSTANCE = new StringResolver (String.class,
             (value, botCommand, botCommandParams, telegramLongPollingBot) -> {
                 if (StringUtils.isBlank((String) value)) {
                     LOGGER.warn("Blank string returnd");
                     return;
                 }
-                TelegramMessageUtils.replyMessage(telegramLongPollingBot, botCommandParams.getUpdate().getMessage(), (String) value, botCommand.getUseHtml(), botCommand.getDisableWebPagePreview());
+                TelegramMessageUtils.replyMessage(telegramLongPollingBot, botCommandParams.getUpdate().getMessage(), (String) value, botCommand.isUseHtml(), botCommand.isDisableWebPagePreview());
                 LOGGER.info("Reply Message: {}", value);
             }
         );
