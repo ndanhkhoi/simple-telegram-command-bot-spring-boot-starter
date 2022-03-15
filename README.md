@@ -2,7 +2,7 @@
 
 [![Jitpack](https://jitpack.io/v/ndanhkhoi/simple-telegram-command-bot-spring-boot-starter.svg)](https://jitpack.io/#ndanhkhoi/simple-telegram-command-bot-spring-boot-starter)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/ndanhkhoi/simple-telegram-command-bot-spring-boot-starter/blob/master/LICENSE)
-[![Publish Action Status](https://github.com/ndanhkhoi/simple-telegram-command-bot-spring-boot-starter/workflows/gradle-publish/badge.svg)](https://github.com/ndanhkhoi/simple-telegram-command-bot-spring-boot-starter/actions)
+[![gradle-publish](https://github.com/ndanhkhoi/simple-telegram-command-bot-spring-boot-starter/actions/workflows/gradle-publish.yml/badge.svg)](https://github.com/ndanhkhoi/simple-telegram-command-bot-spring-boot-starter/actions/workflows/gradle-publish.yml)
 
 A simple-to-use library to create Telegram Long Polling Bots in Java and Spring Boot with syntax like Spring MVC
 
