@@ -13,10 +13,6 @@ import reactor.function.Consumer4;
  */
 public class StringResolver extends TypeResolver<String> {
 
-    private StringResolver(Class<String> type, Consumer4<Object, BotCommand, BotCommandParams, TelegramLongPollingBot> resolver) {
-        super(type, resolver);
-    }
-
     public static final StringResolver INSTANCE = new StringResolver (String.class,
             (value, botCommand, botCommandParams, telegramLongPollingBot) -> {
                 if (StringUtils.isBlank((String) value)) {
@@ -26,6 +22,10 @@ public class StringResolver extends TypeResolver<String> {
                 TelegramMessageUtils.replyMessage(telegramLongPollingBot, botCommandParams.getUpdate().getMessage(), (String) value, botCommand.isUseHtml(), botCommand.isDisableWebPagePreview());
                 LOGGER.info("Reply Message: {}", value);
             }
-        );
+    );
+
+    private StringResolver(Class<String> type, Consumer4<Object, BotCommand, BotCommandParams, TelegramLongPollingBot> resolver) {
+        super(type, resolver);
+    }
 
 }

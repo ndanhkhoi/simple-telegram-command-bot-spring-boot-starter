@@ -16,16 +16,16 @@ import java.io.Serializable;
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class BotApiMethodResolver extends TypeResolver<BotApiMethod> {
 
-    private BotApiMethodResolver(Class<BotApiMethod> type, Consumer4<Object, BotCommand, BotCommandParams, TelegramLongPollingBot> resolver) {
-        super(type, resolver);
-    }
-
     public static final BotApiMethodResolver INSTANCE = new BotApiMethodResolver(BotApiMethod.class,
             (value, botCommand, botCommandParams, telegramLongPollingBot) -> {
                 excute(telegramLongPollingBot, (BotApiMethod) value);
                 LOGGER.info("Excuted API method {}", value);
             }
-        );
+    );
+
+    private BotApiMethodResolver(Class<BotApiMethod> type, Consumer4<Object, BotCommand, BotCommandParams, TelegramLongPollingBot> resolver) {
+        super(type, resolver);
+    }
 
     @SneakyThrows
     private static <T extends Serializable> void excute(TelegramLongPollingBot telegramLongPollingBot, BotApiMethod<T> apiMethod) {

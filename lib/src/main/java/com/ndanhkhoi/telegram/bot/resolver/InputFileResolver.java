@@ -14,16 +14,16 @@ import reactor.function.Consumer4;
  */
 public class InputFileResolver extends TypeResolver<InputFile> {
 
-    private InputFileResolver(Class<InputFile> type, Consumer4<Object, BotCommand, BotCommandParams, TelegramLongPollingBot> resolver) {
-        super(type, resolver);
-    }
-
     public static final InputFileResolver INSTANCE = new InputFileResolver(InputFile.class,
             (value, botCommand, botCommandParams, telegramLongPollingBot) -> {
                 MediaType sendFile = botCommand.getSendFile();
                 SendMediaUtils.sendMedia(botCommandParams.getUpdate().getMessage(), (InputFile) value, botCommandParams.getUpdate().getMessage().getChatId(), sendFile, telegramLongPollingBot);
                 LOGGER.info("Reply Media: [{}]", sendFile);
             }
-        );
+    );
+
+    private InputFileResolver(Class<InputFile> type, Consumer4<Object, BotCommand, BotCommandParams, TelegramLongPollingBot> resolver) {
+        super(type, resolver);
+    }
 
 }
