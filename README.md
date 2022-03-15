@@ -27,7 +27,7 @@ Just import add the library to your project with one of these options:
 <dependency>
     <groupId>com.github.ndanhkhoi</groupId>
     <artifactId>simple-telegram-command-bot-spring-boot-starter</artifactId>
-    <version>0.6.3</version>
+    <version>0.7.0</version>
 </dependency>
 ```
 2. Using Gradle:
@@ -40,7 +40,7 @@ repositories {
 - Step 2. Add the dependency
 ```gradle
 dependencies {
-    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:0.6.3'
+    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:0.7.0'
 }
 ```
 
@@ -101,7 +101,7 @@ More infomation from [Jitpack](https://jitpack.io/#ndanhkhoi/simple-telegram-com
 ## License
 MIT License
 
-Copyright (c) 2021 Nguyễn Đức Anh Khôi
+Copyright (c) 2021 Nguyen Duc Anh Khoi
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
