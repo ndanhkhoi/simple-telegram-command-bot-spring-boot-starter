@@ -15,8 +15,8 @@ plugins {
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
 }
 
-group = "io.github.ndanhkhoi"
-version = "0.8.0"
+group = "com.github.ndanhkhoi"
+version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
@@ -53,32 +53,14 @@ tasks.withType<Test> {
 configure<PublishingExtension> {
     publications {
         publications.create<MavenPublication>("mavenJava") {
-            artifactId = "simple-telegram-command-bot-spring-boot-starter"
             from(components["java"])
             repositories {
                 maven {
-                    name = "OSSRH"
-                    url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+                    name = "GitHubPackages"
+                    url = uri("https://maven.pkg.github.com/ndanhkhoi/simple-telegram-command-bot-spring-boot-starter")
                     credentials {
-                        username = System.getenv("MAVEN_USERNAME")
-                        password = System.getenv("MAVEN_PASSWORD")
-                    }
-                }
-            }
-            pom {
-                name.set("Simple Telegram Command Bot Spring Boot Starter")
-                description.set("A simple-to-use library to create Telegram Long Polling Bots in Java and Spring Boot with syntax like Spring MVC")
-                licenses {
-                    license {
-                        name.set("MIT License")
-                        url.set("https://github.com/ndanhkhoi/simple-telegram-command-bot-spring-boot-starter/blob/master/LICENSE")
-                    }
-                }
-                developers {
-                    developer {
-                        id.set("ndanhkhoi")
-                        name.set("Nguyen Duc Anh Khoi")
-                        email.set("ngducanhkhoiii@gmail.com")
+                        username = System.getenv("GITHUB_ACTOR")
+                        password = System.getenv("GITHUB_TOKEN")
                     }
                 }
             }
