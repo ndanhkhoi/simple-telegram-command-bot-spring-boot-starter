@@ -51,9 +51,9 @@ tasks.withType<Test> {
 configure<PublishingExtension> {
     publications {
         publications.create<MavenPublication>("mavenJava") {
-            groupId = "io.github.ndanhkhoi"
+            groupId = "com.github.ndanhkhoi"
             artifactId = "simple-telegram-command-bot-spring-boot-starter"
-            version = "0.7.0"
+            version = "0.7.1"
             from(components["java"])
             repositories {
                 maven {
@@ -88,7 +88,7 @@ configure<PublishingExtension> {
 
 tasks.withType<Jar> {
     archiveBaseName.set("simple-telegram-command-bot-spring-boot-starter")
-    archiveVersion.set("0.7.0")
+    archiveVersion.set("0.7.1")
 }
 
 tasks {
