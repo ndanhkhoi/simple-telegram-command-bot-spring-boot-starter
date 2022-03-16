@@ -8,6 +8,29 @@
 
 A simple-to-use library to create Telegram Long Polling Bots in Java and Spring Boot with syntax like Spring MVC
 
+- [Simple Telegram Command Bot Spring Boot Starter](#simple-telegram-command-bot-spring-boot-starter)
+    * [Usage](#usage)
+    * [How to use](#how-to-use)
+    * [BotRoute](#botroute)
+    * [CommandMapping](#commandmapping)
+    * [CommandDescription](#commanddescription)
+    * [Authorization](#authorization)
+    * [Supported arguments](#supported-arguments)
+        + [Arguments by type](#arguments-by-type)
+        + [Arguments by annotation](#arguments-by-annotation)
+    * [Supported return values](#supported-return-values)
+        + [Single value](#single-value)
+        + [Multiple value](#multiple-value)
+        + [Reactive support](#reactive-support)
+    * [Default Commands](#default-commands)
+    * [Logging Channel](#logging-channel)
+    * [Configurations](#configurations)
+        + [Properties](#properties)
+    * [Dependencies](#dependencies)
+    * [Telegram Bot API](#telegram-bot-api)
+    * [Jitpack](#jitpack)
+    * [License](#license)
+
 ## Usage
 
 Just import add the library to your project with one of these options:
@@ -77,6 +100,69 @@ public class HelloWorldBotRoute {
 }
 
 ```
+## BotRoute
+An annotation indicates that a particular class serves the role of a router.
+
+## CommandMapping
+An annotation is used to map bot requests to route methods. 
+
+## CommandDescription
+An annotation is used to describe command. You can see it which default `/help` command
+
+## Authorization
+You can authorize command with these properties in `@CommandMapping` annotaion:
+- `allowAllUserAccess` - boolean, if true all users/group can be call this command
+- `accessUserIds` - an array contains user id can call this command
+- `accessGroupIds` - an array contains group id can call this command
+- `accessMemberIds` - an array contains user id can call this command in the group
+- `onlyAdmin` - boolean, if true only admin of group can be call this command
+- `onlyForOwner` - boolean, if true only bot's owner can be call this command
+
+## Supported arguments
+### Arguments by type
+- `Update` - An Update object of telegram bot API
+- `List<PhotoSize>` - If message contains photo(s), it will be hold them, or else it will be return `null`
+### Arguments by annotation
+- `@CommandBody` - An annotation to mark a param in command method as a command body
+- `@ChatId` - An annotation to mark a param in command method as a chat id, can be use on `Long` type
+- `@SendUserId` - An annotation to mark a param in command method as a user id, can be use on `Long` type
+- `@SendUsername` - An annotation to mark a param in command method as a username, can be use on `String` type
+
+## Supported return values
+
+### Single value
+- `String` - the text will be reply to user make a request
+- `InputFile/File/byte[]/ByteArrayResource` - the file will be reply to user make a request
+- `BotApiMethod` - it will be excuted automatically
+- `Void` - do nothing
+
+### Multiple value
+- `Collection<T>` - with T is one of single value types, it will be do a same thing for each element in this collection
+
+### Reactive support
+- `Mono<T>` - same as Single value but for Reactive
+- `Flux<T>` - same as Multiple value but for Reactive
+
+## Default Commands
+- `/help` - List of available command(s) for this chat
+- `/get_log_file` - Get an application log file. This command must be called by owner of a bot in `khoinda.bot.botOwnerChatId` in application.properties or application.yml
+
+## Logging Channel
+If you want to send log when new update received, you can config your channel id to `khoinda.bot.loggerChatId` in application.properties or application.yml
+
+## Configurations
+
+### Properties
+By default, you can configure only these properties:
+
+| Property                     | Description                                             | Default value       |
+|------------------------------|---------------------------------------------------------|---------------------|
+| khoinda.bot.username         | Bot's username                                          |                     |
+| khoinda.bot.token            | Bot's token                                             |                     |
+| khoinda.bot.loggerChatId     | Chat id can received logging when new `Update` recieved |                     |
+| khoinda.bot.botOwnerChatId   | Chat id of bot's owner                                  | `new ArrayList<>()` |
+| khoinda.bot.botRoutePackages | Package(s) name that includes BotRoute class            | `new ArrayList<>()` |
+
 ## Dependencies
 This library uses following dependencies:
 1. [Spring Boot Starter](https://github.com/spring-projects/spring-boot/tree/main/spring-boot-project/spring-boot-starters)
