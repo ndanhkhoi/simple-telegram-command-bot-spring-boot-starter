@@ -15,8 +15,8 @@ plugins {
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
 }
 
-group = "com.github.ndanhkhoi"
-version = "0.7.1"
+group = "io.github.ndanhkhoi"
+version = "0.8.0"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
@@ -57,11 +57,11 @@ configure<PublishingExtension> {
             from(components["java"])
             repositories {
                 maven {
-                    name = "GitHubPackages"
-                    url = uri("https://maven.pkg.github.com/ndanhkhoi/simple-telegram-command-bot-spring-boot-starter")
+                    name = "OSSRH"
+                    url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
                     credentials {
-                        username = System.getenv("GITHUB_ACTOR")
-                        password = System.getenv("GITHUB_TOKEN")
+                        username = System.getenv("MAVEN_USERNAME")
+                        password = System.getenv("MAVEN_PASSWORD")
                     }
                 }
             }
