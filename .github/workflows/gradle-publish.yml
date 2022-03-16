@@ -21,16 +21,21 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Publish artifact
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
-
-        # The GITHUB_REF tag comes in the format 'refs/tags/xxx'.
-        # If we split on '/' and take the 3rd value,
-        # we can get the release name.
+      - name: Build artifact
         run: |
           NEW_VERSION=$(echo "${GITHUB_REF}" | cut -d "/" -f3)
           echo "New version: ${NEW_VERSION}"
           echo "Github username: ${GITHUB_ACTOR}"
-          ./gradlew -Pversion=${NEW_VERSION} publish
+          ./gradlew -Pversion=${NEW_VERSION} jar
+
+      - name: Nexus repo publish artifact
+        uses: sonatype-nexus-community/nexus-repo-github-action@master
+        with:
+          serverUrl: https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/
+          username: ndanhkhoi
+          password: ${{ secrets.SONATYPE_PASSWORD }}
+          format: maven2
+          repository: maven-releases
+          coordinates: groupId=io.github.ndanhkhoi
+          assets: extension=jar
+          filename: ./build/libs/*.jar
