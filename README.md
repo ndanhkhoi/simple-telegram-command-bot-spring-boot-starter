@@ -136,12 +136,12 @@ You can authorize command with these properties in `@CommandMapping` annotaion:
 - `BotApiMethod` - it will be excuted automatically
 - `Void` - do nothing
 
-### Multiple value
+### Collection value
 - `Collection<T>` - with T is one of single value types, it will be do a same job with single value types for each element in this collection
 
 ### Reactive support
-- `Mono<T>` - same as Single value but for Reactive
-- `Flux<T>` - same as Multiple value but for Reactive
+- `Mono<T>` - same as single value but for Reactive
+- `Flux<T>` - same as collection value but for Reactive
 
 ## Default Commands
 - `/help` - List of available command(s) for this chat
