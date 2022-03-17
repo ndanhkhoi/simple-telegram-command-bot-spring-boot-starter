@@ -137,7 +137,7 @@ You can authorize command with these properties in `@CommandMapping` annotaion:
 - `Void` - do nothing
 
 ### Multiple value
-- `Collection<T>` - with T is one of single value types, it will be do a same thing for each element in this collection
+- `Collection<T>` - with T is one of single value types, it will be do a same thing with Single return value for each element in this collection
 
 ### Reactive support
 - `Mono<T>` - same as Single value but for Reactive
