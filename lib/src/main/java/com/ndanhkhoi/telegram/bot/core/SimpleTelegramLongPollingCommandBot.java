@@ -67,7 +67,7 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
         packagesToScan.add("com.ndanhkhoi.telegram.bot.route");
         packagesToScan.addAll(botProperties.getBotRoutePackages());
 
-        log.info("Bot route's ackages: {}", packagesToScan);
+        log.info("Bot route's packages: {}", packagesToScan);
 
         Flux.fromIterable(packagesToScan)
                 .map(packageToScan -> new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forPackage(packageToScan))))
@@ -128,7 +128,7 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
         if (StringUtils.isNotBlank(cmd)) {
             if (StringUtils.startsWith(cmd, CommonConstant.CMD_PREFIX)) {
                 if (cmd.length() > CommonConstant.CMD_MAX_LENGTH) {
-                    throw new BotException("Command cannot be longer than 32 (including /)");
+                    throw new BotException(String.format("Command cannot be longer than %d (including %s)", CommonConstant.CMD_MAX_LENGTH, CommonConstant.CMD_PREFIX));
                 }
                 String cmdValue = cmd.substring(1);
                 if (!CommonConstant.CMD_PATTERN.matcher(cmdValue).matches()) {
@@ -136,7 +136,7 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
                 }
             }
             else {
-                throw new BotException("Command must be start with /");
+                throw new BotException(String.format("Command must be start with %s", CommonConstant.CMD_PREFIX));
             }
         }
         else {
