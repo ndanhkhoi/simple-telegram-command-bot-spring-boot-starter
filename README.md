@@ -9,27 +9,31 @@
 A simple-to-use library to create Telegram Long Polling Bots in Java and Spring Boot with syntax like Spring MVC
 
 - [Simple Telegram Command Bot Spring Boot Starter](#simple-telegram-command-bot-spring-boot-starter)
-    * [Usage](#usage)
-    * [How to use](#how-to-use)
-    * [BotRoute](#botroute)
-    * [CommandMapping](#commandmapping)
-    * [CommandDescription](#commanddescription)
-    * [Authorization](#authorization)
-    * [Supported arguments](#supported-arguments)
-        + [Arguments by type](#arguments-by-type)
-        + [Arguments by annotation](#arguments-by-annotation)
-    * [Supported return values](#supported-return-values)
-        + [Single value](#single-value)
-        + [Multiple value](#multiple-value)
-        + [Reactive support](#reactive-support)
-    * [Default Commands](#default-commands)
-    * [Logging Channel](#logging-channel)
-    * [Configurations](#configurations)
-        + [Properties](#properties)
-    * [Dependencies](#dependencies)
-    * [Telegram Bot API](#telegram-bot-api)
-    * [Jitpack](#jitpack)
-    * [License](#license)
+  * [Usage](#usage)
+  * [How to use](#how-to-use)
+  * [BotRoute](#botroute)
+  * [CommandMapping](#commandmapping)
+  * [CommandDescription](#commanddescription)
+  * [Authorization](#authorization)
+  * [Supported arguments](#supported-arguments)
+    + [Arguments by type](#arguments-by-type)
+    + [Arguments by annotation](#arguments-by-annotation)
+  * [Supported return values](#supported-return-values)
+    + [Single value](#single-value)
+    + [Collection value](#collection-value)
+    + [Reactive support](#reactive-support)
+  * [Default Commands](#default-commands)
+  * [Logging Channel](#logging-channel)
+  * [Exception Handle](#exception-handle)
+    + [BotRouteAdvice](#botrouteadvice)
+    + [BotExceptionHandler](#botexceptionhandler)
+    + [Supported return values of BotExceptionHandler](#supported-return-values-of-botexceptionhandler)
+  * [Configurations](#configurations)
+    + [Properties](#properties)
+  * [Dependencies](#dependencies)
+  * [Telegram Bot API](#telegram-bot-api)
+  * [Jitpack](#jitpack)
+  * [License](#license)
 
 ## Usage
 
@@ -50,7 +54,7 @@ Just import add the library to your project with one of these options:
 <dependency>
     <groupId>com.github.ndanhkhoi</groupId>
     <artifactId>simple-telegram-command-bot-spring-boot-starter</artifactId>
-    <version>0.10</version>
+    <version>0.11</version>
 </dependency>
 ```
 2. Using Gradle:
@@ -63,7 +67,7 @@ repositories {
 - Step 2. Add the dependency
 ```gradle
 dependencies {
-    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:0.10'
+    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:0.11'
 }
 ```
 
