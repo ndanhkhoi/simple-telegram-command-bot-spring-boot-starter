@@ -24,7 +24,7 @@ A simple-to-use library to create Telegram Long Polling Bots in Java and Spring 
     + [Reactive support](#reactive-support)
   * [Default Commands](#default-commands)
   * [Logging Channel](#logging-channel)
-  * [Exception Handle](#exception-handle)
+  * [Handle Exception](#exception-handle)
     + [BotRouteAdvice](#botrouteadvice)
     + [BotExceptionHandler](#botexceptionhandler)
     + [Supported return values of BotExceptionHandler](#supported-return-values-of-botexceptionhandler)
@@ -156,7 +156,7 @@ You can authorize command with these properties in `@CommandMapping` annotaion:
 ## Logging Channel
 If you want to send log when new update received, you can config your channel id to `khoinda.bot.logging-chat-id` in application.properties or application.yml
 
-## Exception Handle
+## Handle Exception
 
 Here is an example for handler of `NoSuchElementException`. When bot command request throw `NoSuchElementException`, it will reply a text: `"404 Not Found !"`
 ```java
