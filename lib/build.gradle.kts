@@ -16,7 +16,6 @@ plugins {
 }
 
 group = "com.github.ndanhkhoi"
-version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
@@ -57,6 +56,7 @@ configure<PublishingExtension> {
             repositories {
                 maven {
                     name = "GitHubPackages"
+                    artifactId = "simple-telegram-command-bot-spring-boot-starter"
                     url = uri("https://maven.pkg.github.com/ndanhkhoi/simple-telegram-command-bot-spring-boot-starter")
                     credentials {
                         username = System.getenv("GITHUB_ACTOR")
