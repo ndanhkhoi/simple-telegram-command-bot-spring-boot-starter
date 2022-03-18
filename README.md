@@ -82,7 +82,7 @@ khoinda:
   bot:
     username: {YOUR_BOT_USERNAME}
     token: {YOUR_BOT_TOKEN}
-    botRoutePackages:
+    bot-route-packages:
         - {YOUR_BOT_ROUTES_PACKAGE}
 ```
 - Create your bot route
@@ -121,7 +121,9 @@ You can authorize command with these properties in `@CommandMapping` annotaion:
 ## Supported arguments
 ### Arguments by type
 - `Update` - An Update object of telegram bot API
-- `List<PhotoSize>` - If message contains photo(s), it will be hold them, or else it will be return `null`
+- `Message` - A message object of telegram bot API
+- `List<PhotoSize>` - If message contains photo, it will be hold them, or else it will be return `null`
+- `Document` - If message contains file, it will be hold them, or else it will be return `null`
 ### Arguments by annotation
 - `@CommandBody` - An annotation to mark a param in command method as a command body
 - `@ChatId` - An annotation to mark a param in command method as a chat id, can be use on `Long` type
@@ -150,18 +152,43 @@ You can authorize command with these properties in `@CommandMapping` annotaion:
 ## Logging Channel
 If you want to send log when new update received, you can config your channel id to `khoinda.bot.loggerChatId` in application.properties or application.yml
 
+## Exception Handle
+
+Here is an example for handler of `NoSuchElementException`. When bot command request throw `NoSuchElementException`, it will reply a text: `"404 Not Found !"`
+```java
+@BotRouteAdvice
+public class RouteAdvice {
+
+    @BotExceptionHandler(NoSuchElementException.class)
+    public String handleNoSuchElement(Update update, NoSuchElementException ex) {
+        return "404 Not Found !";
+    }
+
+}
+```
+
+### BotRouteAdvice
+An annotation indicates that a particular class serves the role of a router for exception.
+
+### BotExceptionHandler
+An annotation is used to mark method is a exception handler.
+
+### Supported return values of BotExceptionHandler
+- `String` - the text will be reply to user make a request
+- `BotApiMethod` - it will be excuted automatically
+
 ## Configurations
 
 ### Properties
 By default, you can configure only these properties:
 
-| Property                     | Description                                             | Default value       |
-|------------------------------|---------------------------------------------------------|---------------------|
-| khoinda.bot.username         | Bot's username                                          |                     |
-| khoinda.bot.token            | Bot's token                                             |                     |
-| khoinda.bot.loggerChatId     | Chat id can received logging when new `Update` recieved |                     |
-| khoinda.bot.botOwnerChatId   | Chat id of bot's owner                                  | `new ArrayList<>()` |
-| khoinda.bot.botRoutePackages | Package(s) name that includes BotRoute class            | `new ArrayList<>()` |
+| Property                       | Description                                             | Default value       |
+|--------------------------------|---------------------------------------------------------|---------------------|
+| khoinda.bot.username           | Bot's username                                          |                     |
+| khoinda.bot.token              | Bot's token                                             |                     |
+| khoinda.bot.logging-chat-id    | Chat id can received logging when new `Update` recieved |                     |
+| khoinda.bot.bot-owner-chat-id  | Chat id of bot's owner                                  | `new ArrayList<>()` |
+| khoinda.bot.bot-route-packages | Package(s) name that includes BotRoute class            | `new ArrayList<>()` |
 
 ## Dependencies
 This library uses following dependencies:

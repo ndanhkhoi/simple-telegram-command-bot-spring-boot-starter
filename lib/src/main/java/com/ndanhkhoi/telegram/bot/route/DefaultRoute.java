@@ -21,6 +21,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -61,11 +62,13 @@ public class DefaultRoute {
         boolean isMessageInGroup = TelegramMessageUtils.isMessageInGroup(update.getMessage());
         String title = TelegramMessageUtils.wrapByTag("List of available commands for this chat: ", TelegramTextStyled.BOLD);
         AtomicInteger index = new AtomicInteger(1);
-        Flux<String> result =  simpleTelegramLongPollingCommandBot.getAvailableBotCommands(update)
+        List<String> result =  simpleTelegramLongPollingCommandBot.getAvailableBotCommands(update)
+                .stream()
                 .map(botCommand -> described(botCommand, isMessageInGroup))
-                .sort()
-                .map(described -> index.getAndIncrement() + ". " + described);
-        return Flux.merge(Flux.just(title), result)
+                .sorted()
+                .map(described -> index.getAndIncrement() + ". " + described)
+                .collect(Collectors.toList());
+        return Flux.merge(Flux.just(title), Flux.fromIterable(result))
             .collect(Collectors.joining(System.lineSeparator()));
     }
 

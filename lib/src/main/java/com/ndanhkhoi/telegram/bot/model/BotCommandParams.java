@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.telegram.telegrambots.meta.api.objects.Document;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -26,6 +28,12 @@ public class BotCommandParams {
      * */
     @TypeArg
     private Update update;
+
+    /**
+     * A message
+     * */
+    @TypeArg
+    private Message message;
 
     /**
      * Command's body
@@ -56,5 +64,11 @@ public class BotCommandParams {
      * */
     @TypeArg
     private List<PhotoSize> photoSizes;
+
+    /**
+     * File received
+     * */
+    @TypeArg
+    private Document document;
 
 }

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.ndanhkhoi.telegram.bot.annotation.AnnotaionArg;
+import com.ndanhkhoi.telegram.bot.annotation.BotExceptionHandler;
+import com.ndanhkhoi.telegram.bot.annotation.BotRouteAdvice;
 import com.ndanhkhoi.telegram.bot.annotation.TypeArg;
 import com.ndanhkhoi.telegram.bot.constant.CommonConstant;
 import com.ndanhkhoi.telegram.bot.core.BotProperties;
@@ -19,15 +21,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import reactor.core.scheduler.Schedulers;
 
 import javax.inject.Singleton;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
+import java.util.Map;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
@@ -104,10 +110,10 @@ public class UpdateSubscriber implements Consumer<Update> {
     private void logMessage(Update update) {
         try {
             log.info("New update detected -> {}", mapper.writeValueAsString(update));
-            if (StringUtils.isNotBlank(botProperties.getLoggerChatId())) {
+            if (StringUtils.isNotBlank(botProperties.getLoggingChatId())) {
                 SendMessage sendMessage = new SendMessage();
                 sendMessage.setText("New update detected -> \n" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(update));
-                sendMessage.setChatId(botProperties.getLoggerChatId());
+                sendMessage.setChatId(botProperties.getLoggingChatId());
                 telegramLongPollingBot.execute(sendMessage);
             }
         }
@@ -120,8 +126,14 @@ public class UpdateSubscriber implements Consumer<Update> {
     private void handleCmd(BotCommand botCommand, BotCommandParams botCommandParams) {
         Object[] args = getBotCommandeArgs(botCommand.getMethod(), botCommandParams);
         Object route = springBeanUtils.getBean(botCommand.getMethod().getDeclaringClass());
-        Object returnValue = botCommand.getMethod().invoke(route, args);
-        ResolverRegistry.INSTANCE.resolve(returnValue, botCommand, botCommandParams, telegramLongPollingBot);
+        try {
+            Object returnValue = botCommand.getMethod().invoke(route, args);
+            ResolverRegistry.INSTANCE.resolve(returnValue, botCommand, botCommandParams, telegramLongPollingBot);
+        }
+        catch (InvocationTargetException ex) {
+            // Exception when invoke method. Ex: bot method throws exception manually
+            throw ex.getTargetException();
+        }
     }
 
     private void processNonCommandUpdate(Update update) {
@@ -134,7 +146,6 @@ public class UpdateSubscriber implements Consumer<Update> {
         }
     }
 
-    @SneakyThrows
     @Override
     public void accept(Update update) {
         Message message = update.getMessage();
@@ -151,11 +162,63 @@ public class UpdateSubscriber implements Consumer<Update> {
             }
             BotCommandParams botCommandParams = telegramLongPollingBot.getCommandParams(update);
             if (botCommandParams != null) {
-                telegramLongPollingBot
-                        .getCommand(update)
-                        .doOnError(ResolverRegistry.onErrorHandle(botCommandParams, telegramLongPollingBot))
-                        .subscribeOn(Schedulers.parallel())
-                        .subscribe(botCommand -> handleCmd(botCommand, botCommandParams));
+                try {
+                    telegramLongPollingBot
+                            .getCommand(update)
+                            .ifPresent(botCommand -> handleCmd(botCommand, botCommandParams));
+                }
+                catch (Throwable t) {
+                    doOnError(t, botCommandParams);
+                }
+            }
+        }
+    }
+
+    @SneakyThrows
+    private void doOnError(Throwable t, BotCommandParams params) {
+        Map<String, Object> adviceMap = springBeanUtils.getBeansWithAnnotation(BotRouteAdvice.class);
+        Method handleMethod = null;
+        Object adviceBean = null;
+        for (Map.Entry<String, Object> entry : adviceMap.entrySet()) {
+            for (Method method : entry.getValue().getClass().getDeclaredMethods()) {
+                if (Modifier.isPublic(method.getModifiers())
+                        && method.getDeclaredAnnotationsByType(BotExceptionHandler.class).length > 0
+                        && method.getDeclaredAnnotationsByType(BotExceptionHandler.class)[0].value() == t.getClass()) {
+                    handleMethod = method;
+                    adviceBean = entry.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (handleMethod == null || adviceBean == null) {
+            ResolverRegistry.onErrorHandle(params, telegramLongPollingBot).accept(t);
+        }
+        else {
+            Parameter[] parameters = handleMethod.getParameters();
+            Object[] args = new Object[parameters.length];
+            for (int idx = 0; idx < parameters.length; idx++) {
+                if (parameters[idx].getType() == Update.class) {
+                    args[idx] = params.getUpdate();
+                }
+                else if (Throwable.class.isAssignableFrom(parameters[idx].getType())) {
+                    args[idx] = t;
+                }
+            }
+            Object returnValue = handleMethod.invoke(adviceBean, args);
+            if (returnValue == null) {
+                log.warn("Returnd value of {}#{} is null, so default error handler will be called as a callback", adviceBean.getClass().getSimpleName(), handleMethod.getName());
+                ResolverRegistry.onErrorHandle(params, telegramLongPollingBot).accept(t);
+            }
+            else if (returnValue instanceof String) {
+                TelegramMessageUtils.replyMessage(telegramLongPollingBot, params.getUpdate().getMessage(), (String) returnValue,false);
+            }
+            else if (returnValue instanceof BotApiMethod) {
+                telegramLongPollingBot.execute((BotApiMethod<? extends Serializable>) returnValue);
+            }
+            else {
+                log.warn("Returnd value of {}#{} is not supported ({}), so default error handler will be called as a callback", adviceBean.getClass().getSimpleName(), handleMethod.getName(), returnValue.getClass().getName());
+                ResolverRegistry.onErrorHandle(params, telegramLongPollingBot).accept(t);
             }
         }
     }
