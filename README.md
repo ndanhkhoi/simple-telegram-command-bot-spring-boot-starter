@@ -151,10 +151,10 @@ You can authorize command with these properties in `@CommandMapping` annotaion:
 
 ## Default Commands
 - `/help` - List of available command(s) for this chat
-- `/get_log_file` - Get an application log file. This command must be called by owner of a bot in `khoinda.bot.botOwnerChatId` in application.properties or application.yml
+- `/get_log_file` - Get an application log file. This command must be called by owner of a bot in `khoinda.bot.bot-owner-chat-id` in application.properties or application.yml
 
 ## Logging Channel
-If you want to send log when new update received, you can config your channel id to `khoinda.bot.loggerChatId` in application.properties or application.yml
+If you want to send log when new update received, you can config your channel id to `khoinda.bot.logging-chat-id` in application.properties or application.yml
 
 ## Exception Handle
 
