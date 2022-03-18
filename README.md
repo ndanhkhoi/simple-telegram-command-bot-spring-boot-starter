@@ -121,6 +121,7 @@ You can authorize command with these properties in `@CommandMapping` annotaion:
 ## Supported arguments
 ### Arguments by type
 - `Update` - An Update object of telegram bot API
+- `Message` - A message object of telegram bot API
 - `List<PhotoSize>` - If message contains photo, it will be hold them, or else it will be return `null`
 - `Document` - If message contains file, it will be hold them, or else it will be return `null`
 ### Arguments by annotation

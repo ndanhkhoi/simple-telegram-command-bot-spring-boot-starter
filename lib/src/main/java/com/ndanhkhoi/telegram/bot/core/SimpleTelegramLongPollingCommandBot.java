@@ -217,6 +217,7 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
             MessageParser messageParser = new MessageParser(message.getText());
             return BotCommandParams.builder()
                     .withUpdate(update)
+                    .withMessage(update.getMessage())
                     .withCmdBody(messageParser.getRemainingText())
                     .withSendUserId(update.getMessage().getFrom().getId())
                     .withSendUsername(Objects.toString(update.getMessage().getFrom().getUserName(), ""))
@@ -234,6 +235,7 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
         Long chatId = message.getChat().getId();
         return BotCommandParams.builder()
                 .withUpdate(update)
+                .withMessage(update.getMessage())
                 .withCmdBody(messageParser.getRemainingText())
                 .withSendUserId(update.getMessage().getFrom().getId())
                 .withSendUsername(Objects.toString(update.getMessage().getFrom().getUserName(), ""))
