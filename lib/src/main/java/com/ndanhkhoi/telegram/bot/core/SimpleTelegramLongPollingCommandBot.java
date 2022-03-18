@@ -222,13 +222,13 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
                     .withSendUsername(Objects.toString(update.getMessage().getFrom().getUserName(), ""))
                     .withChatId(chatId)
                     .build();
-        } else if (message.hasPhoto()) {
-            return getCommandParamsWithPhoto(update);
+        } else if (message.hasPhoto() || message.hasDocument()) {
+            return getCommandParamsWithMedia(update);
         }
         return null;
     }
 
-    private BotCommandParams getCommandParamsWithPhoto(Update update) {
+    private BotCommandParams getCommandParamsWithMedia(Update update) {
         Message message = update.getMessage();
         MessageParser messageParser = new MessageParser(message.getCaption());
         Long chatId = message.getChat().getId();
@@ -239,6 +239,7 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
                 .withSendUsername(Objects.toString(update.getMessage().getFrom().getUserName(), ""))
                 .withChatId(chatId)
                 .withPhotoSizes(message.getPhoto())
+                .withDocument(message.getDocument())
                 .build();
     }
 
