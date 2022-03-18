@@ -191,7 +191,10 @@ public class UpdateSubscriber implements Consumer<Update> {
             }
         }
 
-        if (handleMethod != null && adviceBean != null) {
+        if (handleMethod == null || adviceBean == null) {
+            ResolverRegistry.onErrorHandle(params, telegramLongPollingBot).accept(t);
+        }
+        else {
             Parameter[] parameters = handleMethod.getParameters();
             Object[] args = new Object[parameters.length];
             for (int idx = 0; idx < parameters.length; idx++) {
@@ -217,9 +220,6 @@ public class UpdateSubscriber implements Consumer<Update> {
                 log.warn("Returnd value of {}#{} is not supported ({}), so default error handler will be called as a callback", adviceBean.getClass().getSimpleName(), handleMethod.getName(), returnValue.getClass().getName());
                 ResolverRegistry.onErrorHandle(params, telegramLongPollingBot).accept(t);
             }
-        }
-        else {
-            ResolverRegistry.onErrorHandle(params, telegramLongPollingBot).accept(t);
         }
     }
 
