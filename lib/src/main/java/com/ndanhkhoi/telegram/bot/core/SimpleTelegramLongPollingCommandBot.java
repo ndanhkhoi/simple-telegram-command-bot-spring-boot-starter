@@ -128,19 +128,19 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
         if (StringUtils.isNotBlank(cmd)) {
             if (StringUtils.startsWith(cmd, CommonConstant.CMD_PREFIX)) {
                 if (cmd.length() > CommonConstant.CMD_MAX_LENGTH) {
-                    throw new BotException(String.format("Command cannot be longer than %d (including %s)", CommonConstant.CMD_MAX_LENGTH, CommonConstant.CMD_PREFIX));
+                    throw new BotException(String.format(CommonConstant.CMD_MAX_LENGTH_ERROR, CommonConstant.CMD_MAX_LENGTH, CommonConstant.CMD_PREFIX));
                 }
                 String cmdValue = cmd.substring(1);
                 if (!CommonConstant.CMD_PATTERN.matcher(cmdValue).matches()) {
-                    throw new BotException("Command must contain only lowercase English letters, digits and underscores.");
+                    throw new BotException(CommonConstant.CMD_PATTERN_ERROR);
                 }
             }
             else {
-                throw new BotException(String.format("Command must be start with %s", CommonConstant.CMD_PREFIX));
+                throw new BotException(String.format(CommonConstant.CMD_PREFIX_ERROR, CommonConstant.CMD_PREFIX));
             }
         }
         else {
-            throw new BotException("Command cannot be null or empty");
+            throw new BotException(CommonConstant.CMD_BLANK_ERROR);
         }
     }
 

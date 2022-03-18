@@ -13,8 +13,12 @@ import java.util.regex.Pattern;
 public final class CommonConstant {
 
     public static final String CMD_PREFIX = "/";
+    public static final String CMD_PREFIX_ERROR = "Command must be start with %s";
     public static final int CMD_MAX_LENGTH = 32;
+    public static final String CMD_MAX_LENGTH_ERROR = "Command cannot be longer than %d (including %s)";
     public static final Pattern CMD_PATTERN = Pattern.compile("^[a-z0-9_]*$");
+    public static final String CMD_PATTERN_ERROR = "Command must contain only lowercase English letters, digits and underscores.";
+    public static final String CMD_BLANK_ERROR = "Command cannot be null or empty or blank";
     public static final String ERROR_NOTIFY_MESSAGE = "There is an error. Please contact bot owner to check it !";
     public static final String HELP_CMD = "/help";
     public static final String HELP_CMD_DESCRIPTION = "List of available command(s) for this chat";
