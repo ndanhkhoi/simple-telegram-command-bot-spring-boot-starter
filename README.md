@@ -159,7 +159,7 @@ By default, you can configure only these properties:
 |------------------------------|---------------------------------------------------------|---------------------|
 | khoinda.bot.username         | Bot's username                                          |                     |
 | khoinda.bot.token            | Bot's token                                             |                     |
-| khoinda.bot.loggerChatId     | Chat id can received logging when new `Update` recieved |                     |
+| khoinda.bot.loggingChatId    | Chat id can received logging when new `Update` recieved |                     |
 | khoinda.bot.botOwnerChatId   | Chat id of bot's owner                                  | `new ArrayList<>()` |
 | khoinda.bot.botRoutePackages | Package(s) name that includes BotRoute class            | `new ArrayList<>()` |
 

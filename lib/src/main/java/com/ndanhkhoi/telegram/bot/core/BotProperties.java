@@ -19,7 +19,7 @@ import java.util.List;
 public class BotProperties {
     private String username;
     private String token;
-    private String loggerChatId;
+    private String loggingChatId;
     private List<String> botOwnerChatId = new ArrayList<>();
     private List<String> botRoutePackages = new ArrayList<>();
 }

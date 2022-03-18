@@ -104,10 +104,10 @@ public class UpdateSubscriber implements Consumer<Update> {
     private void logMessage(Update update) {
         try {
             log.info("New update detected -> {}", mapper.writeValueAsString(update));
-            if (StringUtils.isNotBlank(botProperties.getLoggerChatId())) {
+            if (StringUtils.isNotBlank(botProperties.getLoggingChatId())) {
                 SendMessage sendMessage = new SendMessage();
                 sendMessage.setText("New update detected -> \n" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(update));
-                sendMessage.setChatId(botProperties.getLoggerChatId());
+                sendMessage.setChatId(botProperties.getLoggingChatId());
                 telegramLongPollingBot.execute(sendMessage);
             }
         }
