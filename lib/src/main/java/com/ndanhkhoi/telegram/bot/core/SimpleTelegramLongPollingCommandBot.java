@@ -30,16 +30,17 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMember;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
+import reactor.core.Exceptions;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import javax.inject.Singleton;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author ndanhkhoi
@@ -54,23 +55,6 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
     private final SpringBeanUtils springBeanUtils;
     private final CommandRegistry commandRegistry = new CommandRegistry();
     private final DefaultCommandNotFoundUpdateSubscriber defaultNonCommandUpdateSubscriber = new DefaultCommandNotFoundUpdateSubscriber();
-    private final Function<Method, Stream<BotCommand>> extractBotCommands = method -> {
-        String commandDescription = Arrays.stream(method.getDeclaredAnnotationsByType(CommandDescription.class))
-                .findFirst()
-                .map(CommandDescription::value)
-                .orElse("");
-        String bodyDescription = Arrays.stream(method.getParameters())
-                .filter(parameter -> parameter.getDeclaredAnnotationsByType(CommandBody.class).length > 0)
-                .findFirst()
-                .map(parameter -> {
-                    String description = parameter.getDeclaredAnnotationsByType(CommandBody.class)[0].description();
-                    return StringUtils.defaultIfBlank(description, parameter.getName());
-                })
-                .orElse("");
-        CommandMapping mapping = method.getDeclaredAnnotationsByType(CommandMapping.class)[0];
-        return Arrays.stream(mapping.value())
-                .map(cmd -> extractBotCommand(method, cmd, mapping, commandDescription, bodyDescription));
-    };
 
     public SimpleTelegramLongPollingCommandBot(BotProperties botProperties, SpringBeanUtils springBeanUtils) {
         this.botProperties = botProperties;
@@ -86,19 +70,40 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
 
         log.info("Bot route's packages: {}", packagesToScan);
 
-        packagesToScan.parallelStream()
+        Flux.fromIterable(packagesToScan)
                 .map(packageToScan -> new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forPackage(packageToScan))))
-                .flatMap(reflections -> reflections.get(Scanners.TypesAnnotated.with(BotRoute.class).asClass()).stream())
-                .flatMap(clazz -> Arrays.stream(clazz.getDeclaredMethods()))
+                .flatMap(reflections -> Flux.fromIterable(reflections.get(Scanners.TypesAnnotated.with(BotRoute.class).asClass())))
+                .flatMap(clazz -> Flux.fromArray(clazz.getDeclaredMethods()))
                 .filter(method -> Modifier.isPublic(method.getModifiers()) && method.getDeclaredAnnotationsByType(CommandMapping.class).length > 0)
-                .flatMap(extractBotCommands)
-                .forEach(commandRegistry::register);
-        log.info("{} bot command(s) has bean loaded: {}", commandRegistry.getSize(), commandRegistry.getCommandNames());
+                .flatMap(this::extractBotCommands)
+                .doOnError(ex -> {
+                    throw Exceptions.errorCallbackNotImplemented(ex);
+                })
+                .doAfterTerminate(() -> log.info("{} bot command(s) has bean loaded: {}", commandRegistry.getSize(), commandRegistry.getCommandNames()))
+                .subscribe(commandRegistry::register);
     }
 
     @SneakyThrows
     public <T extends Serializable, M extends BotApiMethod<T>> T executeSneakyThrows(M method) {
         return super.execute(method);
+    }
+
+    private Flux<BotCommand> extractBotCommands(Method method) {
+        String commandDescription = Arrays.stream(method.getDeclaredAnnotationsByType(CommandDescription.class))
+                .findFirst()
+                .map(CommandDescription::value)
+                .orElse("");
+        String bodyDescription = Arrays.stream(method.getParameters())
+                .filter(parameter -> parameter.getDeclaredAnnotationsByType(CommandBody.class).length > 0)
+                .findFirst()
+                .map(parameter -> {
+                    String description = parameter.getDeclaredAnnotationsByType(CommandBody.class)[0].description();
+                    return StringUtils.defaultIfBlank(description, parameter.getName());
+                })
+                .orElse("");
+        CommandMapping mapping = method.getDeclaredAnnotationsByType(CommandMapping.class)[0];
+        return Flux.fromArray(mapping.value())
+                .map(cmd -> extractBotCommand(method, cmd, mapping, commandDescription, bodyDescription));
     }
 
     private BotCommand extractBotCommand(Method method, String cmd, CommandMapping mapping, String commandDescription, String bodyDescription) {
@@ -263,14 +268,16 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
 
     @Override
     public void onUpdateReceived(Update update) {
-        CompletableFuture.runAsync(() -> updateSubscriber.accept(update))
-        ;
+        Mono.just(update)
+                .subscribeOn(Schedulers.parallel())
+                .subscribe(updateSubscriber);
     }
 
     @Override
     public void onUpdatesReceived(List<Update> updates) {
-        updates.parallelStream()
-                .forEach(this::onUpdateReceived);
+        Flux.fromIterable(updates)
+                .subscribeOn(Schedulers.parallel())
+                .subscribe(updateSubscriber);
     }
 
 }
