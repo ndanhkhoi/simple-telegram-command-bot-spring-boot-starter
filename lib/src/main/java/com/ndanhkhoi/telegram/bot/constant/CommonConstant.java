@@ -27,5 +27,6 @@ public final class CommonConstant {
     public static final String GET_LOG_FILE_CMD = "/get_log_file";
     public static final String GET_LOG_FILE_DESCRIPTION = "Get an application log file";
     public static final BotCommand HELP_BOT_COMMAND = new BotCommand(HELP_CMD, HELP_CMD_DESCRIPTION);
+    public static final int MAX_MESSAGE_CONTENT_LENGTH = 4096;
 
 }

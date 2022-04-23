@@ -165,7 +165,10 @@ public class UpdateSubscriber implements Consumer<Update> {
                 try {
                     telegramLongPollingBot
                             .getCommand(update)
-                            .ifPresent(botCommand -> handleCmd(botCommand, botCommandParams));
+                            .ifPresent(botCommand -> {
+                                botCommandParams.setCommandName(botCommand.getCmd());
+                                handleCmd(botCommand, botCommandParams);
+                            });
                 }
                 catch (Throwable t) {
                     doOnError(t, botCommandParams);
