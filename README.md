@@ -54,7 +54,7 @@ Just import add the library to your project with one of these options:
 <dependency>
     <groupId>com.github.ndanhkhoi</groupId>
     <artifactId>simple-telegram-command-bot-spring-boot-starter</artifactId>
-    <version>0.12</version>
+    <version>0.13</version>
 </dependency>
 ```
 2. Using Gradle:
@@ -67,7 +67,7 @@ repositories {
 - Step 2. Add the dependency
 ```gradle
 dependencies {
-    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:0.12'
+    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:0.13'
 }
 ```
 
@@ -129,6 +129,7 @@ You can authorize command with these properties in `@CommandMapping` annotaion:
 - `List<PhotoSize>` - If message contains photo, it will be hold them, or else it will be return `null`
 - `Document` - If message contains file, it will be hold them, or else it will be return `null`
 ### Arguments by annotation
+- `@CommandName` - An annotation to mark a param in command method as a command name
 - `@CommandBody` - An annotation to mark a param in command method as a command body
 - `@ChatId` - An annotation to mark a param in command method as a chat id, can be use on `Long` type
 - `@SendUserId` - An annotation to mark a param in command method as a user id, can be use on `Long` type
