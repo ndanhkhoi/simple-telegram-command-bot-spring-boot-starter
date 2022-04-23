@@ -71,4 +71,7 @@ public class BotCommandParams {
     @TypeArg
     private Document document;
 
+    @AnnotaionArg(CommandName.class)
+    private String commandName;
+
 }

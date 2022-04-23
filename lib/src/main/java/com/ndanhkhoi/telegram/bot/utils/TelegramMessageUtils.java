@@ -11,6 +11,10 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @UtilityClass
 public final class TelegramMessageUtils {
@@ -21,13 +25,20 @@ public final class TelegramMessageUtils {
 
     @SneakyThrows
     public static void replyMessage(TelegramLongPollingBot bot, Message messageToReply, String replyContent, boolean useHtml, boolean disableWebPagePreview) {
+        replyMessage(bot, messageToReply.getChatId() + "", messageToReply.getMessageId(), replyContent, useHtml, disableWebPagePreview);
+    }
+
+    @SneakyThrows
+    public static void replyMessage(TelegramLongPollingBot bot, String chatId, @Nullable Integer messageId, String replyContent, boolean useHtml, boolean disableWebPagePreview) {
         SendMessage message = new SendMessage();
         if (useHtml) {
             message.setParseMode(ParseMode.HTML);
         }
         message.setText(replyContent);
-        message.setChatId(String.valueOf(messageToReply.getChatId()));
-        message.setReplyToMessageId(messageToReply.getMessageId());
+        message.setChatId(chatId);
+        if (messageId != null) {
+            message.setReplyToMessageId(messageId);
+        }
         if (disableWebPagePreview) {
             message.setDisableWebPagePreview(true);
         }
@@ -44,6 +55,30 @@ public final class TelegramMessageUtils {
 
     public static boolean isChannelPost(Update update) {
         return update.getChannelPost() != null;
+    }
+
+    public static List<String> lineWrap(String text, int width, boolean shiftNewLines) {
+        String[] words = text.trim().split(" ");
+        StringBuilder currentLine = new StringBuilder();
+        List<String> newLines = new ArrayList<>();
+
+        int currentLength = 0;
+        for (int i = 0; i < words.length; i++) {
+            currentLine.append(words[i]).append(" ");
+            currentLength = currentLine.length();
+
+            int nextWordLength = 0;
+            if (i + 1 < words.length)
+                nextWordLength = words[i + 1].length();
+            if (currentLength + nextWordLength >= width - 2 || i + 1 >= words.length) {
+                newLines.add(currentLine.toString());
+                currentLine = new StringBuilder();
+                if (shiftNewLines)
+                    currentLine.append(" ");
+            }
+        }
+
+        return newLines;
     }
 
 }
