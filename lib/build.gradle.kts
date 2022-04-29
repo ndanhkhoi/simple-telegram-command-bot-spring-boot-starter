@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.telegram:telegrambots:5.7.1")
+    implementation("org.telegram:telegrambots:6.0.1")
     implementation("org.springframework.boot:spring-boot-starter")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
@@ -36,6 +36,7 @@ dependencies {
     api("commons-io:commons-io:2.11.0")
     api("commons-beanutils:commons-beanutils:1.9.4")
     api("com.google.guava:guava:31.0.1-jre")
+    api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 

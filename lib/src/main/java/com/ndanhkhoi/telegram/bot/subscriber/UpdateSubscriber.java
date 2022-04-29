@@ -1,9 +1,5 @@
 package com.ndanhkhoi.telegram.bot.subscriber;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.ndanhkhoi.telegram.bot.annotation.AnnotaionArg;
 import com.ndanhkhoi.telegram.bot.annotation.BotExceptionHandler;
 import com.ndanhkhoi.telegram.bot.annotation.BotRouteAdvice;
@@ -13,12 +9,16 @@ import com.ndanhkhoi.telegram.bot.core.BotProperties;
 import com.ndanhkhoi.telegram.bot.core.SimpleTelegramLongPollingCommandBot;
 import com.ndanhkhoi.telegram.bot.model.BotCommand;
 import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
+import com.ndanhkhoi.telegram.bot.model.UpdateTrace;
+import com.ndanhkhoi.telegram.bot.repository.UpdateTraceRepository;
 import com.ndanhkhoi.telegram.bot.resolver.ResolverRegistry;
-import com.ndanhkhoi.telegram.bot.utils.SpringBeanUtils;
+import com.ndanhkhoi.telegram.bot.utils.SpringHelper;
 import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
+import com.ndanhkhoi.telegram.bot.utils.UpdateObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -47,19 +47,19 @@ import java.util.stream.IntStream;
 @Singleton
 public class UpdateSubscriber implements Consumer<Update> {
 
-    private final ObjectMapper mapper = new ObjectMapper()
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            .setDateFormat(new StdDateFormat());
     private final DefaultNonCommandUpdateSubscriber defaultNonCommandUpdateSubscriber = new DefaultNonCommandUpdateSubscriber();
     private final BotProperties botProperties;
     private final SimpleTelegramLongPollingCommandBot telegramLongPollingBot;
-    private final SpringBeanUtils springBeanUtils;
+    private final SpringHelper springHelper;
+    private final UpdateTraceRepository updateTraceRepository;
+    private final UpdateObjectMapper updateObjectMapper;
 
-    public UpdateSubscriber(BotProperties botProperties, SimpleTelegramLongPollingCommandBot telegramLongPollingBot, SpringBeanUtils springBeanUtils) {
+    public UpdateSubscriber(BotProperties botProperties, SimpleTelegramLongPollingCommandBot telegramLongPollingBot, SpringHelper springHelper, UpdateTraceRepository updateTraceRepository, UpdateObjectMapper updateObjectMapper) {
         this.botProperties = botProperties;
         this.telegramLongPollingBot = telegramLongPollingBot;
-        this.springBeanUtils = springBeanUtils;
+        this.springHelper = springHelper;
+        this.updateTraceRepository = updateTraceRepository;
+        this.updateObjectMapper = updateObjectMapper;
     }
 
     private <T> OptionalInt getIndexArgByType(Parameter[] parameters, Class<T> clazz) {
@@ -109,10 +109,10 @@ public class UpdateSubscriber implements Consumer<Update> {
 
     private void logMessage(Update update) {
         try {
-            log.info("New update detected -> {}", mapper.writeValueAsString(update));
+            log.info("New update detected -> {}", updateObjectMapper.writeValueAsString(update));
             if (StringUtils.isNotBlank(botProperties.getLoggingChatId())) {
                 SendMessage sendMessage = new SendMessage();
-                sendMessage.setText("New update detected -> \n" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(update));
+                sendMessage.setText("New update detected -> \n" + updateObjectMapper.writeValueAsPrettyString(update));
                 sendMessage.setChatId(botProperties.getLoggingChatId());
                 telegramLongPollingBot.execute(sendMessage);
             }
@@ -125,7 +125,7 @@ public class UpdateSubscriber implements Consumer<Update> {
     @SneakyThrows
     private void handleCmd(BotCommand botCommand, BotCommandParams botCommandParams) {
         Object[] args = getBotCommandeArgs(botCommand.getMethod(), botCommandParams);
-        Object route = springBeanUtils.getBean(botCommand.getMethod().getDeclaringClass());
+        Object route = springHelper.getBean(botCommand.getMethod().getDeclaringClass());
         try {
             Object returnValue = botCommand.getMethod().invoke(route, args);
             ResolverRegistry.INSTANCE.resolve(returnValue, botCommand, botCommandParams, telegramLongPollingBot);
@@ -137,8 +137,8 @@ public class UpdateSubscriber implements Consumer<Update> {
     }
 
     private void processNonCommandUpdate(Update update) {
-        if (springBeanUtils.existBean(NonCommandUpdateSubscriber.class)) {
-            NonCommandUpdateSubscriber nonCommandUpdateSubscriber = springBeanUtils.getBean(NonCommandUpdateSubscriber.class);
+        if (springHelper.existBean(NonCommandUpdateSubscriber.class)) {
+            NonCommandUpdateSubscriber nonCommandUpdateSubscriber = springHelper.getBean(NonCommandUpdateSubscriber.class);
             nonCommandUpdateSubscriber.accept(update);
         }
         else {
@@ -148,6 +148,9 @@ public class UpdateSubscriber implements Consumer<Update> {
 
     @Override
     public void accept(Update update) {
+        if (BooleanUtils.isTrue(botProperties.getEnableUpdateTrace())) {
+            updateTraceRepository.add(new UpdateTrace(update));
+        }
         Message message = update.getMessage();
         if (message == null) {
             return;
@@ -179,7 +182,7 @@ public class UpdateSubscriber implements Consumer<Update> {
 
     @SneakyThrows
     private void doOnError(Throwable t, BotCommandParams params) {
-        Map<String, Object> adviceMap = springBeanUtils.getBeansWithAnnotation(BotRouteAdvice.class);
+        Map<String, Object> adviceMap = springHelper.getBeansWithAnnotation(BotRouteAdvice.class);
         Method handleMethod = null;
         Object adviceBean = null;
         for (Map.Entry<String, Object> entry : adviceMap.entrySet()) {

@@ -24,5 +24,10 @@
       "name": "khoinda.bot.botRoutePackages",
       "type": "java.util.List<java.lang.String>",
       "description": "Packages name of classes contains @BotRoute."
+    },
+    {
+      "name": "khoinda.bot.enableUpdateTrace",
+      "type": "java.lang.Boolean",
+      "description": "Enable Message Trace."
     }
   ] }
