@@ -22,4 +22,5 @@ public class BotProperties {
     private String loggingChatId;
     private List<String> botOwnerChatId = new ArrayList<>();
     private List<String> botRoutePackages = new ArrayList<>();
+    private Boolean enableUpdateTrace = false;
 }

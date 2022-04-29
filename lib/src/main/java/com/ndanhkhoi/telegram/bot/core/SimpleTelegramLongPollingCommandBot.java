@@ -1,20 +1,19 @@
 package com.ndanhkhoi.telegram.bot.core;
 
-import com.ndanhkhoi.telegram.bot.annotation.BotRoute;
-import com.ndanhkhoi.telegram.bot.annotation.CommandBody;
-import com.ndanhkhoi.telegram.bot.annotation.CommandDescription;
-import com.ndanhkhoi.telegram.bot.annotation.CommandMapping;
+import com.ndanhkhoi.telegram.bot.annotation.*;
 import com.ndanhkhoi.telegram.bot.constant.ChatMemberStatus;
 import com.ndanhkhoi.telegram.bot.constant.CommonConstant;
 import com.ndanhkhoi.telegram.bot.exception.BotException;
 import com.ndanhkhoi.telegram.bot.model.BotCommand;
 import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import com.ndanhkhoi.telegram.bot.model.MessageParser;
+import com.ndanhkhoi.telegram.bot.repository.UpdateTraceRepository;
 import com.ndanhkhoi.telegram.bot.subscriber.CommandNotFoundUpdateSubscriber;
 import com.ndanhkhoi.telegram.bot.subscriber.DefaultCommandNotFoundUpdateSubscriber;
 import com.ndanhkhoi.telegram.bot.subscriber.UpdateSubscriber;
-import com.ndanhkhoi.telegram.bot.utils.SpringBeanUtils;
+import com.ndanhkhoi.telegram.bot.utils.SpringHelper;
 import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
+import com.ndanhkhoi.telegram.bot.utils.UpdateObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -52,14 +51,14 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
 
     private final BotProperties botProperties;
     private final UpdateSubscriber updateSubscriber;
-    private final SpringBeanUtils springBeanUtils;
+    private final SpringHelper springHelper;
     private final CommandRegistry commandRegistry = new CommandRegistry();
     private final DefaultCommandNotFoundUpdateSubscriber defaultNonCommandUpdateSubscriber = new DefaultCommandNotFoundUpdateSubscriber();
 
-    public SimpleTelegramLongPollingCommandBot(BotProperties botProperties, SpringBeanUtils springBeanUtils) {
+    public SimpleTelegramLongPollingCommandBot(BotProperties botProperties, SpringHelper springHelper, UpdateTraceRepository updateTraceRepository, UpdateObjectMapper updateObjectMapper) {
         this.botProperties = botProperties;
-        this.springBeanUtils = springBeanUtils;
-        this.updateSubscriber = new UpdateSubscriber(botProperties, this, springBeanUtils);
+        this.springHelper = springHelper;
+        this.updateSubscriber = new UpdateSubscriber(botProperties, this, springHelper, updateTraceRepository, updateObjectMapper);
         this.loadBotRoutes();
     }
 
@@ -73,6 +72,17 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
         Flux.fromIterable(packagesToScan)
                 .map(packageToScan -> new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forPackage(packageToScan))))
                 .flatMap(reflections -> Flux.fromIterable(reflections.get(Scanners.TypesAnnotated.with(BotRoute.class).asClass())))
+                .filter(clazz -> {
+                    BotRouteConditionalOnProperty[] annotations = clazz.getDeclaredAnnotationsByType(BotRouteConditionalOnProperty.class);
+                    if (annotations.length == 0) {
+                        return true;
+                    }
+                    String[] properties = annotations[0].value();
+                    String havingValue = annotations[0].havingValue();
+                    return Arrays.stream(properties)
+                            .map(property -> springHelper.getProperty(property, String.class))
+                            .allMatch(propertyValue -> StringUtils.equals(propertyValue, havingValue));
+                })
                 .flatMap(clazz -> Flux.fromArray(clazz.getDeclaredMethods()))
                 .filter(method -> Modifier.isPublic(method.getModifiers()) && method.getDeclaredAnnotationsByType(CommandMapping.class).length > 0)
                 .flatMap(this::extractBotCommands)
@@ -203,8 +213,8 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
         if (commandRegistry.hasCommand(truncatedCmd) && hasPermission(update, commandRegistry.getCommand(truncatedCmd))) {
             botCommand = commandRegistry.getCommand(truncatedCmd);
         } else {
-            if (springBeanUtils.existBean(CommandNotFoundUpdateSubscriber.class)) {
-                CommandNotFoundUpdateSubscriber nonCommandUpdateSubscriber = springBeanUtils.getBean(CommandNotFoundUpdateSubscriber.class);
+            if (springHelper.existBean(CommandNotFoundUpdateSubscriber.class)) {
+                CommandNotFoundUpdateSubscriber nonCommandUpdateSubscriber = springHelper.getBean(CommandNotFoundUpdateSubscriber.class);
                 nonCommandUpdateSubscriber.accept(update, messageParser.getFirstWord());
             } else {
                 defaultNonCommandUpdateSubscriber.accept(update, messageParser.getFirstWord());
