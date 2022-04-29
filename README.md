@@ -194,6 +194,7 @@ By default, you can configure only these properties:
 | khoinda.bot.logging-chat-id    | Chat id can received logging when new `Update` recieved |                     |
 | khoinda.bot.bot-owner-chat-id  | Chat id of bot's owner                                  | `new ArrayList<>()` |
 | khoinda.bot.bot-route-packages | Package(s) name that includes BotRoute class            | `new ArrayList<>()` |
+| khoinda.bot.enable-update-trace| Enable /update_trace for owner                          | `false`             |
 
 ## Dependencies
 This library uses following dependencies:
