@@ -1,6 +1,9 @@
 package com.ndanhkhoi.telegram.bot.core;
 
-import com.ndanhkhoi.telegram.bot.annotation.*;
+import com.ndanhkhoi.telegram.bot.annotation.BotRoute;
+import com.ndanhkhoi.telegram.bot.annotation.CommandBody;
+import com.ndanhkhoi.telegram.bot.annotation.CommandDescription;
+import com.ndanhkhoi.telegram.bot.annotation.CommandMapping;
 import com.ndanhkhoi.telegram.bot.constant.ChatMemberStatus;
 import com.ndanhkhoi.telegram.bot.constant.CommonConstant;
 import com.ndanhkhoi.telegram.bot.exception.BotException;
@@ -21,6 +24,7 @@ import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
@@ -73,7 +77,7 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
                 .map(packageToScan -> new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forPackage(packageToScan))))
                 .flatMap(reflections -> Flux.fromIterable(reflections.get(Scanners.TypesAnnotated.with(BotRoute.class).asClass())))
                 .filter(clazz -> {
-                    BotRouteConditionalOnProperty[] annotations = clazz.getDeclaredAnnotationsByType(BotRouteConditionalOnProperty.class);
+                    ConditionalOnProperty[] annotations = clazz.getDeclaredAnnotationsByType(ConditionalOnProperty.class);
                     if (annotations.length == 0) {
                         return true;
                     }

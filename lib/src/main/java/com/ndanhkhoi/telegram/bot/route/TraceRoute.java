@@ -1,7 +1,6 @@
 package com.ndanhkhoi.telegram.bot.route;
 
 import com.ndanhkhoi.telegram.bot.annotation.BotRoute;
-import com.ndanhkhoi.telegram.bot.annotation.BotRouteConditionalOnProperty;
 import com.ndanhkhoi.telegram.bot.annotation.CommandDescription;
 import com.ndanhkhoi.telegram.bot.annotation.CommandMapping;
 import com.ndanhkhoi.telegram.bot.repository.UpdateTraceRepository;
@@ -15,7 +14,6 @@ import reactor.core.publisher.Mono;
  * @author ndanhkhoi
  * Created at 18:31:54 April 29, 2022
  */
-@BotRouteConditionalOnProperty(value = "khoinda.bot.enable-update-trace", havingValue = "true")
 @ConditionalOnProperty(value = "khoinda.bot.enable-update-trace", havingValue = "true")
 @BotRoute
 @Slf4j
