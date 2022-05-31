@@ -4,9 +4,9 @@ import com.ndanhkhoi.telegram.bot.model.BotCommand;
 import lombok.NoArgsConstructor;
 
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author ndanhkhoi
@@ -15,7 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class CommandRegistry {
 
-    private final Map<String, BotCommand> botCommandMap = new LinkedHashMap<>();
+    private final Map<String, BotCommand> botCommandMap = new ConcurrentHashMap<>();
 
     public int getSize() {
         return this.botCommandMap.keySet().size();

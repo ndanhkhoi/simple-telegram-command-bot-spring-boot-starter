@@ -14,6 +14,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BotExceptionHandler {
 
-    Class<? extends Throwable> value();
+    Class<? extends Throwable>[] value();
 
 }
