@@ -93,7 +93,7 @@ public final class ResolverRegistry {
             return;
         }
         Class<?> type = value.getClass();
-        if (type.isArray()) {
+        if (type.isArray() && (type.getComponentType() != byte.class)) {
             Collection<Object> collection = Arrays.stream((Object[]) value)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
