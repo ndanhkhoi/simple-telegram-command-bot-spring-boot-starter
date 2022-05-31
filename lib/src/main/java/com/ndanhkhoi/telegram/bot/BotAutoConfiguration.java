@@ -1,9 +1,6 @@
 package com.ndanhkhoi.telegram.bot;
 
-import com.ndanhkhoi.telegram.bot.core.BotProperties;
-import com.ndanhkhoi.telegram.bot.core.BotRouteConfig;
-import com.ndanhkhoi.telegram.bot.core.CommandRegistry;
-import com.ndanhkhoi.telegram.bot.core.SimpleTelegramLongPollingCommandBot;
+import com.ndanhkhoi.telegram.bot.core.*;
 import com.ndanhkhoi.telegram.bot.repository.UpdateTraceRepository;
 import com.ndanhkhoi.telegram.bot.repository.impl.InMemoryUpdateTraceRepository;
 import com.ndanhkhoi.telegram.bot.subscriber.*;
@@ -28,7 +25,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 @Configuration
 @ComponentScan
 @EnableConfigurationProperties({BotProperties.class})
-@Import(value = {BotRouteConfig.class})
+@Import(value = {RegistryConfig.class})
 public class BotAutoConfiguration {
 
     private final ApplicationContext applicationContext;
@@ -50,6 +47,11 @@ public class BotAutoConfiguration {
         return new CommandRegistry();
     }
 
+    @Bean
+    AdviceRegistry adviceRegistry() {
+        return new AdviceRegistry();
+    }
+
     @ConditionalOnMissingBean(NonCommandUpdateSubscriber.class)
     @Bean
     NonCommandUpdateSubscriber defaultNonCommandUpdateSubscriber() {
@@ -62,14 +64,10 @@ public class BotAutoConfiguration {
         return new DefaultCommandNotFoundUpdateSubscriber();
     }
 
-    @Bean
-    UpdateSubscriber updateSubscriber(UpdateObjectMapper updateObjectMapper, @Autowired(required = false) UpdateTraceRepository updateTraceRepository) {
-        return new UpdateSubscriber(applicationContext, botProperties, updateObjectMapper,updateTraceRepository);
-    }
-
     @SneakyThrows
     @Bean
-    SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot(UpdateSubscriber updateSubscriber, CommandRegistry commandRegistry) {
+    SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot(CommandRegistry commandRegistry, UpdateObjectMapper updateObjectMapper, @Autowired(required = false) UpdateTraceRepository updateTraceRepository) {
+        UpdateSubscriber updateSubscriber = new UpdateSubscriber(applicationContext, botProperties, updateObjectMapper,updateTraceRepository);
         SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot = new SimpleTelegramLongPollingCommandBot(applicationContext, botProperties, updateSubscriber, commandRegistry);
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         telegramBotsApi.registerBot(simpleTelegramLongPollingCommandBot);

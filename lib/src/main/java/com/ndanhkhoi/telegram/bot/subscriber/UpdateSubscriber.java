@@ -1,10 +1,9 @@
 package com.ndanhkhoi.telegram.bot.subscriber;
 
 import com.ndanhkhoi.telegram.bot.annotation.AnnotaionArg;
-import com.ndanhkhoi.telegram.bot.annotation.BotExceptionHandler;
-import com.ndanhkhoi.telegram.bot.annotation.BotRouteAdvice;
 import com.ndanhkhoi.telegram.bot.annotation.TypeArg;
 import com.ndanhkhoi.telegram.bot.constant.CommonConstant;
+import com.ndanhkhoi.telegram.bot.core.AdviceRegistry;
 import com.ndanhkhoi.telegram.bot.core.BotProperties;
 import com.ndanhkhoi.telegram.bot.core.SimpleTelegramLongPollingCommandBot;
 import com.ndanhkhoi.telegram.bot.model.BotCommand;
@@ -31,9 +30,7 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
-import java.util.Map;
 import java.util.OptionalInt;
 import java.util.function.BiConsumer;
 import java.util.stream.IntStream;
@@ -170,25 +167,10 @@ public class UpdateSubscriber implements BiConsumer<Update, SimpleTelegramLongPo
 
     @SneakyThrows
     private void doOnError(Throwable t, BotCommandParams params, SimpleTelegramLongPollingCommandBot telegramLongPollingBot) {
-        Map<String, Object> adviceMap = applicationContext.getBeansWithAnnotation(BotRouteAdvice.class);
-        Method handleMethod = null;
-        Object adviceBean = null;
-        for (Map.Entry<String, Object> entry : adviceMap.entrySet()) {
-            for (Method method : entry.getValue().getClass().getDeclaredMethods()) {
-                if (Modifier.isPublic(method.getModifiers())
-                        && method.getDeclaredAnnotationsByType(BotExceptionHandler.class).length > 0
-                        && method.getDeclaredAnnotationsByType(BotExceptionHandler.class)[0].value() == t.getClass()) {
-                    handleMethod = method;
-                    adviceBean = entry.getValue();
-                    break;
-                }
-            }
-        }
-
-        if (handleMethod == null || adviceBean == null) {
-            ResolverRegistry.onErrorHandle(params, telegramLongPollingBot).accept(t);
-        }
-        else {
+        AdviceRegistry adviceRegistry = applicationContext.getBean(AdviceRegistry.class);
+        if (adviceRegistry.hasAdvice(t.getClass())) {
+            Method handleMethod = adviceRegistry.getAdvice(t.getClass()).getMethod();
+            Object adviceBean = adviceRegistry.getAdvice(t.getClass()).getBean();
             Parameter[] parameters = handleMethod.getParameters();
             Object[] args = new Object[parameters.length];
             for (int idx = 0; idx < parameters.length; idx++) {
@@ -214,6 +196,9 @@ public class UpdateSubscriber implements BiConsumer<Update, SimpleTelegramLongPo
                 log.warn("Returnd value of {}#{} is not supported ({}), so default error handler will be called as a callback", adviceBean.getClass().getSimpleName(), handleMethod.getName(), returnValue.getClass().getName());
                 ResolverRegistry.onErrorHandle(params, telegramLongPollingBot).accept(t);
             }
+        }
+        else {
+            ResolverRegistry.onErrorHandle(params, telegramLongPollingBot).accept(t);
         }
     }
 
