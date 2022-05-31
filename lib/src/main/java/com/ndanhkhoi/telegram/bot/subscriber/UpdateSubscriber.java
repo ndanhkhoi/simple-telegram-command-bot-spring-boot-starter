@@ -12,7 +12,6 @@ import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import com.ndanhkhoi.telegram.bot.model.UpdateTrace;
 import com.ndanhkhoi.telegram.bot.repository.UpdateTraceRepository;
 import com.ndanhkhoi.telegram.bot.resolver.ResolverRegistry;
-import com.ndanhkhoi.telegram.bot.utils.SpringHelper;
 import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
 import com.ndanhkhoi.telegram.bot.utils.UpdateObjectMapper;
 import lombok.SneakyThrows;
@@ -21,6 +20,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.springframework.context.ApplicationContext;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -35,7 +35,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.Map;
 import java.util.OptionalInt;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.stream.IntStream;
 
 /**
@@ -45,21 +45,18 @@ import java.util.stream.IntStream;
  */
 @Slf4j
 @Singleton
-public class UpdateSubscriber implements Consumer<Update> {
+public class UpdateSubscriber implements BiConsumer<Update, SimpleTelegramLongPollingCommandBot> {
 
-    private final DefaultNonCommandUpdateSubscriber defaultNonCommandUpdateSubscriber = new DefaultNonCommandUpdateSubscriber();
+    private final ApplicationContext applicationContext;
     private final BotProperties botProperties;
-    private final SimpleTelegramLongPollingCommandBot telegramLongPollingBot;
-    private final SpringHelper springHelper;
-    private final UpdateTraceRepository updateTraceRepository;
     private final UpdateObjectMapper updateObjectMapper;
+    private final UpdateTraceRepository updateTraceRepository;
 
-    public UpdateSubscriber(BotProperties botProperties, SimpleTelegramLongPollingCommandBot telegramLongPollingBot, SpringHelper springHelper, UpdateTraceRepository updateTraceRepository, UpdateObjectMapper updateObjectMapper) {
+    public UpdateSubscriber(ApplicationContext applicationContext, BotProperties botProperties, UpdateObjectMapper updateObjectMapper, UpdateTraceRepository updateTraceRepository) {
+        this.applicationContext = applicationContext;
         this.botProperties = botProperties;
-        this.telegramLongPollingBot = telegramLongPollingBot;
-        this.springHelper = springHelper;
-        this.updateTraceRepository = updateTraceRepository;
         this.updateObjectMapper = updateObjectMapper;
+        this.updateTraceRepository = updateTraceRepository;
     }
 
     private <T> OptionalInt getIndexArgByType(Parameter[] parameters, Class<T> clazz) {
@@ -107,7 +104,7 @@ public class UpdateSubscriber implements Consumer<Update> {
         return args;
     }
 
-    private void logMessage(Update update) {
+    private void logMessage(Update update, SimpleTelegramLongPollingCommandBot telegramLongPollingBot) {
         try {
             log.info("New update detected -> {}", updateObjectMapper.writeValueAsString(update));
             if (StringUtils.isNotBlank(botProperties.getLoggingChatId())) {
@@ -123,9 +120,9 @@ public class UpdateSubscriber implements Consumer<Update> {
     }
 
     @SneakyThrows
-    private void handleCmd(BotCommand botCommand, BotCommandParams botCommandParams) {
+    private void handleCmd(BotCommand botCommand, BotCommandParams botCommandParams, SimpleTelegramLongPollingCommandBot telegramLongPollingBot) {
         Object[] args = getBotCommandeArgs(botCommand.getMethod(), botCommandParams);
-        Object route = springHelper.getBean(botCommand.getMethod().getDeclaringClass());
+        Object route = applicationContext.getBean(botCommand.getMethod().getDeclaringClass());
         try {
             Object returnValue = botCommand.getMethod().invoke(route, args);
             ResolverRegistry.INSTANCE.resolve(returnValue, botCommand, botCommandParams, telegramLongPollingBot);
@@ -136,18 +133,8 @@ public class UpdateSubscriber implements Consumer<Update> {
         }
     }
 
-    private void processNonCommandUpdate(Update update) {
-        if (springHelper.existBean(NonCommandUpdateSubscriber.class)) {
-            NonCommandUpdateSubscriber nonCommandUpdateSubscriber = springHelper.getBean(NonCommandUpdateSubscriber.class);
-            nonCommandUpdateSubscriber.accept(update);
-        }
-        else {
-            defaultNonCommandUpdateSubscriber.accept(update);
-        }
-    }
-
     @Override
-    public void accept(Update update) {
+    public void accept(Update update, SimpleTelegramLongPollingCommandBot telegramLongPollingBot) {
         if (BooleanUtils.isTrue(botProperties.getEnableUpdateTrace())) {
             updateTraceRepository.add(new UpdateTrace(update));
         }
@@ -155,12 +142,13 @@ public class UpdateSubscriber implements Consumer<Update> {
         if (message == null) {
             return;
         }
-        logMessage(update);
+        logMessage(update, telegramLongPollingBot);
         if (!TelegramMessageUtils.isChannelPost(update)) {
             boolean isNonCommand = (message.hasText() && !StringUtils.startsWith(message.getText(), CommonConstant.CMD_PREFIX)) ||
                     (message.hasPhoto() && !StringUtils.startsWith(message.getCaption(), CommonConstant.CMD_PREFIX));
             if (isNonCommand) {
-                this.processNonCommandUpdate(update);
+                NonCommandUpdateSubscriber nonCommandUpdateSubscriber = applicationContext.getBean(NonCommandUpdateSubscriber.class);
+                nonCommandUpdateSubscriber.accept(update);
                 return;
             }
             BotCommandParams botCommandParams = telegramLongPollingBot.getCommandParams(update);
@@ -170,19 +158,19 @@ public class UpdateSubscriber implements Consumer<Update> {
                             .getCommand(update)
                             .ifPresent(botCommand -> {
                                 botCommandParams.setCommandName(botCommand.getCmd());
-                                handleCmd(botCommand, botCommandParams);
+                                handleCmd(botCommand, botCommandParams, telegramLongPollingBot);
                             });
                 }
                 catch (Throwable t) {
-                    doOnError(t, botCommandParams);
+                    doOnError(t, botCommandParams, telegramLongPollingBot);
                 }
             }
         }
     }
 
     @SneakyThrows
-    private void doOnError(Throwable t, BotCommandParams params) {
-        Map<String, Object> adviceMap = springHelper.getBeansWithAnnotation(BotRouteAdvice.class);
+    private void doOnError(Throwable t, BotCommandParams params, SimpleTelegramLongPollingCommandBot telegramLongPollingBot) {
+        Map<String, Object> adviceMap = applicationContext.getBeansWithAnnotation(BotRouteAdvice.class);
         Method handleMethod = null;
         Object adviceBean = null;
         for (Map.Entry<String, Object> entry : adviceMap.entrySet()) {
