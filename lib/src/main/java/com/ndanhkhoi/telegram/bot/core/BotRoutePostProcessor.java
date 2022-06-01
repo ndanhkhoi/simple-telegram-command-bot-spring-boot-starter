@@ -95,17 +95,14 @@ public class BotRoutePostProcessor implements BeanPostProcessor, SmartInitializi
     }
 
     private void registerBotCommands(Method method, CommandMapping mapping) {
-        String commandDescription = Arrays.stream(method.getDeclaredAnnotationsByType(CommandDescription.class))
-                .findFirst()
+        String commandDescription = Optional.ofNullable(AnnotationUtils.findAnnotation(method, CommandDescription.class))
                 .map(CommandDescription::value)
                 .orElse("");
         String bodyDescription = Arrays.stream(method.getParameters())
-                .filter(parameter -> parameter.getDeclaredAnnotationsByType(CommandBody.class).length > 0)
+                .flatMap(parameter -> Optional.ofNullable(AnnotationUtils.findAnnotation(parameter, CommandBody.class))
+                        .stream()
+                        .map(commandBody -> StringUtils.defaultIfBlank(commandBody.description(), parameter.getName())))
                 .findFirst()
-                .map(parameter -> {
-                    String description = parameter.getDeclaredAnnotationsByType(CommandBody.class)[0].description();
-                    return StringUtils.defaultIfBlank(description, parameter.getName());
-                })
                 .orElse("");
 
         Flux.fromArray(mapping.value())
