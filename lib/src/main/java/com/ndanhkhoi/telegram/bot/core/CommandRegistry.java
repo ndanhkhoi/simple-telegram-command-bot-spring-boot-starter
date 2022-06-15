@@ -1,5 +1,6 @@
 package com.ndanhkhoi.telegram.bot.core;
 
+import com.ndanhkhoi.telegram.bot.exception.BotException;
 import com.ndanhkhoi.telegram.bot.model.BotCommand;
 import lombok.NoArgsConstructor;
 
@@ -26,6 +27,9 @@ public class CommandRegistry {
     }
 
     public void register(BotCommand botCommand) {
+        if (hasCommand(botCommand.getCmd())) {
+            throw new BotException("There is " + botCommand.getCmd() + " exist on CommandRegistry, please check your command");
+        }
         this.botCommandMap.put(botCommand.getCmd(), botCommand);
     }
 

@@ -20,6 +20,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -64,7 +65,7 @@ public class UpdateSubscriber implements BiConsumer<Update, SimpleTelegramLongPo
 
     private <T extends Annotation> OptionalInt getIndexArgByAnnotation(Parameter[] parameters, Class<T> annotationType) {
         return IntStream.range(0, parameters.length)
-                .filter(i -> parameters[i].getDeclaredAnnotationsByType(annotationType).length > 0)
+                .filter(i -> AnnotationUtils.findAnnotation(parameters[i], annotationType) != null)
                 .findFirst();
     }
 
@@ -80,17 +81,16 @@ public class UpdateSubscriber implements BiConsumer<Update, SimpleTelegramLongPo
 
         FieldUtils.getAllFieldsList(BotCommandParams.class)
                 .forEach(field -> {
-                    TypeArg[] typeArgs = field.getDeclaredAnnotationsByType(TypeArg.class);
-                    if (typeArgs.length > 0) {
+                    TypeArg typeArg = AnnotationUtils.findAnnotation(field, TypeArg.class);
+                    if (typeArg != null) {
                         Class<?> fieldType = field.getType();
                         OptionalInt idx = getIndexArgByType(parameters, fieldType);
                         if (idx.isPresent()) {
                             args[idx.getAsInt()] = getProperty(botCommandParams, field.getName());
                         }
                     }
-                    AnnotaionArg[] annotaionArgs = field.getDeclaredAnnotationsByType(AnnotaionArg.class);
-                    if (annotaionArgs.length > 0) {
-                        AnnotaionArg annotaionArg = annotaionArgs[0];
+                    AnnotaionArg annotaionArg = AnnotationUtils.findAnnotation(field, AnnotaionArg.class);
+                    if (annotaionArg != null) {
                         OptionalInt idx = getIndexArgByAnnotation(parameters, annotaionArg.value());
                         if (idx.isPresent()) {
                             args[idx.getAsInt()] = getProperty(botCommandParams, field.getName());
@@ -134,6 +134,12 @@ public class UpdateSubscriber implements BiConsumer<Update, SimpleTelegramLongPo
     public void accept(Update update, SimpleTelegramLongPollingCommandBot telegramLongPollingBot) {
         if (BooleanUtils.isTrue(botProperties.getEnableUpdateTrace())) {
             updateTraceRepository.add(new UpdateTrace(update));
+        }
+        // callback query
+        if (update.getCallbackQuery() != null) {
+            CallbackQuerySubscriber callbackQuerySubscriber = applicationContext.getBean(CallbackQuerySubscriber.class);
+            callbackQuerySubscriber.accept(update);
+            return;
         }
         Message message = update.getMessage();
         if (message == null) {

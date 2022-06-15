@@ -12,6 +12,8 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.MethodIntrospector;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationUtils;
+import reactor.core.Exceptions;
+import reactor.core.publisher.Flux;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
@@ -43,13 +45,17 @@ public class BotAdvicePostProcessor implements BeanPostProcessor, SmartInitializ
                     log.trace("No @BotExceptionHandler annotations found on bean type: " + bean.getClass());
                 }
                 else {
-                    for (Map.Entry<Method, BotExceptionHandler> entry : annotatedMethods.entrySet()) {
-                        Method method = entry.getKey();
-                        BotExceptionHandler botExceptionHandler = entry.getValue();
-                        beanFactory.getBean(AdviceRegistry.class).register(botExceptionHandler.value(), method, bean);
-                    }
-                    log.debug( annotatedMethods.size() + " @BotExceptionHandler methods processed on bean '"
-                            + beanName + "': " + annotatedMethods);
+                    Flux.fromIterable(annotatedMethods.entrySet())
+                            .doOnError(ex -> {
+                                throw Exceptions.errorCallbackNotImplemented(ex);
+                            })
+                            .doAfterTerminate(() -> log.debug( annotatedMethods.size() + " @BotExceptionHandler methods processed on bean '"
+                                    + beanName + "': " + annotatedMethods))
+                            .subscribe(entry -> {
+                                Method method = entry.getKey();
+                                BotExceptionHandler botExceptionHandler = entry.getValue();
+                                beanFactory.getBean(AdviceRegistry.class).register(botExceptionHandler.value(), method, bean);
+                            });
                 }
             }
             else {
