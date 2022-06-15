@@ -64,6 +64,12 @@ public class BotAutoConfiguration {
         return new DefaultCommandNotFoundUpdateSubscriber();
     }
 
+    @ConditionalOnMissingBean(CallbackQuerySubscriber.class)
+    @Bean
+    CallbackQuerySubscriber defaultCallbackQuerySubscriber() {
+        return new DefaultCallbackQuerySubscriber();
+    }
+
     @SneakyThrows
     @Bean
     SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot(CommandRegistry commandRegistry, UpdateObjectMapper updateObjectMapper, @Autowired(required = false) UpdateTraceRepository updateTraceRepository) {

@@ -135,6 +135,12 @@ public class UpdateSubscriber implements BiConsumer<Update, SimpleTelegramLongPo
         if (BooleanUtils.isTrue(botProperties.getEnableUpdateTrace())) {
             updateTraceRepository.add(new UpdateTrace(update));
         }
+        // callback query
+        if (update.getCallbackQuery() != null) {
+            CallbackQuerySubscriber callbackQuerySubscriber = applicationContext.getBean(CallbackQuerySubscriber.class);
+            callbackQuerySubscriber.accept(update);
+            return;
+        }
         Message message = update.getMessage();
         if (message == null) {
             return;
