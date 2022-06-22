@@ -182,6 +182,30 @@ An annotation is used to mark method is a exception handler.
 - `String` - the text will be reply to user make a request
 - `BotApiMethod` - it will be excuted automatically
 
+## CallbackQuerySubscribe
+
+You can create a bean that inplements `CallbackQuerySubscriber` to trigger callback query:
+
+```java
+@Component
+public class CustomCallbackQuerySubscriber implements CallbackQuerySubscriber {
+
+    @Autowired
+    private SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot;
+
+    @Override
+    public void accept(Update update) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setText("Callback query data: " + update.getCallbackQuery().getData());
+        sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId() + "");
+        simpleTelegramLongPollingCommandBot.executeSneakyThrows(sendMessage);
+    }
+
+}
+
+```
+
+
 ## Configurations
 
 ### Properties
