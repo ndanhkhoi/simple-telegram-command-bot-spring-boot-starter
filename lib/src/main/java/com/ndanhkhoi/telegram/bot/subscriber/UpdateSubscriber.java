@@ -16,24 +16,26 @@ import com.ndanhkhoi.telegram.bot.utils.UpdateObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
-import javax.inject.Singleton;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.OptionalInt;
-import java.util.function.BiConsumer;
 import java.util.stream.IntStream;
 
 /**
@@ -42,19 +44,29 @@ import java.util.stream.IntStream;
  * A consumer that handle a command
  */
 @Slf4j
-@Singleton
-public class UpdateSubscriber implements BiConsumer<Update, SimpleTelegramLongPollingCommandBot> {
+public class UpdateSubscriber implements ApplicationContextAware {
 
-    private final ApplicationContext applicationContext;
-    private final BotProperties botProperties;
-    private final UpdateObjectMapper updateObjectMapper;
-    private final UpdateTraceRepository updateTraceRepository;
+    private ApplicationContext applicationContext;
 
-    public UpdateSubscriber(ApplicationContext applicationContext, BotProperties botProperties, UpdateObjectMapper updateObjectMapper, UpdateTraceRepository updateTraceRepository) {
-        this.applicationContext = applicationContext;
-        this.botProperties = botProperties;
-        this.updateObjectMapper = updateObjectMapper;
-        this.updateTraceRepository = updateTraceRepository;
+    private SimpleTelegramLongPollingCommandBot getBotInstance() {
+        return applicationContext.getBean(SimpleTelegramLongPollingCommandBot.class);
+    }
+
+    private BotProperties getBotProperties() {
+        return applicationContext.getBean(BotProperties.class);
+    }
+
+    private UpdateObjectMapper getUpdateObjectMapper() {
+        return applicationContext.getBean("updateObjectMapper", UpdateObjectMapper.class);
+    }
+
+    private UpdateTraceRepository getUpdateTraceRepository() {
+        return applicationContext.getBean(UpdateTraceRepository.class);
+    }
+
+    private boolean isUpdateTraceEnabled() {
+        BotProperties botProperties = getBotProperties();
+        return botProperties.getEnableUpdateTrace() != null && botProperties.getEnableUpdateTrace();
     }
 
     private <T> OptionalInt getIndexArgByType(Parameter[] parameters, Class<T> clazz) {
@@ -101,18 +113,16 @@ public class UpdateSubscriber implements BiConsumer<Update, SimpleTelegramLongPo
         return args;
     }
 
-    private void logMessage(Update update, SimpleTelegramLongPollingCommandBot telegramLongPollingBot) {
-        try {
-            log.info("New update detected -> {}", updateObjectMapper.writeValueAsString(update));
-            if (StringUtils.isNotBlank(botProperties.getLoggingChatId())) {
-                SendMessage sendMessage = new SendMessage();
-                sendMessage.setText("New update detected -> \n" + updateObjectMapper.writeValueAsPrettyString(update));
-                sendMessage.setChatId(botProperties.getLoggingChatId());
-                telegramLongPollingBot.execute(sendMessage);
-            }
-        }
-        catch (Exception ex) {
-            log.error("Error!", ex);
+    private void logUpdate(Update update) {
+        UpdateObjectMapper updateObjectMapper = getUpdateObjectMapper();
+        BotProperties botProperties = getBotProperties();
+        SimpleTelegramLongPollingCommandBot telegramLongPollingBot = getBotInstance();
+        log.debug("New update detected -> {}", getUpdateObjectMapper().writeValueAsString(update));
+        if (StringUtils.isNotBlank(botProperties.getLoggingChatId())) {
+            SendMessage sendMessage = new SendMessage();
+            sendMessage.setText("New update detected -> \n" + updateObjectMapper.writeValueAsPrettyString(update));
+            sendMessage.setChatId(botProperties.getLoggingChatId());
+            telegramLongPollingBot.executeSneakyThrows(sendMessage);
         }
     }
 
@@ -127,47 +137,6 @@ public class UpdateSubscriber implements BiConsumer<Update, SimpleTelegramLongPo
         catch (InvocationTargetException ex) {
             // Exception when invoke method. Ex: bot method throws exception manually
             throw ex.getTargetException();
-        }
-    }
-
-    @Override
-    public void accept(Update update, SimpleTelegramLongPollingCommandBot telegramLongPollingBot) {
-        if (BooleanUtils.isTrue(botProperties.getEnableUpdateTrace())) {
-            updateTraceRepository.add(new UpdateTrace(update));
-        }
-        // callback query
-        if (update.getCallbackQuery() != null) {
-            CallbackQuerySubscriber callbackQuerySubscriber = applicationContext.getBean(CallbackQuerySubscriber.class);
-            callbackQuerySubscriber.accept(update);
-            return;
-        }
-        Message message = update.getMessage();
-        if (message == null) {
-            return;
-        }
-        logMessage(update, telegramLongPollingBot);
-        if (!TelegramMessageUtils.isChannelPost(update)) {
-            boolean isNonCommand = (message.hasText() && !StringUtils.startsWith(message.getText(), CommonConstant.CMD_PREFIX)) ||
-                    (message.hasPhoto() && !StringUtils.startsWith(message.getCaption(), CommonConstant.CMD_PREFIX));
-            if (isNonCommand) {
-                NonCommandUpdateSubscriber nonCommandUpdateSubscriber = applicationContext.getBean(NonCommandUpdateSubscriber.class);
-                nonCommandUpdateSubscriber.accept(update);
-                return;
-            }
-            BotCommandParams botCommandParams = telegramLongPollingBot.getCommandParams(update);
-            if (botCommandParams != null) {
-                try {
-                    telegramLongPollingBot
-                            .getCommand(update)
-                            .ifPresent(botCommand -> {
-                                botCommandParams.setCommandName(botCommand.getCmd());
-                                handleCmd(botCommand, botCommandParams, telegramLongPollingBot);
-                            });
-                }
-                catch (Throwable t) {
-                    doOnError(t, botCommandParams, telegramLongPollingBot);
-                }
-            }
         }
     }
 
@@ -206,6 +175,89 @@ public class UpdateSubscriber implements BiConsumer<Update, SimpleTelegramLongPo
         else {
             ResolverRegistry.onErrorHandle(params, telegramLongPollingBot).accept(t);
         }
+    }
+
+    private void excuteCommand(Update update, BotCommandParams botCommandParams, SimpleTelegramLongPollingCommandBot telegramLongPollingBot) {
+        try {
+            telegramLongPollingBot
+                    .getCommand(update)
+                    .ifPresent(botCommand -> {
+                        botCommandParams.setCommandName(botCommand.getCmd());
+                        handleCmd(botCommand, botCommandParams, telegramLongPollingBot);
+                    });
+        }
+        catch (Throwable t) {
+            doOnError(t, botCommandParams, telegramLongPollingBot);
+        }
+    }
+
+    private void subscribe(Update update) {
+        SimpleTelegramLongPollingCommandBot telegramLongPollingBot = getBotInstance();
+        if (update.getCallbackQuery() != null) {
+            applicationContext.getBean(CallbackQuerySubscriber.class).accept(update);
+        }
+        else {
+            Message message = update.getMessage();
+            boolean isNonCommand = message == null ||
+                    (message.hasText() && !StringUtils.startsWith(message.getText(), CommonConstant.CMD_PREFIX)) ||
+                    (message.hasPhoto() && !StringUtils.startsWith(message.getCaption(), CommonConstant.CMD_PREFIX)) ||
+                    TelegramMessageUtils.isChannelPost(update);
+
+            if (isNonCommand) {
+                NonCommandUpdateSubscriber nonCommandUpdateSubscriber = applicationContext.getBean(NonCommandUpdateSubscriber.class);
+                nonCommandUpdateSubscriber.accept(update);
+            }
+            else {
+                BotCommandParams botCommandParams = telegramLongPollingBot.getCommandParams(update);
+                if (botCommandParams != null) {
+                    excuteCommand(update, botCommandParams, telegramLongPollingBot);
+                }
+            }
+        }
+    }
+
+    public void consume(Mono<Update> update) {
+        Mono<Update> sharedUpdate = update.subscribeOn(Schedulers.parallel()).share();
+        UpdateTraceRepository updateTraceRepository = getUpdateTraceRepository();
+
+        sharedUpdate.subscribe(this::logUpdate);
+        if (isUpdateTraceEnabled()) {
+            updateTraceRepository.add(sharedUpdate.map(UpdateTrace::new));
+        }
+
+        // Pre-Processor
+        sharedUpdate.subscribe(e -> applicationContext.getBean(PreProcessor.class).accept(e));
+
+        // Main Processor
+        sharedUpdate.subscribe(this::subscribe);
+
+        // Pos-Processor
+        sharedUpdate.subscribe(e -> applicationContext.getBean(PosProcessor.class).accept(e));
+    }
+
+    public void consume(Flux<Update> updates) {
+        Flux<Update> sharedUpdate = updates.subscribeOn(Schedulers.parallel()).share();
+
+        UpdateTraceRepository updateTraceRepository = getUpdateTraceRepository();
+
+        sharedUpdate.subscribe(this::logUpdate);
+        if (isUpdateTraceEnabled()) {
+            updateTraceRepository.addAll(sharedUpdate.map(UpdateTrace::new));
+        }
+
+        // Pre-Processor
+        sharedUpdate.subscribe(e -> applicationContext.getBean(PreProcessor.class).accept(e));
+
+        // Main Processor
+        sharedUpdate.subscribe(this::subscribe);
+
+        // Pos-Processor
+        sharedUpdate.subscribe(e -> applicationContext.getBean(PosProcessor.class).accept(e));
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 
 }

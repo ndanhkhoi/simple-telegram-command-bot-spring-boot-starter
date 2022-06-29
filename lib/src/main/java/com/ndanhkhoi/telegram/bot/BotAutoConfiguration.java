@@ -8,7 +8,6 @@ import com.ndanhkhoi.telegram.bot.utils.UpdateObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -32,6 +31,7 @@ public class BotAutoConfiguration {
     private final BotProperties botProperties;
 
     @ConditionalOnProperty(value = "khoinda.bot.enable-update-trace", havingValue = "true")
+    @ConditionalOnMissingBean(UpdateTraceRepository.class)
     @Bean
     UpdateTraceRepository updateTraceRepository() {
         return new InMemoryUpdateTraceRepository();
@@ -70,10 +70,26 @@ public class BotAutoConfiguration {
         return new DefaultCallbackQuerySubscriber();
     }
 
+    @ConditionalOnMissingBean(PreProcessor.class)
+    @Bean
+    PreProcessor defaultPreProcessor() {
+        return new DefaultPreProcessor();
+    }
+
+    @ConditionalOnMissingBean(PosProcessor.class)
+    @Bean
+    PosProcessor defaultPosProcessor() {
+        return new DefaultPosProcessor();
+    }
+
+    @Bean
+    UpdateSubscriber updateSubscriber() {
+        return new UpdateSubscriber();
+    }
+
     @SneakyThrows
     @Bean
-    SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot(CommandRegistry commandRegistry, UpdateObjectMapper updateObjectMapper, @Autowired(required = false) UpdateTraceRepository updateTraceRepository) {
-        UpdateSubscriber updateSubscriber = new UpdateSubscriber(applicationContext, botProperties, updateObjectMapper,updateTraceRepository);
+    SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot(CommandRegistry commandRegistry, UpdateSubscriber updateSubscriber) {
         SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot = new SimpleTelegramLongPollingCommandBot(applicationContext, botProperties, updateSubscriber, commandRegistry);
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         telegramBotsApi.registerBot(simpleTelegramLongPollingCommandBot);
