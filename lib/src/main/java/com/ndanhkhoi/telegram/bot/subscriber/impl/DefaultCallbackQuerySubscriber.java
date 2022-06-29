@@ -1,5 +1,6 @@
-package com.ndanhkhoi.telegram.bot.subscriber;
+package com.ndanhkhoi.telegram.bot.subscriber.impl;
 
+import com.ndanhkhoi.telegram.bot.subscriber.CallbackQuerySubscriber;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -9,11 +10,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
  * Default handler for non command update
  */
 @Slf4j
-public class DefaultNonCommandUpdateSubscriber implements NonCommandUpdateSubscriber {
+public class DefaultCallbackQuerySubscriber implements CallbackQuerySubscriber {
 
     @Override
     public void accept(Update update) {
-        log.warn("Not a bot's command !");
+        log.trace("Callback detected !!");
     }
 
 }

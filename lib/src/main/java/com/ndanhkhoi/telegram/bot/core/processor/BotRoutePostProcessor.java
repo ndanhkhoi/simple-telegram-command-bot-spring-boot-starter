@@ -1,10 +1,11 @@
-package com.ndanhkhoi.telegram.bot.core;
+package com.ndanhkhoi.telegram.bot.core.processor;
 
 import com.ndanhkhoi.telegram.bot.annotation.BotRoute;
 import com.ndanhkhoi.telegram.bot.annotation.CommandBody;
 import com.ndanhkhoi.telegram.bot.annotation.CommandDescription;
 import com.ndanhkhoi.telegram.bot.annotation.CommandMapping;
 import com.ndanhkhoi.telegram.bot.constant.CommonConstant;
+import com.ndanhkhoi.telegram.bot.core.registry.CommandRegistry;
 import com.ndanhkhoi.telegram.bot.exception.BotException;
 import com.ndanhkhoi.telegram.bot.model.BotCommand;
 import lombok.extern.slf4j.Slf4j;

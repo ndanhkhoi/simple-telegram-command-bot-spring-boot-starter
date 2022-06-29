@@ -190,8 +190,11 @@ You can create a bean that inplements `CallbackQuerySubscriber` to trigger callb
 @Component
 public class CustomCallbackQuerySubscriber implements CallbackQuerySubscriber {
 
-    @Autowired
-    private SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot;
+    private final SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot;
+    
+    public CustomCallbackQuerySubscriber(SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot) {
+        this.simpleTelegramLongPollingCommandBot = simpleTelegramLongPollingCommandBot;
+    }
 
     @Override
     public void accept(Update update) {

@@ -2,6 +2,7 @@ package com.ndanhkhoi.telegram.bot.core;
 
 import com.ndanhkhoi.telegram.bot.constant.ChatMemberStatus;
 import com.ndanhkhoi.telegram.bot.constant.CommonConstant;
+import com.ndanhkhoi.telegram.bot.core.registry.CommandRegistry;
 import com.ndanhkhoi.telegram.bot.model.BotCommand;
 import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import com.ndanhkhoi.telegram.bot.model.MessageParser;
