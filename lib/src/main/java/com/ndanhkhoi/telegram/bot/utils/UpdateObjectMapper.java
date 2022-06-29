@@ -26,4 +26,9 @@ public class UpdateObjectMapper extends ObjectMapper {
         return super.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
     }
 
+    @SneakyThrows
+    public String writeValueAsString(Object obj) {
+        return super.writeValueAsString(obj);
+    }
+
 }

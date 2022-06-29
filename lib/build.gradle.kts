@@ -11,7 +11,7 @@ import org.springframework.boot.gradle.plugin.SpringBootPlugin
 plugins {
     `java-library`
     `maven-publish`
-    id("org.springframework.boot") version "2.6.4" apply false
+    id("org.springframework.boot") version "2.7.1" apply false
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
 }
 

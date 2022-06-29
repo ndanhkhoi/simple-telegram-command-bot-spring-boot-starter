@@ -3,9 +3,11 @@ package com.ndanhkhoi.telegram.bot.repository.impl;
 import com.ndanhkhoi.telegram.bot.model.UpdateTrace;
 import com.ndanhkhoi.telegram.bot.repository.UpdateTraceRepository;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author ndanhkhoi
@@ -17,7 +19,7 @@ public class InMemoryUpdateTraceRepository implements UpdateTraceRepository {
 
     private boolean reverse = true;
 
-    private final List<UpdateTrace> traces = new LinkedList<>();
+    private final List<UpdateTrace> traces = new CopyOnWriteArrayList<>();
 
     /**
      * Flag to say that the repository lists traces in reverse order.
@@ -39,33 +41,31 @@ public class InMemoryUpdateTraceRepository implements UpdateTraceRepository {
         }
     }
 
-    @Override
-    public List<UpdateTrace> findAll() {
-        synchronized (this.traces) {
-            return List.copyOf(this.traces);
+    private void subscribe(UpdateTrace value) {
+        while (this.traces.size() >= this.capacity) {
+            this.traces.remove(this.reverse ? this.capacity - 1 : 0);
+        }
+        if (this.reverse) {
+            this.traces.add(0, value);
+        }
+        else {
+            this.traces.add(value);
         }
     }
 
     @Override
     public Flux<UpdateTrace> fluxAll() {
-        synchronized (this.traces) {
-            return Flux.fromStream(this.traces.stream());
-        }
+        return Flux.fromStream(this.traces.stream());
     }
 
     @Override
-    public void add(UpdateTrace trace) {
-        synchronized (this.traces) {
-            while (this.traces.size() >= this.capacity) {
-                this.traces.remove(this.reverse ? this.capacity - 1 : 0);
-            }
-            if (this.reverse) {
-                this.traces.add(0, trace);
-            }
-            else {
-                this.traces.add(trace);
-            }
-        }
+    public void add(Mono<UpdateTrace> trace) {
+        trace.subscribeOn(Schedulers.parallel()).subscribe(this::subscribe);
+    }
+
+    @Override
+    public void addAll(Flux<UpdateTrace> traces) {
+        traces.subscribeOn(Schedulers.parallel()).subscribe(this::subscribe);
     }
 
 }

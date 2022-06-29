@@ -2,8 +2,7 @@ package com.ndanhkhoi.telegram.bot.repository;
 
 import com.ndanhkhoi.telegram.bot.model.UpdateTrace;
 import reactor.core.publisher.Flux;
-
-import java.util.List;
+import reactor.core.publisher.Mono;
 
 /**
  * @author ndanhkhoi
@@ -12,17 +11,21 @@ import java.util.List;
 public interface UpdateTraceRepository {
 
     /**
-     * Find all {@link UpdateTrace} objects contained in the repository.
-     * @return the results
-     */
-    List<UpdateTrace> findAll();
-
-    /**
      * Adds a trace to the repository.
      * @param trace the trace to add
      */
-    void add(UpdateTrace trace);
+    void add(Mono<UpdateTrace> trace);
 
+    /**
+     * Adds a trace to the repository.
+     * @param traces trace list to add
+     */
+    void addAll(Flux<UpdateTrace> traces);
+
+    /**
+     * Find all {@link UpdateTrace} objects contained in the repository.
+     * @return the results
+     */
     Flux<UpdateTrace> fluxAll();
 
 }

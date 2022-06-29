@@ -22,7 +22,6 @@ import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMember;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import javax.inject.Singleton;
 import java.io.Serializable;
@@ -175,16 +174,12 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
 
     @Override
     public void onUpdateReceived(Update update) {
-        Mono.just(update)
-                .subscribeOn(Schedulers.parallel())
-                .subscribe(u -> updateSubscriber.accept(u, this));
+        updateSubscriber.consume(Mono.just(update));
     }
 
     @Override
     public void onUpdatesReceived(List<Update> updates) {
-        Flux.fromIterable(updates)
-                .subscribeOn(Schedulers.parallel())
-                .subscribe(u -> updateSubscriber.accept(u, this));
+        updateSubscriber.consume(Flux.fromIterable(updates));
     }
 
 }

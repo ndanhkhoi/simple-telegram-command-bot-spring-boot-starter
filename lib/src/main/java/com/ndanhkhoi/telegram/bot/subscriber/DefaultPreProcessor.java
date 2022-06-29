@@ -5,15 +5,14 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 /**
  * @author ndanhkhoi
- * Created at 20:57:14 December 28, 2021
- * Default handler for non command update
+ * Created at 20:13:20 June 25, 2022
  */
 @Slf4j
-public class DefaultCallbackQuerySubscriber implements CallbackQuerySubscriber {
+public class DefaultPreProcessor implements PreProcessor {
 
     @Override
     public void accept(Update update) {
-        log.trace("Callback detected !!");
+        log.trace("DefaultPreProcessor...");
     }
 
 }
