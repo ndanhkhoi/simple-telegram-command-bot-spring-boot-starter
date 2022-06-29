@@ -1,5 +1,6 @@
-package com.ndanhkhoi.telegram.bot.subscriber;
+package com.ndanhkhoi.telegram.bot.subscriber.impl;
 
+import com.ndanhkhoi.telegram.bot.subscriber.PreSubscriber;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -8,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
  * Created at 20:13:20 June 25, 2022
  */
 @Slf4j
-public class DefaultPreProcessor implements PreProcessor {
+public class DefaultPreSubscriber implements PreSubscriber {
 
     @Override
     public void accept(Update update) {

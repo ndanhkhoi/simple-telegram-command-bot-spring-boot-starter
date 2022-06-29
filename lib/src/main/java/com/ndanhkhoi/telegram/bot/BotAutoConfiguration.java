@@ -1,9 +1,14 @@
 package com.ndanhkhoi.telegram.bot;
 
-import com.ndanhkhoi.telegram.bot.core.*;
+import com.ndanhkhoi.telegram.bot.core.BotProperties;
+import com.ndanhkhoi.telegram.bot.core.SimpleTelegramLongPollingCommandBot;
+import com.ndanhkhoi.telegram.bot.core.processor.ProcessorConfig;
+import com.ndanhkhoi.telegram.bot.core.registry.AdviceRegistry;
+import com.ndanhkhoi.telegram.bot.core.registry.CommandRegistry;
 import com.ndanhkhoi.telegram.bot.repository.UpdateTraceRepository;
 import com.ndanhkhoi.telegram.bot.repository.impl.InMemoryUpdateTraceRepository;
 import com.ndanhkhoi.telegram.bot.subscriber.*;
+import com.ndanhkhoi.telegram.bot.subscriber.impl.*;
 import com.ndanhkhoi.telegram.bot.utils.UpdateObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -16,6 +21,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
@@ -24,7 +31,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 @Configuration
 @ComponentScan
 @EnableConfigurationProperties({BotProperties.class})
-@Import(value = {RegistryConfig.class})
+@Import(value = {ProcessorConfig.class})
 public class BotAutoConfiguration {
 
     private final ApplicationContext applicationContext;
@@ -70,21 +77,32 @@ public class BotAutoConfiguration {
         return new DefaultCallbackQuerySubscriber();
     }
 
-    @ConditionalOnMissingBean(PreProcessor.class)
+    @ConditionalOnMissingBean(PreSubscriber.class)
     @Bean
-    PreProcessor defaultPreProcessor() {
-        return new DefaultPreProcessor();
+    PreSubscriber defaultPreSubscriber() {
+        return new DefaultPreSubscriber();
     }
 
-    @ConditionalOnMissingBean(PosProcessor.class)
+    @ConditionalOnMissingBean(PosSubscriber.class)
     @Bean
-    PosProcessor defaultPosProcessor() {
-        return new DefaultPosProcessor();
+    PosSubscriber defaultPosSubscriber() {
+        return new DefaultPosSubscriber();
     }
 
     @Bean
     UpdateSubscriber updateSubscriber() {
         return new UpdateSubscriber();
+    }
+
+    @Bean
+    SimpleAsyncTaskExecutor botAsyncTaskExecutor() {
+        log.info("Creating Default Bot Async Task Executor...");
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(8);
+        executor.setMaxPoolSize(Integer.MAX_VALUE);
+        executor.setQueueCapacity(Integer.MAX_VALUE);
+        executor.setThreadNamePrefix("bot-task-");
+        return new SimpleAsyncTaskExecutor(executor);
     }
 
     @SneakyThrows

@@ -8,5 +8,5 @@ import java.util.function.Consumer;
  * @author ndanhkhoi
  * Created at 20:12:10 June 25, 2022
  */
-public interface PosProcessor extends Consumer<Update> {
+public interface PreSubscriber extends Consumer<Update> {
 }

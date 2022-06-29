@@ -3,14 +3,14 @@ package com.ndanhkhoi.telegram.bot.subscriber;
 import com.ndanhkhoi.telegram.bot.annotation.AnnotaionArg;
 import com.ndanhkhoi.telegram.bot.annotation.TypeArg;
 import com.ndanhkhoi.telegram.bot.constant.CommonConstant;
-import com.ndanhkhoi.telegram.bot.core.AdviceRegistry;
 import com.ndanhkhoi.telegram.bot.core.BotProperties;
 import com.ndanhkhoi.telegram.bot.core.SimpleTelegramLongPollingCommandBot;
+import com.ndanhkhoi.telegram.bot.core.registry.AdviceRegistry;
+import com.ndanhkhoi.telegram.bot.core.registry.ResolverRegistry;
 import com.ndanhkhoi.telegram.bot.model.BotCommand;
 import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import com.ndanhkhoi.telegram.bot.model.UpdateTrace;
 import com.ndanhkhoi.telegram.bot.repository.UpdateTraceRepository;
-import com.ndanhkhoi.telegram.bot.resolver.ResolverRegistry;
 import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
 import com.ndanhkhoi.telegram.bot.utils.UpdateObjectMapper;
 import lombok.SneakyThrows;
@@ -22,6 +22,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -36,6 +37,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.OptionalInt;
+import java.util.concurrent.Executor;
 import java.util.stream.IntStream;
 
 /**
@@ -62,6 +64,14 @@ public class UpdateSubscriber implements ApplicationContextAware {
 
     private UpdateTraceRepository getUpdateTraceRepository() {
         return applicationContext.getBean(UpdateTraceRepository.class);
+    }
+
+    private Executor getTaskExecutor() {
+        return applicationContext.getBean("botAsyncTaskExecutor", SimpleAsyncTaskExecutor.class);
+    }
+
+    private ResolverRegistry getResolverRegistry() {
+        return applicationContext.getBean(ResolverRegistry.class);
     }
 
     private boolean isUpdateTraceEnabled() {
@@ -132,7 +142,7 @@ public class UpdateSubscriber implements ApplicationContextAware {
         Object route = applicationContext.getBean(botCommand.getMethod().getDeclaringClass());
         try {
             Object returnValue = botCommand.getMethod().invoke(route, args);
-            ResolverRegistry.INSTANCE.resolve(returnValue, botCommand, botCommandParams, telegramLongPollingBot);
+            getResolverRegistry().resolve(returnValue, botCommand, botCommandParams);
         }
         catch (InvocationTargetException ex) {
             // Exception when invoke method. Ex: bot method throws exception manually
@@ -143,6 +153,7 @@ public class UpdateSubscriber implements ApplicationContextAware {
     @SneakyThrows
     private void doOnError(Throwable t, BotCommandParams params, SimpleTelegramLongPollingCommandBot telegramLongPollingBot) {
         AdviceRegistry adviceRegistry = applicationContext.getBean(AdviceRegistry.class);
+        ResolverRegistry resolverRegistry = getResolverRegistry();
         if (adviceRegistry.hasAdvice(t.getClass())) {
             Method handleMethod = adviceRegistry.getAdvice(t.getClass()).getMethod();
             Object adviceBean = adviceRegistry.getAdvice(t.getClass()).getBean();
@@ -159,7 +170,7 @@ public class UpdateSubscriber implements ApplicationContextAware {
             Object returnValue = handleMethod.invoke(adviceBean, args);
             if (returnValue == null) {
                 log.warn("Returnd value of {}#{} is null, so default error handler will be called as a callback", adviceBean.getClass().getSimpleName(), handleMethod.getName());
-                ResolverRegistry.onErrorHandle(params, telegramLongPollingBot).accept(t);
+                resolverRegistry.onErrorHandle(params, t);
             }
             else if (returnValue instanceof String) {
                 TelegramMessageUtils.replyMessage(telegramLongPollingBot, params.getUpdate().getMessage(), (String) returnValue,false);
@@ -169,11 +180,11 @@ public class UpdateSubscriber implements ApplicationContextAware {
             }
             else {
                 log.warn("Returnd value of {}#{} is not supported ({}), so default error handler will be called as a callback", adviceBean.getClass().getSimpleName(), handleMethod.getName(), returnValue.getClass().getName());
-                ResolverRegistry.onErrorHandle(params, telegramLongPollingBot).accept(t);
+                resolverRegistry.onErrorHandle(params, t);
             }
         }
         else {
-            ResolverRegistry.onErrorHandle(params, telegramLongPollingBot).accept(t);
+            resolverRegistry.onErrorHandle(params, t);
         }
     }
 
@@ -216,43 +227,28 @@ public class UpdateSubscriber implements ApplicationContextAware {
         }
     }
 
-    public void consume(Mono<Update> update) {
-        Mono<Update> sharedUpdate = update.subscribeOn(Schedulers.parallel()).share();
-        UpdateTraceRepository updateTraceRepository = getUpdateTraceRepository();
-
-        sharedUpdate.subscribe(this::logUpdate);
+    private void consume(Update update) {
+        this.logUpdate(update);
         if (isUpdateTraceEnabled()) {
-            updateTraceRepository.add(sharedUpdate.map(UpdateTrace::new));
+            UpdateTraceRepository updateTraceRepository = getUpdateTraceRepository();
+            updateTraceRepository.add(Mono.just(new UpdateTrace(update)));
         }
-
         // Pre-Processor
-        sharedUpdate.subscribe(e -> applicationContext.getBean(PreProcessor.class).accept(e));
-
+        applicationContext.getBean(PreSubscriber.class).accept(update);
         // Main Processor
-        sharedUpdate.subscribe(this::subscribe);
-
+        this.subscribe(update);
         // Pos-Processor
-        sharedUpdate.subscribe(e -> applicationContext.getBean(PosProcessor.class).accept(e));
+        applicationContext.getBean(PosSubscriber.class).accept(update);
+    }
+
+    public void consume(Mono<Update> update) {
+        update.subscribeOn(Schedulers.fromExecutor(getTaskExecutor()))
+                .subscribe(this::consume);
     }
 
     public void consume(Flux<Update> updates) {
-        Flux<Update> sharedUpdate = updates.subscribeOn(Schedulers.parallel()).share();
-
-        UpdateTraceRepository updateTraceRepository = getUpdateTraceRepository();
-
-        sharedUpdate.subscribe(this::logUpdate);
-        if (isUpdateTraceEnabled()) {
-            updateTraceRepository.addAll(sharedUpdate.map(UpdateTrace::new));
-        }
-
-        // Pre-Processor
-        sharedUpdate.subscribe(e -> applicationContext.getBean(PreProcessor.class).accept(e));
-
-        // Main Processor
-        sharedUpdate.subscribe(this::subscribe);
-
-        // Pos-Processor
-        sharedUpdate.subscribe(e -> applicationContext.getBean(PosProcessor.class).accept(e));
+        updates.subscribeOn(Schedulers.fromExecutor(getTaskExecutor()))
+                .subscribe(this::consume);
     }
 
     @Override

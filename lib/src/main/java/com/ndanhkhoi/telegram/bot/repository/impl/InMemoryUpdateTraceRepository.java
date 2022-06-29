@@ -2,6 +2,10 @@ package com.ndanhkhoi.telegram.bot.repository.impl;
 
 import com.ndanhkhoi.telegram.bot.model.UpdateTrace;
 import com.ndanhkhoi.telegram.bot.repository.UpdateTraceRepository;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -13,7 +17,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author ndanhkhoi
  * Created at 19:06:28 April 29, 2022
  */
-public class InMemoryUpdateTraceRepository implements UpdateTraceRepository {
+public class InMemoryUpdateTraceRepository implements UpdateTraceRepository, ApplicationContextAware {
+
+    private ApplicationContext applicationContext;
 
     private int capacity = 100;
 
@@ -60,12 +66,17 @@ public class InMemoryUpdateTraceRepository implements UpdateTraceRepository {
 
     @Override
     public void add(Mono<UpdateTrace> trace) {
-        trace.subscribeOn(Schedulers.parallel()).subscribe(this::subscribe);
+        trace.subscribeOn(Schedulers.fromExecutor(applicationContext.getBean("botAsyncTaskExecutor", SimpleAsyncTaskExecutor.class))).subscribe(this::subscribe);
     }
 
     @Override
     public void addAll(Flux<UpdateTrace> traces) {
-        traces.subscribeOn(Schedulers.parallel()).subscribe(this::subscribe);
+        traces.subscribeOn(Schedulers.fromExecutor(applicationContext.getBean("botAsyncTaskExecutor", SimpleAsyncTaskExecutor.class))).subscribe(this::subscribe);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 
 }

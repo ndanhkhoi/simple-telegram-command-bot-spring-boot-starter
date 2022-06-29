@@ -1,4 +1,4 @@
-package com.ndanhkhoi.telegram.bot.core;
+package com.ndanhkhoi.telegram.bot.core.registry;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

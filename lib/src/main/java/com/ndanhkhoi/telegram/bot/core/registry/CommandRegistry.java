@@ -1,4 +1,4 @@
-package com.ndanhkhoi.telegram.bot.core;
+package com.ndanhkhoi.telegram.bot.core.registry;
 
 import com.ndanhkhoi.telegram.bot.exception.BotException;
 import com.ndanhkhoi.telegram.bot.model.BotCommand;

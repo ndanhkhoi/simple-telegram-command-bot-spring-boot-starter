@@ -1,7 +1,8 @@
-package com.ndanhkhoi.telegram.bot.core;
+package com.ndanhkhoi.telegram.bot.core.processor;
 
 import com.ndanhkhoi.telegram.bot.annotation.BotExceptionHandler;
 import com.ndanhkhoi.telegram.bot.annotation.BotRouteAdvice;
+import com.ndanhkhoi.telegram.bot.core.registry.AdviceRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
