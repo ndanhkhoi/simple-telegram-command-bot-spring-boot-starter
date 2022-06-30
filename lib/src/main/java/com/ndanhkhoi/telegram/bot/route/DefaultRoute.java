@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
  * @author ndanhkhoi
  * Created at 20:59:35 October 05, 2021
  */
+@ConditionalOnProperty(value = "khoinda.bot.disable-default-commands", havingValue = "false")
 @BotRoute
 @Slf4j
 @RequiredArgsConstructor

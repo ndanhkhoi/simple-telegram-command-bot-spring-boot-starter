@@ -7,6 +7,7 @@ import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import com.ndanhkhoi.telegram.bot.utils.FileUtils;
 import com.ndanhkhoi.telegram.bot.utils.SendMediaUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -15,6 +16,8 @@ import java.io.File;
  * @author ndanhkhoi
  * Created at 22:21:06 February 26, 2022
  */
+@ConditionalOnMissingBean(value = File.class, parameterizedContainer = TypeResolver.class)
+
 @Slf4j
 @Component
 public class FileResolver implements TypeResolver<File> {
