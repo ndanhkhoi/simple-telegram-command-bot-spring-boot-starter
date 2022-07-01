@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  * @author ndanhkhoi
  * Created at 20:59:35 October 05, 2021
  */
-@ConditionalOnProperty(value = "khoinda.bot.disable-default-commands", havingValue = "false")
+@ConditionalOnProperty(value = "khoinda.bot.disable-default-commands", havingValue = "false", matchIfMissing = true)
 @BotRoute
 @Slf4j
 @RequiredArgsConstructor

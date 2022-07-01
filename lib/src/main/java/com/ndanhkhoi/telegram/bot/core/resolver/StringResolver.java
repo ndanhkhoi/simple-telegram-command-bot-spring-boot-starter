@@ -7,8 +7,6 @@ import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.List;
@@ -17,9 +15,7 @@ import java.util.List;
  * @author ndanhkhoi
  * Created at 22:21:06 February 26, 2022
  */
-@ConditionalOnMissingBean(value = TypeResolver.class, parameterizedContainer = String.class)
 @Slf4j
-@Component
 public class StringResolver implements TypeResolver<String> {
 
     private final SimpleTelegramLongPollingCommandBot telegramLongPollingBot;

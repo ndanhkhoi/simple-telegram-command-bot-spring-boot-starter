@@ -7,17 +7,13 @@ import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import com.ndanhkhoi.telegram.bot.utils.FileUtils;
 import com.ndanhkhoi.telegram.bot.utils.SendMediaUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.stereotype.Component;
 
 /**
  * @author ndanhkhoi
  * Created at 22:21:06 February 26, 2022
  */
-@ConditionalOnMissingBean(value = ByteArrayResource.class, parameterizedContainer = TypeResolver.class)
 @Slf4j
-@Component
 public class ByteArrayResourceResolver implements TypeResolver<ByteArrayResource> {
 
     private final SimpleTelegramLongPollingCommandBot telegramLongPollingBot;
