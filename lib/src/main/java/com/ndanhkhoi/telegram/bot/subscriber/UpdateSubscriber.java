@@ -188,7 +188,7 @@ public class UpdateSubscriber implements ApplicationContextAware {
 
     @SneakyThrows
     public void handleCmd(BotCommand botCommand, BotCommandParams botCommandParams) {
-        Object[] args = getBotCommandergs(botCommand.getMethod(), botCommandParams);
+        Object[] args = getBotCommandArgs(botCommand.getMethod(), botCommandParams);
         Object route = applicationContext.getBean(botCommand.getMethod().getDeclaringClass());
         handleReturnedValue(() -> invokeMethod(route, botCommand.getMethod(), args), botCommand, botCommandParams);
     }
