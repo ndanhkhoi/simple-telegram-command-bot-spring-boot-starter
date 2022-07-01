@@ -150,10 +150,16 @@ public class UpdateSubscriber implements ApplicationContextAware {
         }
     }
 
+    private void onErrorHandle(BotCommandParams params, Throwable throwable) {
+        SimpleTelegramLongPollingCommandBot telegramLongPollingBot = applicationContext.getBean(SimpleTelegramLongPollingCommandBot.class);
+        log.error("Error!", throwable);
+        TelegramMessageUtils.replyMessage(telegramLongPollingBot, params.getUpdate().getMessage(), CommonConstant.ERROR_NOTIFY_MESSAGE, false);
+    }
+
     @SneakyThrows
-    private void doOnError(Throwable t, BotCommandParams params, SimpleTelegramLongPollingCommandBot telegramLongPollingBot) {
+    public void doOnError(Throwable t, BotCommandParams params) {
         AdviceRegistry adviceRegistry = applicationContext.getBean(AdviceRegistry.class);
-        ResolverRegistry resolverRegistry = getResolverRegistry();
+        SimpleTelegramLongPollingCommandBot telegramLongPollingBot = applicationContext.getBean(SimpleTelegramLongPollingCommandBot.class);
         if (adviceRegistry.hasAdvice(t.getClass())) {
             Method handleMethod = adviceRegistry.getAdvice(t.getClass()).getMethod();
             Object adviceBean = adviceRegistry.getAdvice(t.getClass()).getBean();
@@ -170,7 +176,7 @@ public class UpdateSubscriber implements ApplicationContextAware {
             Object returnValue = handleMethod.invoke(adviceBean, args);
             if (returnValue == null) {
                 log.warn("Returnd value of {}#{} is null, so default error handler will be called as a callback", adviceBean.getClass().getSimpleName(), handleMethod.getName());
-                resolverRegistry.onErrorHandle(params, t);
+                onErrorHandle(params, t);
             }
             else if (returnValue instanceof String) {
                 TelegramMessageUtils.replyMessage(telegramLongPollingBot, params.getUpdate().getMessage(), (String) returnValue,false);
@@ -180,11 +186,11 @@ public class UpdateSubscriber implements ApplicationContextAware {
             }
             else {
                 log.warn("Returnd value of {}#{} is not supported ({}), so default error handler will be called as a callback", adviceBean.getClass().getSimpleName(), handleMethod.getName(), returnValue.getClass().getName());
-                resolverRegistry.onErrorHandle(params, t);
+                onErrorHandle(params, t);
             }
         }
         else {
-            resolverRegistry.onErrorHandle(params, t);
+            onErrorHandle(params, t);
         }
     }
 
@@ -198,7 +204,7 @@ public class UpdateSubscriber implements ApplicationContextAware {
                     });
         }
         catch (Throwable t) {
-            doOnError(t, botCommandParams, telegramLongPollingBot);
+            doOnError(t, botCommandParams);
         }
     }
 

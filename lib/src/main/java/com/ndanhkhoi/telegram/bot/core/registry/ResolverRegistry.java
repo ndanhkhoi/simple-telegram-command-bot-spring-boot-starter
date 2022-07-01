@@ -1,10 +1,9 @@
 package com.ndanhkhoi.telegram.bot.core.registry;
 
-import com.ndanhkhoi.telegram.bot.constant.CommonConstant;
 import com.ndanhkhoi.telegram.bot.core.resolver.TypeResolver;
 import com.ndanhkhoi.telegram.bot.model.BotCommand;
 import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
-import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
+import com.ndanhkhoi.telegram.bot.subscriber.UpdateSubscriber;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -59,12 +58,6 @@ public final class ResolverRegistry implements ApplicationContextAware {
         return resolverMap.containsKey(type);
     }
 
-    public void onErrorHandle(BotCommandParams params, Throwable throwable) {
-        TelegramLongPollingBot telegramLongPollingBot = applicationContext.getBean(TelegramLongPollingBot.class);
-        log.error("Error!", throwable);
-        TelegramMessageUtils.replyMessage(telegramLongPollingBot, params.getUpdate().getMessage(), CommonConstant.ERROR_NOTIFY_MESSAGE, false);
-    }
-
     private <T> void resolveCollection(Collection<T> valueCollection, BotCommand botCommand, BotCommandParams botCommandParams) {
         if (valueCollection.isEmpty()) {
             log.info("Nothing to reply. Cause return value(s) is empty collection/array");
@@ -108,15 +101,16 @@ public final class ResolverRegistry implements ApplicationContextAware {
 
     public void resolve(Object value, BotCommand botCommand, BotCommandParams botCommandParams) {
         Executor executor = applicationContext.getBean("botAsyncTaskExecutor", SimpleAsyncTaskExecutor.class);
+        UpdateSubscriber updateSubscriber = applicationContext.getBean(UpdateSubscriber.class);
         if (value instanceof Mono) {
             ((Mono<?>) value)
                     .subscribeOn(Schedulers.fromExecutor(executor))
-                    .doOnError(t -> onErrorHandle(botCommandParams, t))
+                    .doOnError(t -> updateSubscriber.doOnError(t, botCommandParams))
                     .subscribe(e -> resolveByType(e, botCommand, botCommandParams));
         } else if (value instanceof Flux) {
             ((Flux<?>) value)
                     .subscribeOn(Schedulers.fromExecutor(executor))
-                    .doOnError(t -> onErrorHandle(botCommandParams, t))
+                    .doOnError(t -> updateSubscriber.doOnError(t, botCommandParams))
                     .subscribe(e -> resolveByType(e, botCommand, botCommandParams));
         } else {
             resolveByType(value, botCommand, botCommandParams);
