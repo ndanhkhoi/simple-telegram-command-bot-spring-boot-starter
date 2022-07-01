@@ -214,14 +214,15 @@ public class CustomCallbackQuerySubscriber implements CallbackQuerySubscriber {
 ### Properties
 By default, you can configure only these properties:
 
-| Property                       | Description                                             | Default value       |
-|--------------------------------|---------------------------------------------------------|---------------------|
-| khoinda.bot.username           | Bot's username                                          |                     |
-| khoinda.bot.token              | Bot's token                                             |                     |
-| khoinda.bot.logging-chat-id    | Chat id can received logging when new `Update` recieved |                     |
-| khoinda.bot.bot-owner-chat-id  | Chat id of bot's owner                                  | `new ArrayList<>()` |
-| khoinda.bot.bot-route-packages | Package(s) name that includes BotRoute class            | `new ArrayList<>()` |
-| khoinda.bot.enable-update-trace| Enable /update_trace for owner                          | `false`             |
+| Property                            | Description                                             | Default value       |
+|-------------------------------------|---------------------------------------------------------|---------------------|
+| khoinda.bot.username                | Bot's username                                          |                     |
+| khoinda.bot.token                   | Bot's token                                             |                     |
+| khoinda.bot.logging-chat-id         | Chat id can received logging when new `Update` recieved |                     |
+| khoinda.bot.bot-owner-chat-id       | Chat id of bot's owner                                  | `new ArrayList<>()` |
+| khoinda.bot.bot-route-packages      | Package(s) name that includes BotRoute class            | `new ArrayList<>()` |
+| khoinda.bot.enable-update-trace     | Enable /update_trace for owner                          | `false`             |
+| khoinda.bot.disable-default-commands| Disable /help, /start by default                        | `false`             |
 
 ## Dependencies
 This library uses following dependencies:
