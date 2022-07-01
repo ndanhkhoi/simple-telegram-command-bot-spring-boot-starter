@@ -102,7 +102,7 @@ public class UpdateSubscriber implements ApplicationContextAware {
     }
 
     @SneakyThrows
-    private Object[] getBotCommandeArgs(Method method, BotCommandParams botCommandParams) {
+    private Object[] getBotCommandArgs(Method method, BotCommandParams botCommandParams) {
         Parameter[] parameters = method.getParameters();
         Object[] args = new Object[parameters.length];
 
@@ -188,7 +188,7 @@ public class UpdateSubscriber implements ApplicationContextAware {
 
     @SneakyThrows
     public void handleCmd(BotCommand botCommand, BotCommandParams botCommandParams) {
-        Object[] args = getBotCommandeArgs(botCommand.getMethod(), botCommandParams);
+        Object[] args = getBotCommandergs(botCommand.getMethod(), botCommandParams);
         Object route = applicationContext.getBean(botCommand.getMethod().getDeclaringClass());
         handleReturnedValue(() -> invokeMethod(route, botCommand.getMethod(), args), botCommand, botCommandParams);
     }
