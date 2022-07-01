@@ -182,7 +182,7 @@ public class UpdateSubscriber implements ApplicationContextAware {
     }
 
     @SneakyThrows
-    private Object invokeMethod(Object bean, Method method, ...Object args) {
+    private Object invokeMethod(Object bean, Method method, Object ...args) {
         return method.invoke(bean, args);
     }
 
