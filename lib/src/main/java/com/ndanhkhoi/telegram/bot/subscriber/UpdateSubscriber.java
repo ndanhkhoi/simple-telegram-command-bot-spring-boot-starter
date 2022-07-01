@@ -182,7 +182,7 @@ public class UpdateSubscriber implements ApplicationContextAware {
     }
 
     @SneakyThrows
-    private Object invokeMethod(Method method, Object bean, Object[] args) {
+    private Object invokeMethod(Object bean, Method method, Object[] args) {
         return method.invoke(bean, args);
     }
 
@@ -190,7 +190,7 @@ public class UpdateSubscriber implements ApplicationContextAware {
     public void handleCmd(BotCommand botCommand, BotCommandParams botCommandParams) {
         Object[] args = getBotCommandeArgs(botCommand.getMethod(), botCommandParams);
         Object route = applicationContext.getBean(botCommand.getMethod().getDeclaringClass());
-        handleReturnedValue(() -> invokeMethod(botCommand.getMethod(), route, args), botCommand, botCommandParams);
+        handleReturnedValue(() -> invokeMethod(route, botCommand.getMethod(), args), botCommand, botCommandParams);
     }
 
     private void sendUnknownErrorAlert(BotCommandParams params, Throwable t) {
