@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 
 import java.io.File;
+import java.util.Collection;
 
 /**
  * @author khoinda
@@ -52,6 +53,12 @@ public class TypeResolverConfig {
     @ConditionalOnMissingTypeResolverBean(String.class)
     TypeResolver<String> stringResolver(SimpleTelegramLongPollingCommandBot telegramLongPollingCommandBot) {
         return new StringResolver(telegramLongPollingCommandBot);
+    }
+
+    @Bean
+    @ConditionalOnMissingTypeResolverBean(Collection.class)
+    TypeResolver<Collection> collectionTypeResolver(SimpleTelegramLongPollingCommandBot telegramLongPollingCommandBot) {
+        return new CollectiomResolver(telegramLongPollingCommandBot);
     }
 
 }

@@ -36,8 +36,13 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.Set;
 import java.util.concurrent.Executor;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -97,7 +102,7 @@ public class UpdateSubscriber implements ApplicationContextAware {
     }
 
     @SneakyThrows
-    private Object[] getBotCommandeArgs(Method method, BotCommandParams botCommandParams) {
+    private Object[] getBotCommandArgs(Method method, BotCommandParams botCommandParams) {
         Parameter[] parameters = method.getParameters();
         Object[] args = new Object[parameters.length];
 
@@ -137,27 +142,65 @@ public class UpdateSubscriber implements ApplicationContextAware {
     }
 
     @SneakyThrows
-    private void handleCmd(BotCommand botCommand, BotCommandParams botCommandParams, SimpleTelegramLongPollingCommandBot telegramLongPollingBot) {
-        Object[] args = getBotCommandeArgs(botCommand.getMethod(), botCommandParams);
-        Object route = applicationContext.getBean(botCommand.getMethod().getDeclaringClass());
-        try {
-            Object returnValue = botCommand.getMethod().invoke(route, args);
-            getResolverRegistry().resolve(returnValue, botCommand, botCommandParams);
-        }
-        catch (InvocationTargetException ex) {
-            // Exception when invoke method. Ex: bot method throws exception manually
-            throw ex.getTargetException();
-        }
+    public void handleReturnedValue(Supplier<Object> returmedSupplier, BotCommand botCommand, BotCommandParams botCommandParams) {
+        ResolverRegistry resolverRegistry = getResolverRegistry();
+        Set<Class<Object>> supportedTypes = resolverRegistry.getSupportedTypes();
+        Set<String> supportedTypesName = supportedTypes.stream()
+                .map(Class::getName)
+                .collect(Collectors.toSet());
+        Mono.fromSupplier(returmedSupplier)
+                // Exception when invoke method. Ex: bot method throws exception manually
+                .doOnError(InvocationTargetException.class, itex -> executeCommandAdvice(itex.getTargetException(), botCommandParams))
+                .doOnError(Exception.class, ex -> executeCommandAdvice(ex, botCommandParams))
+                .flatMapMany(rawReturnedValue -> {
+                    if (Objects.isNull(rawReturnedValue)) {
+                        log.info("Nothing to reply. Cause return value is null or it's type is Void");
+                        return Flux.empty();
+                    }
+                    else if (rawReturnedValue instanceof Mono) {
+                        return ((Mono<?>) rawReturnedValue).flux();
+                    }
+                    else if (rawReturnedValue instanceof Flux) {
+                        return  (Flux<?>) rawReturnedValue;
+                    }
+                    return Flux.just(rawReturnedValue);
+                })
+                .subscribeOn(Schedulers.fromExecutor(getTaskExecutor()))
+                .subscribe(returnValue -> {
+                    Class<?> type = returnValue.getClass();
+                    Optional<Class<Object>> supportedType = supportedTypes.stream()
+                            .filter(e -> e.isAssignableFrom(type))
+                            .findFirst();
+                    if (supportedType.isPresent()) {
+                        resolverRegistry.getResolverByType(supportedType.get())
+                                .resolve(returnValue, botCommand, botCommandParams);
+                    }
+                    else {
+                        log.warn("Nothing to reply. Cause the return type is not supported ({}}). Supported types are: {}", type.getName(), supportedTypesName);
+                    }
+                }, t -> executeCommandAdvice(t, botCommandParams));
     }
 
-    private void onErrorHandle(BotCommandParams params, Throwable throwable) {
+    @SneakyThrows
+    private Object invokeMethod(Object bean, Method method, ...Object args) {
+        return method.invoke(bean, args);
+    }
+
+    @SneakyThrows
+    public void handleCmd(BotCommand botCommand, BotCommandParams botCommandParams) {
+        Object[] args = getBotCommandergs(botCommand.getMethod(), botCommandParams);
+        Object route = applicationContext.getBean(botCommand.getMethod().getDeclaringClass());
+        handleReturnedValue(() -> invokeMethod(route, botCommand.getMethod(), args), botCommand, botCommandParams);
+    }
+
+    private void sendUnknownErrorAlert(BotCommandParams params, Throwable t) {
         SimpleTelegramLongPollingCommandBot telegramLongPollingBot = applicationContext.getBean(SimpleTelegramLongPollingCommandBot.class);
-        log.error("Error!", throwable);
+        log.error("Error!", t);
         TelegramMessageUtils.replyMessage(telegramLongPollingBot, params.getUpdate().getMessage(), CommonConstant.ERROR_NOTIFY_MESSAGE, false);
     }
 
     @SneakyThrows
-    public void doOnError(Throwable t, BotCommandParams params) {
+    public void executeCommandAdvice(Throwable t, BotCommandParams params) {
         AdviceRegistry adviceRegistry = applicationContext.getBean(AdviceRegistry.class);
         SimpleTelegramLongPollingCommandBot telegramLongPollingBot = applicationContext.getBean(SimpleTelegramLongPollingCommandBot.class);
         if (adviceRegistry.hasAdvice(t.getClass())) {
@@ -176,7 +219,7 @@ public class UpdateSubscriber implements ApplicationContextAware {
             Object returnValue = handleMethod.invoke(adviceBean, args);
             if (returnValue == null) {
                 log.warn("Returnd value of {}#{} is null, so default error handler will be called as a callback", adviceBean.getClass().getSimpleName(), handleMethod.getName());
-                onErrorHandle(params, t);
+                sendUnknownErrorAlert(params, t);
             }
             else if (returnValue instanceof String) {
                 TelegramMessageUtils.replyMessage(telegramLongPollingBot, params.getUpdate().getMessage(), (String) returnValue,false);
@@ -186,26 +229,21 @@ public class UpdateSubscriber implements ApplicationContextAware {
             }
             else {
                 log.warn("Returnd value of {}#{} is not supported ({}), so default error handler will be called as a callback", adviceBean.getClass().getSimpleName(), handleMethod.getName(), returnValue.getClass().getName());
-                onErrorHandle(params, t);
+                sendUnknownErrorAlert(params, t);
             }
         }
         else {
-            onErrorHandle(params, t);
+            sendUnknownErrorAlert(params, t);
         }
     }
 
     private void excuteCommand(Update update, BotCommandParams botCommandParams, SimpleTelegramLongPollingCommandBot telegramLongPollingBot) {
-        try {
-            telegramLongPollingBot
-                    .getCommand(update)
-                    .ifPresent(botCommand -> {
-                        botCommandParams.setCommandName(botCommand.getCmd());
-                        handleCmd(botCommand, botCommandParams, telegramLongPollingBot);
-                    });
-        }
-        catch (Throwable t) {
-            doOnError(t, botCommandParams);
-        }
+        telegramLongPollingBot
+                .getCommand(update)
+                .ifPresentOrElse(botCommand -> {
+                    botCommandParams.setCommandName(botCommand.getCmd());
+                    handleCmd(botCommand, botCommandParams);
+                }, () -> applicationContext.getBean(CommandNotFoundUpdateSubscriber.class).accept(update, botCommandParams.getCommandName()));
     }
 
     private void subscribe(Update update) {
