@@ -6,7 +6,6 @@ import com.ndanhkhoi.telegram.bot.model.BotCommand;
 import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import com.ndanhkhoi.telegram.bot.utils.SendMediaUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 
 /**
@@ -14,7 +13,6 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
  * Created at 22:21:06 February 26, 2022
  */
 @Slf4j
-@Component
 public class InputFileResolver implements TypeResolver<InputFile> {
 
     private final SimpleTelegramLongPollingCommandBot telegramLongPollingBot;

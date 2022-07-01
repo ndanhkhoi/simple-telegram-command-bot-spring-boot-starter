@@ -7,7 +7,6 @@ import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import com.ndanhkhoi.telegram.bot.utils.FileUtils;
 import com.ndanhkhoi.telegram.bot.utils.SendMediaUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.time.ZoneId;
 
@@ -16,7 +15,6 @@ import java.time.ZoneId;
  * Created at 22:21:06 February 26, 2022
  */
 @Slf4j
-@Component
 public class ByteArrayResolver implements TypeResolver<byte[]> {
 
     private final SimpleTelegramLongPollingCommandBot telegramLongPollingBot;
