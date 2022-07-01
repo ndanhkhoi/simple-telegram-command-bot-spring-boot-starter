@@ -6,7 +6,6 @@ import com.ndanhkhoi.telegram.bot.core.registry.CommandRegistry;
 import com.ndanhkhoi.telegram.bot.model.BotCommand;
 import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import com.ndanhkhoi.telegram.bot.model.MessageParser;
-import com.ndanhkhoi.telegram.bot.subscriber.CommandNotFoundUpdateSubscriber;
 import com.ndanhkhoi.telegram.bot.subscriber.UpdateSubscriber;
 import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
 import lombok.SneakyThrows;
@@ -112,10 +111,6 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
         String truncatedCmd = truncatedBotUsername(messageParser.getFirstWord());
         if (commandRegistry.hasCommand(truncatedCmd) && hasPermission(update, commandRegistry.getCommand(truncatedCmd))) {
             botCommand = commandRegistry.getCommand(truncatedCmd);
-        }
-        else {
-            CommandNotFoundUpdateSubscriber commandNotFoundUpdateSubscriber = applicationContext.getBean(CommandNotFoundUpdateSubscriber.class);
-            commandNotFoundUpdateSubscriber.accept(update, messageParser.getFirstWord());
         }
         return Optional.ofNullable(botCommand);
     }
