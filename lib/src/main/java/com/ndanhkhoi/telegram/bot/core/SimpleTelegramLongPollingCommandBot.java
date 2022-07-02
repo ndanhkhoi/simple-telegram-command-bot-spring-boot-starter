@@ -8,10 +8,10 @@ import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import com.ndanhkhoi.telegram.bot.model.MessageParser;
 import com.ndanhkhoi.telegram.bot.subscriber.UpdateSubscriber;
 import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.ApplicationContext;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
@@ -23,7 +23,6 @@ import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScope
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import javax.inject.Singleton;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -33,21 +32,11 @@ import java.util.stream.Collectors;
  * Created at 11:33:32 October 08, 2021
  */
 @Slf4j
-@Singleton
+@RequiredArgsConstructor
 public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot {
-
-    private final ApplicationContext applicationContext;
     private final BotProperties botProperties;
     private final UpdateSubscriber updateSubscriber;
     private final CommandRegistry commandRegistry;
-
-    public SimpleTelegramLongPollingCommandBot(ApplicationContext applicationContext, BotProperties botProperties, UpdateSubscriber updateSubscriber, CommandRegistry commandRegistry) {
-        this.applicationContext = applicationContext;
-        this.botProperties = botProperties;
-        this.updateSubscriber = updateSubscriber;
-        this.commandRegistry = commandRegistry;
-    }
-
 
     @SneakyThrows
     public <T extends Serializable, M extends BotApiMethod<T>> T executeSneakyThrows(M method) {

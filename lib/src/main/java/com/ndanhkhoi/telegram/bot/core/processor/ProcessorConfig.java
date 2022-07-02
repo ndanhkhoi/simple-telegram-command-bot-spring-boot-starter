@@ -17,16 +17,15 @@ public class ProcessorConfig implements ImportBeanDefinitionRegistrar {
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        if (!registry.containsBeanDefinition(BOT_ROUTE_ANNOTATION_PROCESSOR_BEAN_NAME)) {
-            registry.registerBeanDefinition(BOT_ROUTE_ANNOTATION_PROCESSOR_BEAN_NAME, new RootBeanDefinition(BotRoutePostProcessor.class));
-        }
-        if (!registry.containsBeanDefinition(BOT_ADVICE_ANNOTATION_PROCESSOR_BEAN_NAME)) {
-            registry.registerBeanDefinition(BOT_ADVICE_ANNOTATION_PROCESSOR_BEAN_NAME, new RootBeanDefinition(BotAdvicePostProcessor.class));
-        }
-        if (!registry.containsBeanDefinition(TYPE_RESOLVER_PROCESSOR_BEAN_NAME)) {
-            registry.registerBeanDefinition(TYPE_RESOLVER_PROCESSOR_BEAN_NAME, new RootBeanDefinition(TypeResolvertProcessor.class));
-        }
+        registerBean(registry, BOT_ROUTE_ANNOTATION_PROCESSOR_BEAN_NAME, BotRoutePostProcessor.class);
+        registerBean(registry, BOT_ADVICE_ANNOTATION_PROCESSOR_BEAN_NAME, BotAdvicePostProcessor.class);
+        registerBean(registry, TYPE_RESOLVER_PROCESSOR_BEAN_NAME, TypeResolvertProcessor.class);
+    }
 
+    private <T> void registerBean(BeanDefinitionRegistry registry, String beanName, Class<T> clazz) {
+        if (!registry.containsBeanDefinition(beanName)) {
+            registry.registerBeanDefinition(beanName, new RootBeanDefinition(clazz));
+        }
     }
 
 }

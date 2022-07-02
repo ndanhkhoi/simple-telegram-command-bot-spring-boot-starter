@@ -17,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @ConfigurationProperties(prefix = "khoinda.bot", ignoreUnknownFields = false)
 public class BotProperties {
+
     private String username;
     private String token;
     private String loggingChatId;
@@ -24,4 +25,16 @@ public class BotProperties {
     private List<String> botRoutePackages = new ArrayList<>();
     private Boolean enableUpdateTrace = false;
     private Boolean disableDefaultCommands = false;
+    private Executor executor;
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class Executor {
+        private int corePoolSize = 8;
+        private int maxPoolSize = Integer.MAX_VALUE;
+        private int queueCapacity = Integer.MAX_VALUE;
+        private String threadNamePrefix = "bot-task-";
+    }
+
 }

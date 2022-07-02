@@ -3,7 +3,6 @@ package com.ndanhkhoi.telegram.bot.core.resolver;
 import com.ndanhkhoi.telegram.bot.annotation.ConditionalOnMissingTypeResolverBean;
 import com.ndanhkhoi.telegram.bot.core.SimpleTelegramLongPollingCommandBot;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ByteArrayResource;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
@@ -15,7 +14,6 @@ import java.util.Collection;
  * @author khoinda
  * Created at 09:33:31 July 01, 2022
  */
-@Configuration
 public class TypeResolverConfig {
 
     @Bean

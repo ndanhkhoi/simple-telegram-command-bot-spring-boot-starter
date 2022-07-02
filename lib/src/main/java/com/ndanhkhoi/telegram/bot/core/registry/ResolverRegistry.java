@@ -1,8 +1,8 @@
 package com.ndanhkhoi.telegram.bot.core.registry;
 
 import com.ndanhkhoi.telegram.bot.core.resolver.TypeResolver;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.Set;
@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created at 22:02:59 February 26, 2022
  */
 @Slf4j
-@Component
+@NoArgsConstructor
 public final class ResolverRegistry {
 
     private final Map<Class<Object>, TypeResolver<Object>> resolverMap = new ConcurrentHashMap<>();
