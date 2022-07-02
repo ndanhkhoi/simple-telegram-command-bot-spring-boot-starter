@@ -54,7 +54,7 @@ Just import add the library to your project with one of these options:
 <dependency>
     <groupId>com.github.ndanhkhoi</groupId>
     <artifactId>simple-telegram-command-bot-spring-boot-starter</artifactId>
-    <version>0.22</version>
+    <version>0.23</version>
 </dependency>
 ```
 2. Using Gradle:
@@ -67,7 +67,7 @@ repositories {
 - Step 2. Add the dependency
 ```gradle
 dependencies {
-    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:0.22'
+    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:0.23'
 }
 ```
 
@@ -214,15 +214,19 @@ public class CustomCallbackQuerySubscriber implements CallbackQuerySubscriber {
 ### Properties
 By default, you can configure only these properties:
 
-| Property                            | Description                                             | Default value       |
-|-------------------------------------|---------------------------------------------------------|---------------------|
-| khoinda.bot.username                | Bot's username                                          |                     |
-| khoinda.bot.token                   | Bot's token                                             |                     |
-| khoinda.bot.logging-chat-id         | Chat id can received logging when new `Update` recieved |                     |
-| khoinda.bot.bot-owner-chat-id       | Chat id of bot's owner                                  | `new ArrayList<>()` |
-| khoinda.bot.bot-route-packages      | Package(s) name that includes BotRoute class            | `new ArrayList<>()` |
-| khoinda.bot.enable-update-trace     | Enable /update_trace for owner                          | `false`             |
-| khoinda.bot.disable-default-commands| Disable /help, /start by default                        | `false`             |
+| Property                              | Description                                             | Default value       |
+|---------------------------------------|---------------------------------------------------------|---------------------|
+| khoinda.bot.username                  | Bot's username                                          |                     |
+| khoinda.bot.token                     | Bot's token                                             |                     |
+| khoinda.bot.logging-chat-id           | Chat id can received logging when new `Update` recieved |                     |
+| khoinda.bot.bot-owner-chat-id         | Chat id of bot's owner                                  | `new ArrayList<>()` |
+| khoinda.bot.bot-route-packages        | Package(s) name that includes BotRoute class            | `new ArrayList<>()` |
+| khoinda.bot.enable-update-trace       | Enable /update_trace for owner                          | `false`             |
+| khoinda.bot.disable-default-commands  | Disable /help, /start by default                        | `false`             |
+| khoinda.bot.executor.corePoolSize     | Bot executor core pool size                             | `8`                 |
+| khoinda.bot.executor.maxPoolSize      | Bot executor max pool size                              | `Integer.MAX_VALUE` |
+| khoinda.bot.executor.queueCapacity    | Bot executor queue capacity                             | `Integer.MAX_VALUE` |
+| khoinda.bot.executor.threadNamePrefix | Bot executor thread name prefix                         | `bot-task-`         |
 
 ## Dependencies
 This library uses following dependencies:
