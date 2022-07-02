@@ -22,8 +22,6 @@ import org.springframework.core.MethodIntrospector;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.env.Environment;
-import reactor.core.Exceptions;
-import reactor.core.publisher.Flux;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -106,12 +104,9 @@ public class BotRoutePostProcessor implements BeanPostProcessor, SmartInitializi
                 .findFirst()
                 .orElse("");
 
-        Flux.fromArray(mapping.value())
+        Arrays.stream(mapping.value())
                 .map(cmd -> extractBotCommand(method, cmd, mapping, commandDescription, bodyDescription))
-                .doOnError(ex -> {
-                    throw Exceptions.errorCallbackNotImplemented(ex);
-                })
-                .subscribe(this::registerBotCommand);
+                .forEach(this::registerBotCommand);
     }
 
     @Override
@@ -159,6 +154,10 @@ public class BotRoutePostProcessor implements BeanPostProcessor, SmartInitializi
     @Override
     public void setEnvironment(Environment env) {
         this.env = env;
+        setBotRoutePackages();
+    }
+
+    private void setBotRoutePackages() {
         this.botRoutePackages = Binder.get(env)
                 .bind(BOT_ROUTE_PACKAGES_PROPERTY, String[].class)
                 .map(Arrays::asList)
