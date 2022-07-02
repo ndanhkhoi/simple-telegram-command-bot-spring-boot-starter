@@ -141,7 +141,6 @@ public class UpdateSubscriber implements ApplicationContextAware {
         }
     }
 
-    @SneakyThrows
     public void handleReturnedValue(Supplier<Object> returmedSupplier, BotCommand botCommand, BotCommandParams botCommandParams) {
         ResolverRegistry resolverRegistry = getResolverRegistry();
         Set<Class<Object>> supportedTypes = resolverRegistry.getSupportedTypes();
@@ -186,7 +185,6 @@ public class UpdateSubscriber implements ApplicationContextAware {
         return method.invoke(bean, args);
     }
 
-    @SneakyThrows
     public void handleCmd(BotCommand botCommand, BotCommandParams botCommandParams) {
         Object[] args = getBotCommandArgs(botCommand.getMethod(), botCommandParams);
         Object route = applicationContext.getBean(botCommand.getMethod().getDeclaringClass());
@@ -199,7 +197,6 @@ public class UpdateSubscriber implements ApplicationContextAware {
         TelegramMessageUtils.replyMessage(telegramLongPollingBot, params.getUpdate().getMessage(), CommonConstant.ERROR_NOTIFY_MESSAGE, false);
     }
 
-    @SneakyThrows
     public void executeCommandAdvice(Throwable t, BotCommandParams params) {
         AdviceRegistry adviceRegistry = applicationContext.getBean(AdviceRegistry.class);
         SimpleTelegramLongPollingCommandBot telegramLongPollingBot = applicationContext.getBean(SimpleTelegramLongPollingCommandBot.class);
@@ -216,7 +213,7 @@ public class UpdateSubscriber implements ApplicationContextAware {
                     args[idx] = t;
                 }
             }
-            Object returnValue = handleMethod.invoke(adviceBean, args);
+            Object returnValue = invokeMethod(adviceBean, handleMethod, args);
             if (returnValue == null) {
                 log.warn("Returnd value of {}#{} is null, so default error handler will be called as a callback", adviceBean.getClass().getSimpleName(), handleMethod.getName());
                 sendUnknownErrorAlert(params, t);
@@ -225,7 +222,7 @@ public class UpdateSubscriber implements ApplicationContextAware {
                 TelegramMessageUtils.replyMessage(telegramLongPollingBot, params.getUpdate().getMessage(), (String) returnValue,false);
             }
             else if (returnValue instanceof BotApiMethod) {
-                telegramLongPollingBot.execute((BotApiMethod<? extends Serializable>) returnValue);
+                telegramLongPollingBot.executeSneakyThrows((BotApiMethod<? extends Serializable>) returnValue);
             }
             else {
                 log.warn("Returnd value of {}#{} is not supported ({}), so default error handler will be called as a callback", adviceBean.getClass().getSimpleName(), handleMethod.getName(), returnValue.getClass().getName());
@@ -246,7 +243,7 @@ public class UpdateSubscriber implements ApplicationContextAware {
                 }, () -> applicationContext.getBean(CommandNotFoundUpdateSubscriber.class).accept(update, botCommandParams.getCommandName()));
     }
 
-    private void subscribe(Update update) {
+    private void process(Update update) {
         SimpleTelegramLongPollingCommandBot telegramLongPollingBot = getBotInstance();
         if (update.getCallbackQuery() != null) {
             applicationContext.getBean(CallbackQuerySubscriber.class).accept(update);
@@ -280,7 +277,7 @@ public class UpdateSubscriber implements ApplicationContextAware {
         // Pre-Processor
         applicationContext.getBean(PreSubscriber.class).accept(update);
         // Main Processor
-        this.subscribe(update);
+        this.process(update);
         // Pos-Processor
         applicationContext.getBean(PosSubscriber.class).accept(update);
     }
