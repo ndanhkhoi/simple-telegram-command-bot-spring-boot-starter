@@ -91,6 +91,7 @@ public class BotRoutePostProcessor implements BeanPostProcessor, SmartInitializi
 
     private void registerBotCommand(BotCommand botCommand) {
         beanFactory.getBean(CommandRegistry.class).register(botCommand);
+        log.debug("Registered command: {}", botCommand.getCmd());
     }
 
     private void registerBotCommands(Method method, CommandMapping mapping) {
