@@ -25,7 +25,7 @@ public class BotProperties {
     private List<String> botRoutePackages = new ArrayList<>();
     private Boolean enableUpdateTrace = false;
     private Boolean disableDefaultCommands = false;
-    private Executor executor;
+    private Executor executor = new Executor();
 
     @Getter
     @Setter
