@@ -22,10 +22,15 @@ import org.springframework.core.MethodIntrospector;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.env.Environment;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import reactor.core.Exceptions;
+import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
 
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
 
 /**
  * @author khoinda
@@ -94,20 +99,20 @@ public class BotRoutePostProcessor implements BeanPostProcessor, SmartInitializi
         log.debug("Registered command: {}", botCommand.getCmd());
     }
 
-    private void registerBotCommands(Method method, CommandMapping mapping) {
-        String commandDescription = Optional.ofNullable(AnnotationUtils.findAnnotation(method, CommandDescription.class))
-                .map(CommandDescription::value)
-                .orElse("");
-        String bodyDescription = Arrays.stream(method.getParameters())
-                .flatMap(parameter -> Optional.ofNullable(AnnotationUtils.findAnnotation(parameter, CommandBody.class))
-                        .stream()
-                        .map(commandBody -> StringUtils.defaultIfBlank(commandBody.description(), parameter.getName())))
-                .findFirst()
-                .orElse("");
-
-        Arrays.stream(mapping.value())
-                .map(cmd -> extractBotCommand(method, cmd, mapping, commandDescription, bodyDescription))
-                .forEach(this::registerBotCommand);
+    private Flux<BotCommand> extractBotCommands(Method method, CommandMapping mapping) {
+        return Flux.fromArray(mapping.value())
+                .map(cmd -> {
+                    String commandDescription = Optional.ofNullable(AnnotationUtils.findAnnotation(method, CommandDescription.class))
+                            .map(CommandDescription::value)
+                            .orElse("");
+                    String bodyDescription = Arrays.stream(method.getParameters())
+                            .flatMap(parameter -> Optional.ofNullable(AnnotationUtils.findAnnotation(parameter, CommandBody.class))
+                                    .stream()
+                                    .map(commandBody -> StringUtils.defaultIfBlank(commandBody.description(), parameter.getName())))
+                            .findFirst()
+                            .orElse("");
+                    return extractBotCommand(method, cmd, mapping, commandDescription, bodyDescription);
+                });
     }
 
     @Override
@@ -125,9 +130,15 @@ public class BotRoutePostProcessor implements BeanPostProcessor, SmartInitializi
                     log.trace("No @CommandMapping annotations found on bean type: " + bean.getClass());
                 }
                 else {
-                    annotatedMethods.forEach(this::registerBotCommands);
-                    log.debug( annotatedMethods.size() + " @CommandMapping methods processed on bean '"
-                            + beanName + "': " + annotatedMethods);
+                    Flux.fromIterable(annotatedMethods.entrySet())
+                            .flatMap(entry -> this.extractBotCommands(entry.getKey(), entry.getValue()))
+                            .doOnComplete(() -> log.debug(annotatedMethods.size() + " @CommandMapping methods processed on bean '"
+                                    + beanName + "': " + annotatedMethods))
+                            .doOnError(ex -> {
+                                throw Exceptions.errorCallbackNotImplemented(ex);
+                            })
+                            .subscribeOn(Schedulers.fromExecutor(getTaskExecutor()))
+                            .subscribe(this::registerBotCommand);
                 }
             }
             else {
@@ -163,6 +174,10 @@ public class BotRoutePostProcessor implements BeanPostProcessor, SmartInitializi
                 .bind(BOT_ROUTE_PACKAGES_PROPERTY, String[].class)
                 .map(Arrays::asList)
                 .orElse(new ArrayList<>());
+    }
+
+    private Executor getTaskExecutor() {
+        return beanFactory.getBean("botAsyncTaskExecutor", SimpleAsyncTaskExecutor.class);
     }
 
 }

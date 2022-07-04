@@ -13,14 +13,17 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.MethodIntrospector;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import reactor.core.Exceptions;
 import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
 
 /**
  * @author ndanhkhoi
@@ -52,6 +55,7 @@ public class BotAdvicePostProcessor implements BeanPostProcessor, SmartInitializ
                             })
                             .doAfterTerminate(() -> log.debug( annotatedMethods.size() + " @BotExceptionHandler methods processed on bean '"
                                     + beanName + "': " + annotatedMethods))
+                            .subscribeOn(Schedulers.fromExecutor(getTaskExecutor()))
                             .subscribe(entry -> {
                                 Method method = entry.getKey();
                                 BotExceptionHandler botExceptionHandler = entry.getValue();
@@ -80,6 +84,10 @@ public class BotAdvicePostProcessor implements BeanPostProcessor, SmartInitializ
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
+    }
+
+    private Executor getTaskExecutor() {
+        return beanFactory.getBean("botAsyncTaskExecutor", SimpleAsyncTaskExecutor.class);
     }
 
 }

@@ -9,6 +9,11 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.Ordered;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
+
+import java.util.concurrent.Executor;
 
 /**
  * @author khoinda
@@ -27,8 +32,7 @@ public class TypeResolvertProcessor implements BeanPostProcessor, Ordered, BeanF
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         if (isTypeResolver(bean)) {
-            beanFactory.getBean(ResolverRegistry.class)
-                    .register((TypeResolver) bean);
+            Mono.just(bean).subscribeOn(Schedulers.fromExecutor(getTaskExecutor())).subscribe(e -> beanFactory.getBean(ResolverRegistry.class).register((TypeResolver) e));
         }
         return bean;
     }
@@ -41,6 +45,10 @@ public class TypeResolvertProcessor implements BeanPostProcessor, Ordered, BeanF
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
+    }
+
+    private Executor getTaskExecutor() {
+        return beanFactory.getBean("botAsyncTaskExecutor", SimpleAsyncTaskExecutor.class);
     }
 
 }
