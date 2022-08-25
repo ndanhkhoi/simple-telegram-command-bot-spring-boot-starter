@@ -23,10 +23,7 @@ public final class ResolverRegistry {
     }
 
     public void register(TypeResolver<Object> resolver) {
-        Class<Object> key = resolver.getType();
-        if (!resolverMap.containsKey(key)) {
-            resolverMap.put(key, resolver);
-        }
+        resolverMap.putIfAbsent(resolver.getType(), resolver);
     }
 
     public Set<Class<Object>> getSupportedTypes() {
