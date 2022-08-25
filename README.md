@@ -28,7 +28,7 @@ A simple-to-use library to create Telegram Long Polling Bots in Java and Spring 
     + [BotRouteAdvice](#botrouteadvice)
     + [BotExceptionHandler](#botexceptionhandler)
     + [Supported return values of BotExceptionHandler](#supported-return-values-of-botexceptionhandler)
-  * [CallbackQuerySubscribe](#callbackquerysubscribe)
+  * [CallbackQuerySubscriber](#callbackquerysubscriber)
   * [Others Subscriber Bean](#others-subscriber-bean)
   * [Configurations](#configurations)
     + [Properties](#properties)
@@ -187,7 +187,7 @@ An annotation is used to mark method is a exception handler.
 - `String` - the text will be reply to user make a request
 - `BotApiMethod` - it will be excuted automatically
 
-## CallbackQuerySubscribe
+## CallbackQuerySubscriber
 
 You can create a bean that inplements `CallbackQuerySubscriber` to trigger callback query:
 
@@ -215,7 +215,7 @@ public class CustomCallbackQuerySubscriber implements CallbackQuerySubscriber {
 ## Others Subscriber Bean
 
 There are some beans that you can create an inplements to do your stuff
-- `CallbackQuerySubscribe` - handle callback query (like button pressed, etc, ...)
+- `CallbackQuerySubscriber` - handle callback query (like button pressed, etc, ...)
 - `CommandNotFoundUpdateSubscriber` - handle unknown commands
 - `NonCommandUpdateSubscriber` - handle an update does not contain command
 - `PreSubscriber` - do your job before process command
