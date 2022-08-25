@@ -1,0 +1,15 @@
+com.ndanhkhoi.telegram.bot
+com.ndanhkhoi.telegram.bot.annotation
+com.ndanhkhoi.telegram.bot.constant
+com.ndanhkhoi.telegram.bot.core
+com.ndanhkhoi.telegram.bot.core.processor
+com.ndanhkhoi.telegram.bot.core.registry
+com.ndanhkhoi.telegram.bot.core.resolver
+com.ndanhkhoi.telegram.bot.exception
+com.ndanhkhoi.telegram.bot.model
+com.ndanhkhoi.telegram.bot.repository
+com.ndanhkhoi.telegram.bot.repository.impl
+com.ndanhkhoi.telegram.bot.route
+com.ndanhkhoi.telegram.bot.subscriber
+com.ndanhkhoi.telegram.bot.subscriber.impl
+com.ndanhkhoi.telegram.bot.utils
