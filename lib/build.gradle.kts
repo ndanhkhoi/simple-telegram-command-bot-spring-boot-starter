@@ -11,7 +11,7 @@ import org.springframework.boot.gradle.plugin.SpringBootPlugin
 plugins {
     `java-library`
     `maven-publish`
-    id("org.springframework.boot") version "2.7.1" apply false
+    id("org.springframework.boot") version "2.7.3" apply false
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
 }
 
@@ -29,8 +29,8 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    api("io.projectreactor:reactor-core:3.4.15")
-    api("io.projectreactor.addons:reactor-extra:3.4.6")
+    api("io.projectreactor:reactor-core:3.4.22")
+    api("io.projectreactor.addons:reactor-extra:3.4.8")
     api("org.apache.commons:commons-lang3:3.12.0")
     api("commons-io:commons-io:2.11.0")
     api("commons-beanutils:commons-beanutils:1.9.4")
