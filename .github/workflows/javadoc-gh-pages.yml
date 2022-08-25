@@ -29,4 +29,3 @@ jobs:
           branch: gh-pages
           clean: true
           folder: lib/build/docs/javadoc
-          target-folder: javadoc
