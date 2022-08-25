@@ -24,16 +24,21 @@ A simple-to-use library to create Telegram Long Polling Bots in Java and Spring 
     + [Reactive support](#reactive-support)
   * [Default Commands](#default-commands)
   * [Logging Channel](#logging-channel)
-  * [Handle Exception](#exception-handle)
+  * [Handle Exception](#handle-exception)
     + [BotRouteAdvice](#botrouteadvice)
     + [BotExceptionHandler](#botexceptionhandler)
     + [Supported return values of BotExceptionHandler](#supported-return-values-of-botexceptionhandler)
+  * [CallbackQuerySubscribe](#callbackquerysubscribe)
+  * [Others Subscriber Bean](#others-subscriber-bean)
   * [Configurations](#configurations)
     + [Properties](#properties)
   * [Dependencies](#dependencies)
   * [Telegram Bot API](#telegram-bot-api)
   * [Jitpack](#jitpack)
   * [License](#license)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
 
 ## Usage
 
@@ -54,7 +59,7 @@ Just import add the library to your project with one of these options:
 <dependency>
     <groupId>com.github.ndanhkhoi</groupId>
     <artifactId>simple-telegram-command-bot-spring-boot-starter</artifactId>
-    <version>0.25</version>
+    <version>2022.08.25</version>
 </dependency>
 ```
 2. Using Gradle:
@@ -67,7 +72,7 @@ repositories {
 - Step 2. Add the dependency
 ```gradle
 dependencies {
-    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:0.25'
+    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:2022.08.25'
 }
 ```
 
@@ -207,7 +212,14 @@ public class CustomCallbackQuerySubscriber implements CallbackQuerySubscriber {
 }
 
 ```
+## Others Subscriber Bean
 
+There are some beans that you can create an inplements to do your stuff
+- `CallbackQuerySubscribe` - handle callback query (like button pressed, etc, ...)
+- `CommandNotFoundUpdateSubscriber` - handle unknown commands
+- `NonCommandUpdateSubscriber` - handle an update does not contain command
+- `PreSubscriber` - do your job before process command
+- `PosSubscriber` - do your job after process command
 
 ## Configurations
 
