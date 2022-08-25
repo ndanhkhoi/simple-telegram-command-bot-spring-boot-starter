@@ -15,15 +15,14 @@ import java.util.Collection;
  * @author ndanhkhoi
  * Created at 22:21:06 February 26, 2022
  */
+@SuppressWarnings("rawtypes")
 @Slf4j
 public class CollectiomResolver implements TypeResolver<Collection>, ApplicationContextAware {
-
-    private final SimpleTelegramLongPollingCommandBot telegramLongPollingBot;
     private ApplicationContext applicationContext;
 
 
-    public CollectiomResolver(SimpleTelegramLongPollingCommandBot telegramLongPollingBot) {
-        this.telegramLongPollingBot = telegramLongPollingBot;
+    public CollectiomResolver() {
+        // Default constructor
     }
 
     @Override

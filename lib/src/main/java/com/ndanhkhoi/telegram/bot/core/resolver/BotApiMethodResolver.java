@@ -6,10 +6,13 @@ import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
+import java.io.Serializable;
+
 /**
  * @author ndanhkhoi
  * Created at 22:21:06 February 26, 2022
  */
+@SuppressWarnings("rawtypes")
 @Slf4j
 public class BotApiMethodResolver implements TypeResolver<BotApiMethod> {
 

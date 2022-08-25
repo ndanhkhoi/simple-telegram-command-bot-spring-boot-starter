@@ -14,23 +14,24 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 @Slf4j
 @UtilityClass
 public final class FileUtils {
 
+    private static final String TEMP_PREFIX = "temp_";
+
     @SneakyThrows
     public static InputFile getInputFile(File file) {
         InputFile inputFile = new InputFile();
-        String fileName = StringUtils.firstNonBlank(file.getName(), "temp_" + getPosfixFileInstantByTime(ZoneId.systemDefault()));
+        String fileName = StringUtils.firstNonBlank(file.getName(), TEMP_PREFIX + getPosfixFileInstantByTime(ZoneId.systemDefault()));
         inputFile.setMedia(new FileInputStream(file), fileName);
         return inputFile;
     }
 
     public static InputFile getInputFile(byte[] bytes, String fileName) {
         InputFile inputFile = new InputFile();
-        String finalFileName = StringUtils.firstNonBlank(fileName, "temp_" + getPosfixFileInstantByTime(ZoneId.systemDefault()));
+        String finalFileName = StringUtils.firstNonBlank(fileName, TEMP_PREFIX + getPosfixFileInstantByTime(ZoneId.systemDefault()));
         inputFile.setMedia(new ByteArrayInputStream(bytes), finalFileName);
         return inputFile;
     }
@@ -38,7 +39,7 @@ public final class FileUtils {
     @SneakyThrows
     public static InputFile getInputFile(ByteArrayResource resource) {
         InputFile inputFile = new InputFile();
-        String fileName = StringUtils.firstNonBlank(resource.getFilename(), "temp_" + getPosfixFileInstantByTime(ZoneId.systemDefault()));
+        String fileName = StringUtils.firstNonBlank(resource.getFilename(), TEMP_PREFIX + getPosfixFileInstantByTime(ZoneId.systemDefault()));
         inputFile.setMedia(resource.getInputStream(), fileName);
         return inputFile;
     }

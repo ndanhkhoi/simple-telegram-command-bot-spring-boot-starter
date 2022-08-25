@@ -14,6 +14,7 @@ import java.util.Collection;
  * @author khoinda
  * Created at 09:33:31 July 01, 2022
  */
+@SuppressWarnings("rawtypes")
 public class TypeResolverConfig {
 
     @Bean
@@ -55,8 +56,8 @@ public class TypeResolverConfig {
 
     @Bean
     @ConditionalOnMissingTypeResolverBean(Collection.class)
-    TypeResolver<Collection> collectionTypeResolver(SimpleTelegramLongPollingCommandBot telegramLongPollingCommandBot) {
-        return new CollectiomResolver(telegramLongPollingCommandBot);
+    TypeResolver<Collection> collectionTypeResolver() {
+        return new CollectiomResolver();
     }
 
 }
