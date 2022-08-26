@@ -14,7 +14,7 @@ plugins {
     `maven-publish`
     id("org.springframework.boot") version "2.7.3" apply false
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    id("io.franzbecker:gradle-lombok") version "2.0"
+    id("io.franzbecker.gradle-lombok") version "2.0"
 }
 
 group = "com.github.ndanhkhoi"
