@@ -14,7 +14,7 @@ plugins {
     `maven-publish`
     id("org.springframework.boot") version "2.7.3" apply false
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    id("io.franzbecker.gradle-lombok") version "2.0"
+    id("io.franzbecker.gradle-lombok") version "5.0.0"
 }
 
 group = "com.github.ndanhkhoi"
@@ -33,9 +33,9 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     api("io.projectreactor:reactor-core:3.4.22")
     api("io.projectreactor.addons:reactor-extra:3.4.8")
+    api("commons-beanutils:commons-beanutils:1.9.4")
     api("org.apache.commons:commons-lang3:3.12.0")
     api("commons-io:commons-io:2.11.0")
-    api("commons-beanutils:commons-beanutils:1.9.4")
     api("com.google.guava:guava:31.0.1-jre")
     api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -45,10 +45,6 @@ dependencyManagement {
     imports {
         mavenBom(SpringBootPlugin.BOM_COORDINATES)
     }
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
 }
 
 configure<PublishingExtension> {
@@ -70,25 +66,28 @@ configure<PublishingExtension> {
     }
 }
 
-tasks.withType<Jar> {
-    archiveBaseName.set("simple-telegram-command-bot-spring-boot-starter")
-}
-
 tasks {
+    test {
+        useJUnitPlatform()
+    }
+
+    jar {
+        archiveBaseName.set("simple-telegram-command-bot-spring-boot-starter")
+    }
+
     register("fatJar", Jar::class.java) {
         archiveBaseName.set("simple-telegram-command-bot-spring-boot-starter-full-dependencies")
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
         with(jar.get() as CopySpec)
     }
-}
-
-tasks {
 
     val delombok by registering(DelombokTask::class) {
+
         dependsOn(compileJava)
         val outputDir by extra { file("$buildDir/delombok") }
         outputs.dir(outputDir)
+        defaultCharacterEncoding = "UTF-8"
         sourceSets["main"].java.srcDirs.forEach {
             inputs.dir(it)
             args(it, "-d", outputDir)
@@ -99,10 +98,11 @@ tasks {
     }
 
     javadoc {
-        dependsOn(delombok)
+        dependsOn("delombok")
         val outputDir: File by delombok.get().extra
         source = fileTree(outputDir)
         isFailOnError = false
+        title = "Simple Telegram Command Bot Spring Boot Starter API"
+        options.encoding = "UTF-8"
     }
-
 }
