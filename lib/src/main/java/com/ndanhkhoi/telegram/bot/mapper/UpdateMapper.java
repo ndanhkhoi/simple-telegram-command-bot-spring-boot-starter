@@ -1,4 +1,4 @@
-package com.ndanhkhoi.telegram.bot.utils;
+package com.ndanhkhoi.telegram.bot.mapper;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,9 +11,9 @@ import lombok.SneakyThrows;
  * @author ndanhkhoi
  * Created at 19:33:28 April 29, 2022
  */
-public class UpdateObjectMapper extends ObjectMapper {
+public class UpdateMapper extends ObjectMapper {
 
-    public UpdateObjectMapper() {
+    public UpdateMapper() {
         super();
         super.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         super.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);

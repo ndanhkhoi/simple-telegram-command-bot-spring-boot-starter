@@ -3,13 +3,11 @@ package com.ndanhkhoi.telegram.bot;
 import com.ndanhkhoi.telegram.bot.core.BotProperties;
 import com.ndanhkhoi.telegram.bot.core.SimpleTelegramLongPollingCommandBot;
 import com.ndanhkhoi.telegram.bot.core.processor.ProcessorConfig;
-import com.ndanhkhoi.telegram.bot.core.registry.CommandRegistry;
 import com.ndanhkhoi.telegram.bot.core.registry.RegistryConfig;
 import com.ndanhkhoi.telegram.bot.core.resolver.TypeResolverConfig;
+import com.ndanhkhoi.telegram.bot.mapper.MapperConfig;
 import com.ndanhkhoi.telegram.bot.repository.RepositoryConfig;
 import com.ndanhkhoi.telegram.bot.subscriber.SubscriberConfig;
-import com.ndanhkhoi.telegram.bot.subscriber.UpdateSubscriber;
-import com.ndanhkhoi.telegram.bot.utils.UpdateObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -33,15 +31,11 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
         RegistryConfig.class,
         TypeResolverConfig.class,
         SubscriberConfig.class,
-        RepositoryConfig.class
+        RepositoryConfig.class,
+        MapperConfig.class
 })
 public class BotAutoConfiguration {
     private final BotProperties botProperties;
-
-    @Bean(name = "updateObjectMapper")
-    UpdateObjectMapper updateObjectMapper() {
-        return new UpdateObjectMapper();
-    }
 
     @Bean
     SimpleAsyncTaskExecutor botAsyncTaskExecutor() {
@@ -57,8 +51,8 @@ public class BotAutoConfiguration {
 
     @SneakyThrows
     @Bean
-    SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot(CommandRegistry commandRegistry, UpdateSubscriber updateSubscriber) {
-        SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot = new SimpleTelegramLongPollingCommandBot(botProperties, updateSubscriber, commandRegistry);
+    SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot() {
+        SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot = new SimpleTelegramLongPollingCommandBot(botProperties);
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         telegramBotsApi.registerBot(simpleTelegramLongPollingCommandBot);
         log.info("Spring Boot Telegram Command Bot Auto Configuration by @ndanhkhoi");

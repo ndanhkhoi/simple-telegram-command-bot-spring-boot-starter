@@ -12,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
@@ -33,10 +36,17 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot {
+public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot implements ApplicationContextAware {
     private final BotProperties botProperties;
-    private final UpdateSubscriber updateSubscriber;
-    private final CommandRegistry commandRegistry;
+    private ApplicationContext applicationContext;
+
+    public UpdateSubscriber getUpdateSubscriber() {
+        return applicationContext.getBean(UpdateSubscriber.class);
+    }
+
+    public CommandRegistry getCommandRegistry() {
+        return applicationContext.getBean(CommandRegistry.class);
+    }
 
     @SneakyThrows
     public <T extends Serializable, M extends BotApiMethod<T>> T executeSneakyThrows(M method) {
@@ -78,7 +88,7 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
     }
 
     public List<BotCommand> getAvailableBotCommands(Update update) {
-        return commandRegistry.getAllCommands()
+        return getCommandRegistry().getAllCommands()
                 .stream()
                 .filter(botCommand -> this.hasPermission(update, botCommand))
                 .collect(Collectors.toList());
@@ -94,6 +104,7 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
     }
 
     public Optional<BotCommand> getCommand(Update update) {
+        CommandRegistry commandRegistry = getCommandRegistry();
         BotCommand botCommand = null;
         Message message = update.getMessage();
         MessageParser messageParser = new MessageParser(message.getText());
@@ -159,12 +170,16 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
 
     @Override
     public void onUpdateReceived(Update update) {
-        updateSubscriber.consume(Mono.just(update));
+        getUpdateSubscriber().consume(Mono.just(update));
     }
 
     @Override
     public void onUpdatesReceived(List<Update> updates) {
-        updateSubscriber.consume(Flux.fromIterable(updates));
+        getUpdateSubscriber().consume(Flux.fromIterable(updates));
     }
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
 }
