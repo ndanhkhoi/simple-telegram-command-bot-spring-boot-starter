@@ -6,6 +6,7 @@ com.ndanhkhoi.telegram.bot.core.processor
 com.ndanhkhoi.telegram.bot.core.registry
 com.ndanhkhoi.telegram.bot.core.resolver
 com.ndanhkhoi.telegram.bot.exception
+com.ndanhkhoi.telegram.bot.mapper
 com.ndanhkhoi.telegram.bot.model
 com.ndanhkhoi.telegram.bot.repository
 com.ndanhkhoi.telegram.bot.repository.impl

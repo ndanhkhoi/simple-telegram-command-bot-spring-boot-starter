@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -146,11 +146,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code>org.telegram.telegrambots.meta.generics.LongPollingBot</code>, <code>org.telegram.telegrambots.meta.generics.TelegramBot</code></dd>
+<dd><code>org.springframework.beans.factory.Aware</code>, <code>org.springframework.context.ApplicationContextAware</code>, <code>org.telegram.telegrambots.meta.generics.LongPollingBot</code>, <code>org.telegram.telegrambots.meta.generics.TelegramBot</code></dd>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">SimpleTelegramLongPollingCommandBot</span>
-extends org.telegram.telegrambots.bots.TelegramLongPollingBot</pre>
+extends org.telegram.telegrambots.bots.TelegramLongPollingBot
+implements org.springframework.context.ApplicationContextAware</pre>
 </li>
 </ul>
 </div>
@@ -188,9 +189,7 @@ extends org.telegram.telegrambots.bots.TelegramLongPollingBot</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(com.ndanhkhoi.telegram.bot.core.BotProperties,com.ndanhkhoi.telegram.bot.subscriber.UpdateSubscriber,com.ndanhkhoi.telegram.bot.core.registry.CommandRegistry)">SimpleTelegramLongPollingCommandBot</a></span>&#8203;(<a href="BotProperties.html" title="class in com.ndanhkhoi.telegram.bot.core">BotProperties</a>&nbsp;botProperties,
-                                   <a href="../subscriber/UpdateSubscriber.html" title="class in com.ndanhkhoi.telegram.bot.subscriber">UpdateSubscriber</a>&nbsp;updateSubscriber,
-                                   <a href="registry/CommandRegistry.html" title="class in com.ndanhkhoi.telegram.bot.core.registry">CommandRegistry</a>&nbsp;commandRegistry)</code></th>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(com.ndanhkhoi.telegram.bot.core.BotProperties)">SimpleTelegramLongPollingCommandBot</a></span>&#8203;(<a href="BotProperties.html" title="class in com.ndanhkhoi.telegram.bot.core">BotProperties</a>&nbsp;botProperties)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -242,18 +241,33 @@ extends org.telegram.telegrambots.bots.TelegramLongPollingBot</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i6" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onRegister()">onRegister</a></span>()</code></th>
+<td class="colFirst"><code><a href="registry/CommandRegistry.html" title="class in com.ndanhkhoi.telegram.bot.core.registry">CommandRegistry</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCommandRegistry()">getCommandRegistry</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i7" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onUpdateReceived(org.telegram.telegrambots.meta.api.objects.Update)">onUpdateReceived</a></span>&#8203;(org.telegram.telegrambots.meta.api.objects.Update&nbsp;update)</code></th>
+<td class="colFirst"><code><a href="../subscriber/UpdateSubscriber.html" title="class in com.ndanhkhoi.telegram.bot.subscriber">UpdateSubscriber</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUpdateSubscriber()">getUpdateSubscriber</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onRegister()">onRegister</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onUpdateReceived(org.telegram.telegrambots.meta.api.objects.Update)">onUpdateReceived</a></span>&#8203;(org.telegram.telegrambots.meta.api.objects.Update&nbsp;update)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i10" class="altColor">
+<td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onUpdatesReceived(java.util.List)">onUpdatesReceived</a></span>&#8203;(java.util.List&lt;org.telegram.telegrambots.meta.api.objects.Update&gt;&nbsp;updates)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setApplicationContext(org.springframework.context.ApplicationContext)">setApplicationContext</a></span>&#8203;(org.springframework.context.ApplicationContext&nbsp;applicationContext)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -308,15 +322,13 @@ extends org.telegram.telegrambots.bots.TelegramLongPollingBot</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(com.ndanhkhoi.telegram.bot.core.BotProperties,com.ndanhkhoi.telegram.bot.subscriber.UpdateSubscriber,com.ndanhkhoi.telegram.bot.core.registry.CommandRegistry)">
+<a id="&lt;init&gt;(com.ndanhkhoi.telegram.bot.core.BotProperties)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>SimpleTelegramLongPollingCommandBot</h4>
-<pre>public&nbsp;SimpleTelegramLongPollingCommandBot&#8203;(<a href="BotProperties.html" title="class in com.ndanhkhoi.telegram.bot.core">BotProperties</a>&nbsp;botProperties,
-                                           <a href="../subscriber/UpdateSubscriber.html" title="class in com.ndanhkhoi.telegram.bot.subscriber">UpdateSubscriber</a>&nbsp;updateSubscriber,
-                                           <a href="registry/CommandRegistry.html" title="class in com.ndanhkhoi.telegram.bot.core.registry">CommandRegistry</a>&nbsp;commandRegistry)</pre>
+<pre>public&nbsp;SimpleTelegramLongPollingCommandBot&#8203;(<a href="BotProperties.html" title="class in com.ndanhkhoi.telegram.bot.core">BotProperties</a>&nbsp;botProperties)</pre>
 </li>
 </ul>
 </li>
@@ -329,6 +341,24 @@ extends org.telegram.telegrambots.bots.TelegramLongPollingBot</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a id="getUpdateSubscriber()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getUpdateSubscriber</h4>
+<pre class="methodSignature">public&nbsp;<a href="../subscriber/UpdateSubscriber.html" title="class in com.ndanhkhoi.telegram.bot.subscriber">UpdateSubscriber</a>&nbsp;getUpdateSubscriber()</pre>
+</li>
+</ul>
+<a id="getCommandRegistry()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCommandRegistry</h4>
+<pre class="methodSignature">public&nbsp;<a href="registry/CommandRegistry.html" title="class in com.ndanhkhoi.telegram.bot.core.registry">CommandRegistry</a>&nbsp;getCommandRegistry()</pre>
+</li>
+</ul>
 <a id="executeSneakyThrows(org.telegram.telegrambots.meta.api.methods.BotApiMethod)">
 <!--   -->
 </a><a id="executeSneakyThrows(M)">
@@ -374,6 +404,10 @@ extends org.telegram.telegrambots.bots.TelegramLongPollingBot</pre>
 <li class="blockList">
 <h4>getBotUsername</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getBotUsername()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code>getBotUsername</code>&nbsp;in interface&nbsp;<code>org.telegram.telegrambots.meta.generics.TelegramBot</code></dd>
+</dl>
 </li>
 </ul>
 <a id="getBotToken()">
@@ -398,6 +432,10 @@ extends org.telegram.telegrambots.bots.TelegramLongPollingBot</pre>
 <li class="blockList">
 <h4>onRegister</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;onRegister()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code>onRegister</code>&nbsp;in interface&nbsp;<code>org.telegram.telegrambots.meta.generics.TelegramBot</code></dd>
+</dl>
 </li>
 </ul>
 <a id="onUpdateReceived(org.telegram.telegrambots.meta.api.objects.Update)">
@@ -407,15 +445,39 @@ extends org.telegram.telegrambots.bots.TelegramLongPollingBot</pre>
 <li class="blockList">
 <h4>onUpdateReceived</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;onUpdateReceived&#8203;(org.telegram.telegrambots.meta.api.objects.Update&nbsp;update)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code>onUpdateReceived</code>&nbsp;in interface&nbsp;<code>org.telegram.telegrambots.meta.generics.LongPollingBot</code></dd>
+</dl>
 </li>
 </ul>
 <a id="onUpdatesReceived(java.util.List)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>onUpdatesReceived</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;onUpdatesReceived&#8203;(java.util.List&lt;org.telegram.telegrambots.meta.api.objects.Update&gt;&nbsp;updates)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code>onUpdatesReceived</code>&nbsp;in interface&nbsp;<code>org.telegram.telegrambots.meta.generics.LongPollingBot</code></dd>
+</dl>
+</li>
+</ul>
+<a id="setApplicationContext(org.springframework.context.ApplicationContext)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>setApplicationContext</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setApplicationContext&#8203;(org.springframework.context.ApplicationContext&nbsp;applicationContext)
+                           throws org.springframework.beans.BeansException</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code>setApplicationContext</code>&nbsp;in interface&nbsp;<code>org.springframework.context.ApplicationContextAware</code></dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>org.springframework.beans.BeansException</code></dd>
+</dl>
 </li>
 </ul>
 </li>

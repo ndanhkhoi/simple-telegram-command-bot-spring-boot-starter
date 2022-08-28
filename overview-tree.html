@@ -103,6 +103,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li><a href="com/ndanhkhoi/telegram/bot/core/registry/package-tree.html">com.ndanhkhoi.telegram.bot.core.registry</a>, </li>
 <li><a href="com/ndanhkhoi/telegram/bot/core/resolver/package-tree.html">com.ndanhkhoi.telegram.bot.core.resolver</a>, </li>
 <li><a href="com/ndanhkhoi/telegram/bot/exception/package-tree.html">com.ndanhkhoi.telegram.bot.exception</a>, </li>
+<li><a href="com/ndanhkhoi/telegram/bot/mapper/package-tree.html">com.ndanhkhoi.telegram.bot.mapper</a>, </li>
 <li><a href="com/ndanhkhoi/telegram/bot/model/package-tree.html">com.ndanhkhoi.telegram.bot.model</a>, </li>
 <li><a href="com/ndanhkhoi/telegram/bot/repository/package-tree.html">com.ndanhkhoi.telegram.bot.repository</a>, </li>
 <li><a href="com/ndanhkhoi/telegram/bot/repository/impl/package-tree.html">com.ndanhkhoi.telegram.bot.repository.impl</a>, </li>
@@ -124,7 +125,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul>
 <li class="circle">org.telegram.telegrambots.bots.TelegramLongPollingBot (implements org.telegram.telegrambots.meta.generics.LongPollingBot)
 <ul>
-<li class="circle">com.ndanhkhoi.telegram.bot.core.<a href="com/ndanhkhoi/telegram/bot/core/SimpleTelegramLongPollingCommandBot.html" title="class in com.ndanhkhoi.telegram.bot.core"><span class="typeNameLink">SimpleTelegramLongPollingCommandBot</span></a></li>
+<li class="circle">com.ndanhkhoi.telegram.bot.core.<a href="com/ndanhkhoi/telegram/bot/core/SimpleTelegramLongPollingCommandBot.html" title="class in com.ndanhkhoi.telegram.bot.core"><span class="typeNameLink">SimpleTelegramLongPollingCommandBot</span></a> (implements org.springframework.context.ApplicationContextAware)</li>
 </ul>
 </li>
 </ul>
@@ -158,6 +159,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="circle">com.ndanhkhoi.telegram.bot.utils.<a href="com/ndanhkhoi/telegram/bot/utils/FileUtils.html" title="class in com.ndanhkhoi.telegram.bot.utils"><span class="typeNameLink">FileUtils</span></a></li>
 <li class="circle">com.ndanhkhoi.telegram.bot.repository.impl.<a href="com/ndanhkhoi/telegram/bot/repository/impl/InMemoryUpdateTraceRepository.html" title="class in com.ndanhkhoi.telegram.bot.repository.impl"><span class="typeNameLink">InMemoryUpdateTraceRepository</span></a> (implements org.springframework.context.ApplicationContextAware, com.ndanhkhoi.telegram.bot.repository.<a href="com/ndanhkhoi/telegram/bot/repository/UpdateTraceRepository.html" title="interface in com.ndanhkhoi.telegram.bot.repository">UpdateTraceRepository</a>)</li>
 <li class="circle">com.ndanhkhoi.telegram.bot.core.resolver.<a href="com/ndanhkhoi/telegram/bot/core/resolver/InputFileResolver.html" title="class in com.ndanhkhoi.telegram.bot.core.resolver"><span class="typeNameLink">InputFileResolver</span></a> (implements com.ndanhkhoi.telegram.bot.core.resolver.<a href="com/ndanhkhoi/telegram/bot/core/resolver/TypeResolver.html" title="interface in com.ndanhkhoi.telegram.bot.core.resolver">TypeResolver</a>&lt;T&gt;)</li>
+<li class="circle">com.ndanhkhoi.telegram.bot.mapper.<a href="com/ndanhkhoi/telegram/bot/mapper/MapperConfig.html" title="class in com.ndanhkhoi.telegram.bot.mapper"><span class="typeNameLink">MapperConfig</span></a></li>
 <li class="circle">com.ndanhkhoi.telegram.bot.model.<a href="com/ndanhkhoi/telegram/bot/model/MessageParser.html" title="class in com.ndanhkhoi.telegram.bot.model"><span class="typeNameLink">MessageParser</span></a></li>
 <li class="circle">com.ndanhkhoi.telegram.bot.core.processor.<a href="com/ndanhkhoi/telegram/bot/core/processor/ProcessorConfig.html" title="class in com.ndanhkhoi.telegram.bot.core.processor"><span class="typeNameLink">ProcessorConfig</span></a> (implements org.springframework.context.annotation.ImportBeanDefinitionRegistrar)</li>
 <li class="circle">com.ndanhkhoi.telegram.bot.core.registry.<a href="com/ndanhkhoi/telegram/bot/core/registry/RegistryConfig.html" title="class in com.ndanhkhoi.telegram.bot.core.registry"><span class="typeNameLink">RegistryConfig</span></a></li>
@@ -187,7 +189,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul>
 <li class="circle">com.fasterxml.jackson.databind.ObjectMapper (implements java.io.Serializable, com.fasterxml.jackson.core.Versioned)
 <ul>
-<li class="circle">com.ndanhkhoi.telegram.bot.utils.<a href="com/ndanhkhoi/telegram/bot/utils/UpdateObjectMapper.html" title="class in com.ndanhkhoi.telegram.bot.utils"><span class="typeNameLink">UpdateObjectMapper</span></a></li>
+<li class="circle">com.ndanhkhoi.telegram.bot.mapper.<a href="com/ndanhkhoi/telegram/bot/mapper/UpdateMapper.html" title="class in com.ndanhkhoi.telegram.bot.mapper"><span class="typeNameLink">UpdateMapper</span></a></li>
 </ul>
 </li>
 </ul>
@@ -195,7 +197,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </ul>
 </li>
 <li class="circle">com.ndanhkhoi.telegram.bot.core.resolver.<a href="com/ndanhkhoi/telegram/bot/core/resolver/TypeResolverConfig.html" title="class in com.ndanhkhoi.telegram.bot.core.resolver"><span class="typeNameLink">TypeResolverConfig</span></a></li>
-<li class="circle">com.ndanhkhoi.telegram.bot.core.processor.<a href="com/ndanhkhoi/telegram/bot/core/processor/TypeResolvertProcessor.html" title="class in com.ndanhkhoi.telegram.bot.core.processor"><span class="typeNameLink">TypeResolvertProcessor</span></a> (implements org.springframework.beans.factory.BeanFactoryAware, org.springframework.beans.factory.config.BeanPostProcessor, org.springframework.core.Ordered)</li>
+<li class="circle">com.ndanhkhoi.telegram.bot.core.processor.<a href="com/ndanhkhoi/telegram/bot/core/processor/TypeResolverPostProcessor.html" title="class in com.ndanhkhoi.telegram.bot.core.processor"><span class="typeNameLink">TypeResolverPostProcessor</span></a> (implements org.springframework.beans.factory.BeanFactoryAware, org.springframework.beans.factory.config.BeanPostProcessor, org.springframework.core.Ordered)</li>
 <li class="circle">com.ndanhkhoi.telegram.bot.subscriber.<a href="com/ndanhkhoi/telegram/bot/subscriber/UpdateSubscriber.html" title="class in com.ndanhkhoi.telegram.bot.subscriber"><span class="typeNameLink">UpdateSubscriber</span></a> (implements org.springframework.context.ApplicationContextAware)</li>
 <li class="circle">com.ndanhkhoi.telegram.bot.model.<a href="com/ndanhkhoi/telegram/bot/model/UpdateTrace.html" title="class in com.ndanhkhoi.telegram.bot.model"><span class="typeNameLink">UpdateTrace</span></a></li>
 </ul>
