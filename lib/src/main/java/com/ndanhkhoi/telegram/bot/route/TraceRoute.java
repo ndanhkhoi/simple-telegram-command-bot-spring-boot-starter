@@ -5,7 +5,7 @@ import com.ndanhkhoi.telegram.bot.annotation.CommandDescription;
 import com.ndanhkhoi.telegram.bot.annotation.CommandMapping;
 import com.ndanhkhoi.telegram.bot.repository.UpdateTraceRepository;
 import com.ndanhkhoi.telegram.bot.utils.FileUtils;
-import com.ndanhkhoi.telegram.bot.utils.UpdateObjectMapper;
+import com.ndanhkhoi.telegram.bot.mapper.UpdateMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -24,11 +24,11 @@ import java.nio.charset.StandardCharsets;
 public class TraceRoute {
 
     private final UpdateTraceRepository updateTraceRepository;
-    private final UpdateObjectMapper updateObjectMapper;
+    private final UpdateMapper updateMapper;
 
-    public TraceRoute(UpdateTraceRepository updateTraceRepository, @Qualifier("updateObjectMapper") UpdateObjectMapper updateObjectMapper) {
+    public TraceRoute(UpdateTraceRepository updateTraceRepository, @Qualifier("updateMapper") UpdateMapper updateMapper) {
         this.updateTraceRepository = updateTraceRepository;
-        this.updateObjectMapper = updateObjectMapper;
+        this.updateMapper = updateMapper;
     }
 
     @CommandDescription("Trace last 100 update incoming")
@@ -36,7 +36,7 @@ public class TraceRoute {
     public Mono<InputFile> updateTrace() {
         return updateTraceRepository.fluxAll()
                 .collectList()
-                .map(updateObjectMapper::writeValueAsPrettyString)
+                .map(updateMapper::writeValueAsPrettyString)
                 .map(content -> FileUtils.getInputFile(content.getBytes(StandardCharsets.UTF_8), "trace.log"));
     }
 

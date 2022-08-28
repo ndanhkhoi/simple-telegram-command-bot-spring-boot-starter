@@ -29,4 +29,6 @@ public final class CommonConstant {
     public static final BotCommand HELP_BOT_COMMAND = new BotCommand(HELP_CMD, HELP_CMD_DESCRIPTION);
     public static final int MAX_MESSAGE_CONTENT_LENGTH = 4096;
 
+    public static final String TEMP_PREFIX = "temp_";
+
 }
