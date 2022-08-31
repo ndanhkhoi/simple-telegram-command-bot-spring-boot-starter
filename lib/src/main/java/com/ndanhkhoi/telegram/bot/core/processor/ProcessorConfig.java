@@ -23,7 +23,7 @@ public class ProcessorConfig implements ImportBeanDefinitionRegistrar {
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        BEANPOST_PROCESSOR_LIST.forEach(bean -> registerBean(registry, bean.getPackageName(), bean));
+        BEANPOST_PROCESSOR_LIST.forEach(bean -> registerBean(registry, bean.getName(), bean));
     }
 
     private <T> void registerBean(BeanDefinitionRegistry registry, String beanName, Class<T> clazz) {
