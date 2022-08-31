@@ -30,10 +30,9 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     api("io.projectreactor:reactor-core:3.4.22")
     api("io.projectreactor.addons:reactor-extra:3.4.8")
-    api("commons-beanutils:commons-beanutils:1.9.4")
     api("org.apache.commons:commons-lang3:3.12.0")
     api("commons-io:commons-io:2.11.0")
-    api("com.google.guava:guava:31.0.1-jre")
+    api("com.google.guava:guava:31.1-jre")
     api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

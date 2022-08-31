@@ -7,12 +7,13 @@ import com.ndanhkhoi.telegram.bot.core.BotProperties;
 import com.ndanhkhoi.telegram.bot.core.SimpleTelegramLongPollingCommandBot;
 import com.ndanhkhoi.telegram.bot.core.registry.AdviceRegistry;
 import com.ndanhkhoi.telegram.bot.core.registry.ResolverRegistry;
+import com.ndanhkhoi.telegram.bot.mapper.UpdateMapper;
 import com.ndanhkhoi.telegram.bot.model.BotCommand;
 import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import com.ndanhkhoi.telegram.bot.model.UpdateTrace;
 import com.ndanhkhoi.telegram.bot.repository.UpdateTraceRepository;
+import com.ndanhkhoi.telegram.bot.utils.ReflectUtils;
 import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
-import com.ndanhkhoi.telegram.bot.mapper.UpdateMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -32,7 +33,6 @@ import reactor.core.scheduler.Schedulers;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -97,12 +97,6 @@ public class UpdateSubscriber implements ApplicationContextAware {
     }
 
     @SneakyThrows
-    private <T> Object getProperty(T bean, String name) {
-        Field field = FieldUtils.getDeclaredField(bean.getClass(), name);
-        return field.get(bean);
-    }
-
-    @SneakyThrows
     private Object[] getBotCommandArgs(Method method, BotCommandParams botCommandParams) {
         Parameter[] parameters = method.getParameters();
         Object[] args = new Object[parameters.length];
@@ -114,14 +108,14 @@ public class UpdateSubscriber implements ApplicationContextAware {
                         Class<?> fieldType = field.getType();
                         OptionalInt idx = getIndexArgByType(parameters, fieldType);
                         if (idx.isPresent()) {
-                            args[idx.getAsInt()] = getProperty(botCommandParams, field.getName());
+                            args[idx.getAsInt()] = ReflectUtils.getProperty(botCommandParams, field.getName());
                         }
                     }
                     AnnotaionArg annotaionArg = AnnotationUtils.findAnnotation(field, AnnotaionArg.class);
                     if (annotaionArg != null) {
                         OptionalInt idx = getIndexArgByAnnotation(parameters, annotaionArg.value());
                         if (idx.isPresent()) {
-                            args[idx.getAsInt()] = getProperty(botCommandParams, field.getName());
+                            args[idx.getAsInt()] = ReflectUtils.getProperty(botCommandParams, field.getName());
                         }
                     }
                 });
