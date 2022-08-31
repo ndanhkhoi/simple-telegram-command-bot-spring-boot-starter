@@ -250,7 +250,6 @@ This library uses following dependencies:
 6. [Google Guava](https://github.com/google/guava)
 7. [Apache Commons Lang](https://github.com/apache/commons-lang)
 8. [Apache Commons IO](https://github.com/apache/commons-io)
-9. [Apache Commons BeanUtils](https://github.com/apache/commons-beanutils)
 
 ## Telegram Bot API
 This library use [Telegram bot API](https://core.telegram.org/bots), you can find more information following the link.
