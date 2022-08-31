@@ -15,7 +15,6 @@ import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
 import com.ndanhkhoi.telegram.bot.utils.UpdateObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.beans.BeansException;
@@ -33,6 +32,7 @@ import reactor.core.scheduler.Schedulers;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -98,7 +98,8 @@ public class UpdateSubscriber implements ApplicationContextAware {
 
     @SneakyThrows
     private <T> Object getProperty(T bean, String name) {
-        return PropertyUtils.getProperty(bean, name);
+        Field field = FieldUtils.getDeclaredField(bean.getClass(), name);
+        return field.get(bean);
     }
 
     @SneakyThrows
