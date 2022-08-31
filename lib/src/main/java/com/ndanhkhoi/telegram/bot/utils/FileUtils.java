@@ -1,5 +1,6 @@
 package com.ndanhkhoi.telegram.bot.utils;
 
+import com.ndanhkhoi.telegram.bot.constant.CommonConstant;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -19,19 +20,17 @@ import java.time.format.DateTimeFormatter;
 @UtilityClass
 public final class FileUtils {
 
-    private static final String TEMP_PREFIX = "temp_";
-
     @SneakyThrows
     public static InputFile getInputFile(File file) {
         InputFile inputFile = new InputFile();
-        String fileName = StringUtils.firstNonBlank(file.getName(), TEMP_PREFIX + getPosfixFileInstantByTime(ZoneId.systemDefault()));
+        String fileName = StringUtils.firstNonBlank(file.getName(), CommonConstant.TEMP_PREFIX + getPosfixFileInstantByTime(ZoneId.systemDefault()));
         inputFile.setMedia(new FileInputStream(file), fileName);
         return inputFile;
     }
 
     public static InputFile getInputFile(byte[] bytes, String fileName) {
         InputFile inputFile = new InputFile();
-        String finalFileName = StringUtils.firstNonBlank(fileName, TEMP_PREFIX + getPosfixFileInstantByTime(ZoneId.systemDefault()));
+        String finalFileName = StringUtils.firstNonBlank(fileName, CommonConstant.TEMP_PREFIX + getPosfixFileInstantByTime(ZoneId.systemDefault()));
         inputFile.setMedia(new ByteArrayInputStream(bytes), finalFileName);
         return inputFile;
     }
@@ -39,7 +38,7 @@ public final class FileUtils {
     @SneakyThrows
     public static InputFile getInputFile(ByteArrayResource resource) {
         InputFile inputFile = new InputFile();
-        String fileName = StringUtils.firstNonBlank(resource.getFilename(), TEMP_PREFIX + getPosfixFileInstantByTime(ZoneId.systemDefault()));
+        String fileName = StringUtils.firstNonBlank(resource.getFilename(), CommonConstant.TEMP_PREFIX + getPosfixFileInstantByTime(ZoneId.systemDefault()));
         inputFile.setMedia(resource.getInputStream(), fileName);
         return inputFile;
     }

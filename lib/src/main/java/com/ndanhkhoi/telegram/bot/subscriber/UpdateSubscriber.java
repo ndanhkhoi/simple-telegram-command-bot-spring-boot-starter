@@ -12,7 +12,7 @@ import com.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import com.ndanhkhoi.telegram.bot.model.UpdateTrace;
 import com.ndanhkhoi.telegram.bot.repository.UpdateTraceRepository;
 import com.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
-import com.ndanhkhoi.telegram.bot.utils.UpdateObjectMapper;
+import com.ndanhkhoi.telegram.bot.mapper.UpdateMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -63,8 +63,8 @@ public class UpdateSubscriber implements ApplicationContextAware {
         return applicationContext.getBean(BotProperties.class);
     }
 
-    private UpdateObjectMapper getUpdateObjectMapper() {
-        return applicationContext.getBean("updateObjectMapper", UpdateObjectMapper.class);
+    private UpdateMapper getUpdateMapper() {
+        return applicationContext.getBean("updateMapper", UpdateMapper.class);
     }
 
     private UpdateTraceRepository getUpdateTraceRepository() {
@@ -130,13 +130,13 @@ public class UpdateSubscriber implements ApplicationContextAware {
     }
 
     private void logUpdate(Update update) {
-        UpdateObjectMapper updateObjectMapper = getUpdateObjectMapper();
+        UpdateMapper updateMapper = getUpdateMapper();
         BotProperties botProperties = getBotProperties();
         SimpleTelegramLongPollingCommandBot telegramLongPollingBot = getBotInstance();
-        log.debug("New update detected -> {}", getUpdateObjectMapper().writeValueAsString(update));
+        log.debug("New update detected -> {}", getUpdateMapper().writeValueAsString(update));
         if (StringUtils.isNotBlank(botProperties.getLoggingChatId())) {
             SendMessage sendMessage = new SendMessage();
-            sendMessage.setText("New update detected -> \n" + updateObjectMapper.writeValueAsPrettyString(update));
+            sendMessage.setText("New update detected -> \n" + updateMapper.writeValueAsPrettyString(update));
             sendMessage.setChatId(botProperties.getLoggingChatId());
             telegramLongPollingBot.executeSneakyThrows(sendMessage);
         }

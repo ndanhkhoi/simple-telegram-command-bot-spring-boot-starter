@@ -20,7 +20,7 @@ import java.util.concurrent.Executor;
  * Created at 09:03:41 May 31, 2022
  */
 @Slf4j
-public class TypeResolvertProcessor implements BeanPostProcessor, Ordered, BeanFactoryAware {
+public class TypeResolverPostProcessor implements BeanPostProcessor, Ordered, BeanFactoryAware {
 
     private BeanFactory beanFactory;
 
