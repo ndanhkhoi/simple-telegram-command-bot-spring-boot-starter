@@ -11,7 +11,10 @@ import com.ndanhkhoi.telegram.bot.subscriber.SubscriberConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -36,6 +39,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 })
 public class BotAutoConfiguration {
     private final BotProperties botProperties;
+    private final ApplicationContext applicationContext;
 
     @Bean
     SimpleAsyncTaskExecutor botAsyncTaskExecutor() {
@@ -49,14 +53,18 @@ public class BotAutoConfiguration {
         return new SimpleAsyncTaskExecutor(executor);
     }
 
-    @SneakyThrows
     @Bean
     SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot() {
         SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot = new SimpleTelegramLongPollingCommandBot(botProperties);
-        TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-        telegramBotsApi.registerBot(simpleTelegramLongPollingCommandBot);
-        log.info("Spring Boot Telegram Command Bot Auto Configuration by @ndanhkhoi");
         return simpleTelegramLongPollingCommandBot;
+    }
+
+    @SneakyThrows
+    @EventListener(ApplicationReadyEvent.class)
+    public void registerBot() {
+        TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
+        telegramBotsApi.registerBot(applicationContext.getBean(SimpleTelegramLongPollingCommandBot.class));
+        log.info("Spring Boot Telegram Command Bot Auto Configuration by @ndanhkhoi");
     }
 
 }
