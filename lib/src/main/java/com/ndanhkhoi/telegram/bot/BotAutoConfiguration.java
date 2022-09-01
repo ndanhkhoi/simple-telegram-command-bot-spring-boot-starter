@@ -11,18 +11,22 @@ import com.ndanhkhoi.telegram.bot.subscriber.SubscriberConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationContext;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import reactor.core.publisher.Mono;
+
+import java.time.Duration;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -55,15 +59,21 @@ public class BotAutoConfiguration {
 
     @Bean
     SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot() {
-        SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot = new SimpleTelegramLongPollingCommandBot(botProperties);
-        return simpleTelegramLongPollingCommandBot;
+        return new SimpleTelegramLongPollingCommandBot(botProperties);
     }
 
     @SneakyThrows
     @EventListener(ApplicationReadyEvent.class)
     public void registerBot() {
-        TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-        telegramBotsApi.registerBot(applicationContext.getBean(SimpleTelegramLongPollingCommandBot.class));
+        SimpleTelegramLongPollingCommandBot bot = applicationContext.getBean(SimpleTelegramLongPollingCommandBot.class);
+        Mono.just(new TelegramBotsApi(DefaultBotSession.class))
+                .delaySubscription(Duration.ofSeconds(botProperties.getRegisterDelay()))
+                .subscribe(e -> registerBot(e, bot));
+    }
+
+    @SneakyThrows
+    private void registerBot(TelegramBotsApi api, TelegramLongPollingBot bot) {
+        api.registerBot(bot);
         log.info("Spring Boot Telegram Command Bot Auto Configuration by @ndanhkhoi");
     }
 
