@@ -239,7 +239,7 @@ By default, you can configure only these properties:
 | khoinda.bot.executor.max-pool-size      | Bot executor max pool size                                       | `Integer.MAX_VALUE` |
 | khoinda.bot.executor.queue-capacity     | Bot executor queue capacity                                      | `Integer.MAX_VALUE` |
 | khoinda.bot.executor.thread-name-prefix | Bot executor thread name prefix                                  | `bot-task-`         |
-| khoinda.bot.executor.register-delay     | Number of second(s) delay to register bot when application ready | `1`                 |
+| khoinda.bot.register-delay              | Number of second(s) delay to register bot when application ready | `1`                 |
 
 ## Dependencies
 This library uses following dependencies:
