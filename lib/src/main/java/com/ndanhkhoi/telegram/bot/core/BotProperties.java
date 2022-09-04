@@ -26,7 +26,7 @@ public class BotProperties {
     private Boolean enableUpdateTrace = false;
     private Boolean disableDefaultCommands = false;
     private Executor executor = new Executor();
-    private Long registerDelay = 1L;
+    private Integer registerDelay = 0;
 
     @Getter
     @Setter

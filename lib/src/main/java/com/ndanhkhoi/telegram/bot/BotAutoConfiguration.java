@@ -21,9 +21,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import reactor.core.Exceptions;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
@@ -68,13 +68,18 @@ public class BotAutoConfiguration {
         SimpleTelegramLongPollingCommandBot bot = applicationContext.getBean(SimpleTelegramLongPollingCommandBot.class);
         Mono.just(new TelegramBotsApi(DefaultBotSession.class))
                 .delaySubscription(Duration.ofSeconds(botProperties.getRegisterDelay()))
-                .subscribe(e -> registerBot(e, bot));
-    }
-
-    @SneakyThrows
-    private void registerBot(TelegramBotsApi api, TelegramLongPollingBot bot) {
-        api.registerBot(bot);
-        log.info("Spring Boot Telegram Command Bot Auto Configuration by @ndanhkhoi");
+                .doOnSuccess(api -> log.info("Spring Boot Telegram Command Bot Auto Configuration by @ndanhkhoi"))
+                .doOnError(ex -> {
+                    throw Exceptions.errorCallbackNotImplemented(ex);
+                })
+                .subscribe(api -> {
+                    try {
+                        api.registerBot(bot);
+                    }
+                    catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                });
     }
 
 }
