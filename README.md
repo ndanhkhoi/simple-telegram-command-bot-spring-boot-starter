@@ -59,7 +59,7 @@ Just import add the library to your project with one of these options:
 <dependency>
     <groupId>com.github.ndanhkhoi</groupId>
     <artifactId>simple-telegram-command-bot-spring-boot-starter</artifactId>
-    <version>2022.09.15</version>
+    <version>2022.09.17</version>
 </dependency>
 ```
 2. Using Gradle:
@@ -72,7 +72,7 @@ repositories {
 - Step 2. Add the dependency
 ```gradle
 dependencies {
-    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:2022.09.15'
+    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:2022.09.17'
 }
 ```
 
@@ -121,10 +121,12 @@ An annotation is used to describe command. You can see it which default `/help` 
 ## Authorization
 You can authorize command with these properties in `@CommandMapping` annotaion:
 - `allowAllUserAccess` - boolean, if true all users/group can be call this command
+- `allowAllGroupAccess` - a flag to mark a command can be called by any groups
 - `accessUserIds` - an array contains user id can call this command
 - `accessGroupIds` - an array contains group id can call this command
 - `accessMemberIds` - an array contains user id can call this command in the group
 - `onlyAdmin` - boolean, if true only admin of group can be call this command
+- `onlyForGroup` - boolean, a flag to mark a command can be called in groups
 - `onlyForOwner` - boolean, if true only bot's owner can be call this command
 
 ## Supported arguments
