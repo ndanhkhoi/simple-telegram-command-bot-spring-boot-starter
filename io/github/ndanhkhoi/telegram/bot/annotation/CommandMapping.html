@@ -185,23 +185,37 @@ public @interface <span class="memberNameLabel">CommandMapping</span></pre>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#allowAllGroupAccess()">allowAllGroupAccess</a></span></code></th>
+<td class="colLast">
+<div class="block">A flag to mark a command can be called by any groups</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#allowAllUserAccess()">allowAllUserAccess</a></span></code></th>
 <td class="colLast">
 <div class="block">A flag to mark a command can be called by everyone</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#disableWebPagePreview()">disableWebPagePreview</a></span></code></th>
 <td class="colLast">
 <div class="block">A flag to disable webpage preview on message</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onlyAdmin()">onlyAdmin</a></span></code></th>
 <td class="colLast">
 <div class="block">A flag to mark a command can be called by admin (of a group)</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onlyForGroup()">onlyForGroup</a></span></code></th>
+<td class="colLast">
+<div class="block">A flag to mark a command can be called in groups</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -372,6 +386,25 @@ public @interface <span class="memberNameLabel">CommandMapping</span></pre>
 </section>
 <section role="region">
 <ul class="blockList">
+<li class="blockList"><a id="allowAllGroupAccess()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>allowAllGroupAccess</h4>
+<pre>boolean&nbsp;allowAllGroupAccess</pre>
+<div class="block">A flag to mark a command can be called by any groups</div>
+<dl>
+<dt>Default:</dt>
+<dd>false</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section role="region">
+<ul class="blockList">
 <li class="blockList"><a id="onlyAdmin()">
 <!--   -->
 </a>
@@ -380,6 +413,25 @@ public @interface <span class="memberNameLabel">CommandMapping</span></pre>
 <h4>onlyAdmin</h4>
 <pre>boolean&nbsp;onlyAdmin</pre>
 <div class="block">A flag to mark a command can be called by admin (of a group)</div>
+<dl>
+<dt>Default:</dt>
+<dd>false</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section role="region">
+<ul class="blockList">
+<li class="blockList"><a id="onlyForGroup()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>onlyForGroup</h4>
+<pre>boolean&nbsp;onlyForGroup</pre>
+<div class="block">A flag to mark a command can be called in groups</div>
 <dl>
 <dt>Default:</dt>
 <dd>false</dd>
