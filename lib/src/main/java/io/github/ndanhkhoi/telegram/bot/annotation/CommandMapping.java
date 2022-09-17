@@ -53,9 +53,19 @@ public @interface CommandMapping {
     boolean allowAllUserAccess() default false;
 
     /**
+     * A flag to mark a command can be called by any groups
+     * */
+    boolean allowAllGroupAccess() default false;
+
+    /**
      * A flag to mark a command can be called by admin (of a group)
      * */
     boolean onlyAdmin() default false;
+
+    /**
+     * A flag to mark a command can be called in groups
+     * */
+    boolean onlyForGroup() default false;
 
     /**
      * Reply media message.
