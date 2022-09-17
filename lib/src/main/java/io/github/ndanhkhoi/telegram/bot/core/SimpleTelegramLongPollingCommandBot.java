@@ -69,9 +69,12 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
                 return status == ChatMemberStatus.ADMINISTRATOR || status == ChatMemberStatus.CREATOR;
             }
             else if (isMessageInGroup) {
-                boolean isAcceptedGroup = Arrays.stream(botCommand.getAccessGroupIds()).anyMatch(e -> e == chatId);
+                boolean isAcceptedGroup = botCommand.allowAllGroupAccess() || Arrays.stream(botCommand.getAccessGroupIds()).anyMatch(e -> e == chatId);
                 boolean isAcceptedMember = botCommand.getAccessMemberIds().length == 0 || Arrays.stream(botCommand.getAccessMemberIds()).anyMatch(e -> e == userSendId);
                 return botCommand.isAllowAllUserAccess() || (isAcceptedGroup && isAcceptedMember);
+            }
+            else if (botCommand.onlyForGroup()) {
+                return false;
             }
             else if (botCommand.isOnlyForOwner()) {
                 return botProperties.getBotOwnerChatId().contains(String.valueOf(userSendId));
