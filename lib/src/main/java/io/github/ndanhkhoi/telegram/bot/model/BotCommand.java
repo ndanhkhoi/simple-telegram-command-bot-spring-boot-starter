@@ -59,6 +59,16 @@ public class BotCommand {
     private boolean allowAllUserAccess;
 
     /**
+     * @see CommandMapping#allowAllGroupAccess()
+     * */
+    private boolean allowAllGroupAccess;
+
+    /**
+     * @see CommandMapping#onlyForGroup()
+     * */
+    private boolean onlyForGroup;
+
+    /**
      * @see CommandMapping#onlyAdmin()
      * */
     private boolean onlyAdmin;
