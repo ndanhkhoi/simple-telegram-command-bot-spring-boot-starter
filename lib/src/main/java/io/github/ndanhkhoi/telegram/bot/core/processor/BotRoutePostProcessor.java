@@ -85,6 +85,8 @@ public class BotRoutePostProcessor implements BeanPostProcessor, SmartInitializi
                 .withAccessMemberIds(mapping.accessMemberIds())
                 .withAccessGroupIds(mapping.accessGroupIds())
                 .withAllowAllUserAccess(mapping.allowAllUserAccess())
+                .withAllowAllGroupAccess(mapping.allowAllGroupAccess())
+                .withOnlyForGroup(mapping.onlyForGroup())
                 .withOnlyAdmin(mapping.onlyAdmin())
                 .withSendFile(mapping.sendFile())
                 .withMethod(method)
