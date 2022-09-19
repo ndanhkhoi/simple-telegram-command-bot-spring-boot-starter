@@ -59,7 +59,7 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
             Long chatId = message.getChatId();
             Long userSendId = message.getFrom().getId();
             boolean isMessageInGroup = TelegramMessageUtils.isMessageInGroup(message);
-            if (isMessageInGroup && botCommand.isOnlyForOwner()) {
+            if (isMessageInGroup && (botCommand.isOnlyForOwner()) || botCommand.isOnlyForPrivate()) {
                 return false;
             }
             else if (isMessageInGroup && botCommand.isOnlyAdmin()) {

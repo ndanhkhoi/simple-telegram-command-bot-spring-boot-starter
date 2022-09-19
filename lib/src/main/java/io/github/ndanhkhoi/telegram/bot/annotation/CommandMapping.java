@@ -1,6 +1,7 @@
 package io.github.ndanhkhoi.telegram.bot.annotation;
 
 import io.github.ndanhkhoi.telegram.bot.constant.MediaType;
+import io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -23,9 +24,9 @@ public @interface CommandMapping {
     String[] value();
 
     /**
-     * Send result as html
+     * Send result as HTML or Markdown or Plain text
      * */
-    boolean useHtml() default false;
+    MessageParseMode parseMode() default MessageParseMode.PLAIN;
 
     /**
      * A flag to disable webpage preview on message
@@ -66,6 +67,11 @@ public @interface CommandMapping {
      * A flag to mark a command can be called in groups
      * */
     boolean onlyForGroup() default false;
+
+    /**
+     * A flag to mark a command can be called in private chat
+     * */
+    boolean onlyForPrivate() default false;
 
     /**
      * Reply media message.
