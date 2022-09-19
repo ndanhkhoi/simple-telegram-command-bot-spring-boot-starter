@@ -226,17 +226,24 @@ public @interface <span class="memberNameLabel">CommandMapping</span></pre>
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onlyForPrivate()">onlyForPrivate</a></span></code></th>
+<td class="colLast">
+<div class="block">A flag to mark a command can be called in private chat</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../constant/MessageParseMode.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">MessageParseMode</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#parseMode()">parseMode</a></span></code></th>
+<td class="colLast">
+<div class="block">Send result as HTML or Markdown or Plain text</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../constant/MediaType.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">MediaType</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendFile()">sendFile</a></span></code></th>
 <td class="colLast">
 <div class="block">Reply media message.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#useHtml()">useHtml</a></span></code></th>
-<td class="colLast">
-<div class="block">Send result as html</div>
 </td>
 </tr>
 </table>
@@ -272,17 +279,17 @@ public @interface <span class="memberNameLabel">CommandMapping</span></pre>
 <!-- ============ ANNOTATION TYPE MEMBER DETAIL =========== -->
 <section role="region">
 <ul class="blockList">
-<li class="blockList"><a id="useHtml()">
+<li class="blockList"><a id="parseMode()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>useHtml</h4>
-<pre>boolean&nbsp;useHtml</pre>
-<div class="block">Send result as html</div>
+<h4>parseMode</h4>
+<pre><a href="../constant/MessageParseMode.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">MessageParseMode</a>&nbsp;parseMode</pre>
+<div class="block">Send result as HTML or Markdown or Plain text</div>
 <dl>
 <dt>Default:</dt>
-<dd>false</dd>
+<dd>io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode.PLAIN</dd>
 </dl>
 </li>
 </ul>
@@ -432,6 +439,25 @@ public @interface <span class="memberNameLabel">CommandMapping</span></pre>
 <h4>onlyForGroup</h4>
 <pre>boolean&nbsp;onlyForGroup</pre>
 <div class="block">A flag to mark a command can be called in groups</div>
+<dl>
+<dt>Default:</dt>
+<dd>false</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section role="region">
+<ul class="blockList">
+<li class="blockList"><a id="onlyForPrivate()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>onlyForPrivate</h4>
+<pre>boolean&nbsp;onlyForPrivate</pre>
+<div class="block">A flag to mark a command can be called in private chat</div>
 <dl>
 <dt>Default:</dt>
 <dd>false</dd>

@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -241,12 +241,17 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="BotCommand.BotCommandBuilder.html" title="class in io.github.ndanhkhoi.telegram.bot.model">BotCommand.BotCommandBuilder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withSendFile(io.github.ndanhkhoi.telegram.bot.constant.MediaType)">withSendFile</a></span>&#8203;(<a href="../constant/MediaType.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">MediaType</a>&nbsp;sendFile)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withOnlyForPrivate(boolean)">withOnlyForPrivate</a></span>&#8203;(boolean&nbsp;onlyForPrivate)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="BotCommand.BotCommandBuilder.html" title="class in io.github.ndanhkhoi.telegram.bot.model">BotCommand.BotCommandBuilder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withUseHtml(boolean)">withUseHtml</a></span>&#8203;(boolean&nbsp;useHtml)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withParseMode(io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode)">withParseMode</a></span>&#8203;(<a href="../constant/MessageParseMode.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">MessageParseMode</a>&nbsp;parseMode)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i17" class="rowColor">
+<td class="colFirst"><code><a href="BotCommand.BotCommandBuilder.html" title="class in io.github.ndanhkhoi.telegram.bot.model">BotCommand.BotCommandBuilder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withSendFile(io.github.ndanhkhoi.telegram.bot.constant.MediaType)">withSendFile</a></span>&#8203;(<a href="../constant/MediaType.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">MediaType</a>&nbsp;sendFile)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -287,18 +292,18 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a id="withUseHtml(boolean)">
+<a id="withParseMode(io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>withUseHtml</h4>
-<pre class="methodSignature">public&nbsp;<a href="BotCommand.BotCommandBuilder.html" title="class in io.github.ndanhkhoi.telegram.bot.model">BotCommand.BotCommandBuilder</a>&nbsp;withUseHtml&#8203;(boolean&nbsp;useHtml)</pre>
+<h4>withParseMode</h4>
+<pre class="methodSignature">public&nbsp;<a href="BotCommand.BotCommandBuilder.html" title="class in io.github.ndanhkhoi.telegram.bot.model">BotCommand.BotCommandBuilder</a>&nbsp;withParseMode&#8203;(<a href="../constant/MessageParseMode.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">MessageParseMode</a>&nbsp;parseMode)</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd><code>this</code>.</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../annotation/CommandMapping.html#useHtml()"><code>CommandMapping.useHtml()</code></a></dd>
+<dd><a href="../annotation/CommandMapping.html#parseMode()"><code>CommandMapping.parseMode()</code></a></dd>
 </dl>
 </li>
 </ul>
@@ -404,6 +409,21 @@ extends java.lang.Object</pre>
 <dd><code>this</code>.</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../annotation/CommandMapping.html#onlyForGroup()"><code>CommandMapping.onlyForGroup()</code></a></dd>
+</dl>
+</li>
+</ul>
+<a id="withOnlyForPrivate(boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>withOnlyForPrivate</h4>
+<pre class="methodSignature">public&nbsp;<a href="BotCommand.BotCommandBuilder.html" title="class in io.github.ndanhkhoi.telegram.bot.model">BotCommand.BotCommandBuilder</a>&nbsp;withOnlyForPrivate&#8203;(boolean&nbsp;onlyForPrivate)</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>this</code>.</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../annotation/CommandMapping.html#onlyForPrivate()"><code>CommandMapping.onlyForPrivate()</code></a></dd>
 </dl>
 </li>
 </ul>

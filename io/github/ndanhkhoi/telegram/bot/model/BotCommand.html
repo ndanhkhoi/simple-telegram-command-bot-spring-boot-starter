@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10};
+var data = {"i0":9,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -183,8 +183,8 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.lang.String,boolean,boolean,long%5B%5D,long%5B%5D,long%5B%5D,boolean,boolean,boolean,boolean,io.github.ndanhkhoi.telegram.bot.constant.MediaType,boolean,java.lang.reflect.Method,java.lang.String,java.lang.String)">BotCommand</a></span>&#8203;(java.lang.String&nbsp;cmd,
-          boolean&nbsp;useHtml,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.lang.String,io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode,boolean,long%5B%5D,long%5B%5D,long%5B%5D,boolean,boolean,boolean,boolean,boolean,io.github.ndanhkhoi.telegram.bot.constant.MediaType,boolean,java.lang.reflect.Method,java.lang.String,java.lang.String)">BotCommand</a></span>&#8203;(java.lang.String&nbsp;cmd,
+          <a href="../constant/MessageParseMode.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">MessageParseMode</a>&nbsp;parseMode,
           boolean&nbsp;disableWebPagePreview,
           long[]&nbsp;accessUserIds,
           long[]&nbsp;accessMemberIds,
@@ -192,6 +192,7 @@ extends java.lang.Object</pre>
           boolean&nbsp;allowAllUserAccess,
           boolean&nbsp;allowAllGroupAccess,
           boolean&nbsp;onlyForGroup,
+          boolean&nbsp;onlyForPrivate,
           boolean&nbsp;onlyAdmin,
           <a href="../constant/MediaType.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">MediaType</a>&nbsp;sendFile,
           boolean&nbsp;onlyForOwner,
@@ -267,126 +268,136 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i8" class="altColor">
+<td class="colFirst"><code><a href="../constant/MessageParseMode.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">MessageParseMode</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getParseMode()">getParseMode</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="../constant/MediaType.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">MediaType</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSendFile()">getSendFile</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isAllowAllGroupAccess()">isAllowAllGroupAccess</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isAllowAllUserAccess()">isAllowAllUserAccess</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isDisableWebPagePreview()">isDisableWebPagePreview</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isOnlyAdmin()">isOnlyAdmin</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isOnlyForGroup()">isOnlyForGroup</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isOnlyForOwner()">isOnlyForOwner</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i15" class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isUseHtml()">isUseHtml</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
 <tr id="i16" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAccessGroupIds(long%5B%5D)">setAccessGroupIds</a></span>&#8203;(long[]&nbsp;accessGroupIds)</code></th>
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isOnlyForPrivate()">isOnlyForPrivate</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i17" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAccessMemberIds(long%5B%5D)">setAccessMemberIds</a></span>&#8203;(long[]&nbsp;accessMemberIds)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAccessGroupIds(long%5B%5D)">setAccessGroupIds</a></span>&#8203;(long[]&nbsp;accessGroupIds)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i18" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAccessUserIds(long%5B%5D)">setAccessUserIds</a></span>&#8203;(long[]&nbsp;accessUserIds)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAccessMemberIds(long%5B%5D)">setAccessMemberIds</a></span>&#8203;(long[]&nbsp;accessMemberIds)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i19" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAllowAllGroupAccess(boolean)">setAllowAllGroupAccess</a></span>&#8203;(boolean&nbsp;allowAllGroupAccess)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAccessUserIds(long%5B%5D)">setAccessUserIds</a></span>&#8203;(long[]&nbsp;accessUserIds)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i20" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAllowAllUserAccess(boolean)">setAllowAllUserAccess</a></span>&#8203;(boolean&nbsp;allowAllUserAccess)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAllowAllGroupAccess(boolean)">setAllowAllGroupAccess</a></span>&#8203;(boolean&nbsp;allowAllGroupAccess)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i21" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAllowAllUserAccess(boolean)">setAllowAllUserAccess</a></span>&#8203;(boolean&nbsp;allowAllUserAccess)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setBodyDescription(java.lang.String)">setBodyDescription</a></span>&#8203;(java.lang.String&nbsp;bodyDescription)</code></th>
 <td class="colLast">
 <div class="block">Description of command's body</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setCmd(java.lang.String)">setCmd</a></span>&#8203;(java.lang.String&nbsp;cmd)</code></th>
 <td class="colLast">
 <div class="block">A command</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setDescription(java.lang.String)">setDescription</a></span>&#8203;(java.lang.String&nbsp;description)</code></th>
 <td class="colLast">
 <div class="block"><a href="../annotation/CommandDescription.html" title="annotation in io.github.ndanhkhoi.telegram.bot.annotation"><code>CommandDescription</code></a></div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setDisableWebPagePreview(boolean)">setDisableWebPagePreview</a></span>&#8203;(boolean&nbsp;disableWebPagePreview)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setMethod(java.lang.reflect.Method)">setMethod</a></span>&#8203;(java.lang.reflect.Method&nbsp;method)</code></th>
 <td class="colLast">
 <div class="block">A method that is marked by <a href="../annotation/CommandMapping.html" title="annotation in io.github.ndanhkhoi.telegram.bot.annotation"><code>CommandMapping</code></a> annotation</div>
 </td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setOnlyAdmin(boolean)">setOnlyAdmin</a></span>&#8203;(boolean&nbsp;onlyAdmin)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i27" class="rowColor">
+<tr id="i28" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setOnlyForGroup(boolean)">setOnlyForGroup</a></span>&#8203;(boolean&nbsp;onlyForGroup)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setOnlyForOwner(boolean)">setOnlyForOwner</a></span>&#8203;(boolean&nbsp;onlyForOwner)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i29" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setSendFile(io.github.ndanhkhoi.telegram.bot.constant.MediaType)">setSendFile</a></span>&#8203;(<a href="../constant/MediaType.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">MediaType</a>&nbsp;sendFile)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
 <tr id="i30" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setUseHtml(boolean)">setUseHtml</a></span>&#8203;(boolean&nbsp;useHtml)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setOnlyForPrivate(boolean)">setOnlyForPrivate</a></span>&#8203;(boolean&nbsp;onlyForPrivate)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i31" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setParseMode(io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode)">setParseMode</a></span>&#8203;(<a href="../constant/MessageParseMode.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">MessageParseMode</a>&nbsp;parseMode)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i32" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setSendFile(io.github.ndanhkhoi.telegram.bot.constant.MediaType)">setSendFile</a></span>&#8203;(<a href="../constant/MediaType.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">MediaType</a>&nbsp;sendFile)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -422,14 +433,14 @@ extends java.lang.Object</pre>
 <pre>public&nbsp;BotCommand()</pre>
 </li>
 </ul>
-<a id="&lt;init&gt;(java.lang.String,boolean,boolean,long[],long[],long[],boolean,boolean,boolean,boolean,io.github.ndanhkhoi.telegram.bot.constant.MediaType,boolean,java.lang.reflect.Method,java.lang.String,java.lang.String)">
+<a id="&lt;init&gt;(java.lang.String,io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode,boolean,long[],long[],long[],boolean,boolean,boolean,boolean,boolean,io.github.ndanhkhoi.telegram.bot.constant.MediaType,boolean,java.lang.reflect.Method,java.lang.String,java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>BotCommand</h4>
 <pre>public&nbsp;BotCommand&#8203;(java.lang.String&nbsp;cmd,
-                  boolean&nbsp;useHtml,
+                  <a href="../constant/MessageParseMode.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">MessageParseMode</a>&nbsp;parseMode,
                   boolean&nbsp;disableWebPagePreview,
                   long[]&nbsp;accessUserIds,
                   long[]&nbsp;accessMemberIds,
@@ -437,6 +448,7 @@ extends java.lang.Object</pre>
                   boolean&nbsp;allowAllUserAccess,
                   boolean&nbsp;allowAllGroupAccess,
                   boolean&nbsp;onlyForGroup,
+                  boolean&nbsp;onlyForPrivate,
                   boolean&nbsp;onlyAdmin,
                   <a href="../constant/MediaType.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">MediaType</a>&nbsp;sendFile,
                   boolean&nbsp;onlyForOwner,
@@ -474,16 +486,16 @@ extends java.lang.Object</pre>
 <div class="block">A command</div>
 </li>
 </ul>
-<a id="isUseHtml()">
+<a id="getParseMode()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>isUseHtml</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;isUseHtml()</pre>
+<h4>getParseMode</h4>
+<pre class="methodSignature">public&nbsp;<a href="../constant/MessageParseMode.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">MessageParseMode</a>&nbsp;getParseMode()</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../annotation/CommandMapping.html#useHtml()"><code>CommandMapping.useHtml()</code></a></dd>
+<dd><a href="../annotation/CommandMapping.html#parseMode()"><code>CommandMapping.parseMode()</code></a></dd>
 </dl>
 </li>
 </ul>
@@ -578,6 +590,19 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
+<a id="isOnlyForPrivate()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isOnlyForPrivate</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isOnlyForPrivate()</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../annotation/CommandMapping.html#onlyForPrivate()"><code>CommandMapping.onlyForPrivate()</code></a></dd>
+</dl>
+</li>
+</ul>
 <a id="isOnlyAdmin()">
 <!--   -->
 </a>
@@ -661,16 +686,16 @@ extends java.lang.Object</pre>
 <div class="block">A command</div>
 </li>
 </ul>
-<a id="setUseHtml(boolean)">
+<a id="setParseMode(io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>setUseHtml</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setUseHtml&#8203;(boolean&nbsp;useHtml)</pre>
+<h4>setParseMode</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setParseMode&#8203;(<a href="../constant/MessageParseMode.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">MessageParseMode</a>&nbsp;parseMode)</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../annotation/CommandMapping.html#useHtml()"><code>CommandMapping.useHtml()</code></a></dd>
+<dd><a href="../annotation/CommandMapping.html#parseMode()"><code>CommandMapping.parseMode()</code></a></dd>
 </dl>
 </li>
 </ul>
@@ -762,6 +787,19 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../annotation/CommandMapping.html#onlyForGroup()"><code>CommandMapping.onlyForGroup()</code></a></dd>
+</dl>
+</li>
+</ul>
+<a id="setOnlyForPrivate(boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setOnlyForPrivate</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setOnlyForPrivate&#8203;(boolean&nbsp;onlyForPrivate)</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../annotation/CommandMapping.html#onlyForPrivate()"><code>CommandMapping.onlyForPrivate()</code></a></dd>
 </dl>
 </li>
 </ul>
