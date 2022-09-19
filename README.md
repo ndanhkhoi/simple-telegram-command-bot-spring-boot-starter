@@ -125,8 +125,9 @@ You can authorize command with these properties in `@CommandMapping` annotaion:
 - `accessUserIds` - an array contains user id can call this command
 - `accessGroupIds` - an array contains group id can call this command
 - `accessMemberIds` - an array contains user id can call this command in the group
-- `onlyAdmin` - boolean, if true only admin of group can be call this command
-- `onlyForGroup` - boolean, a flag to mark a command can be called in groups
+- `onlyAdmin` - boolean, if true only admin of group can call this command
+- `onlyForGroup` - boolean, a flag to mark a command can be called in groups only
+- `onlyForPrivate` - boolean, a flag to mark a command can be called in private chat only
 - `onlyForOwner` - boolean, if true only bot's owner can be call this command
 
 ## Supported arguments
