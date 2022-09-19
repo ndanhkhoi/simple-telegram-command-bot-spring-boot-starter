@@ -4,6 +4,7 @@ import io.github.ndanhkhoi.telegram.bot.annotation.CommandBody;
 import io.github.ndanhkhoi.telegram.bot.annotation.CommandDescription;
 import io.github.ndanhkhoi.telegram.bot.annotation.CommandMapping;
 import io.github.ndanhkhoi.telegram.bot.constant.MediaType;
+import io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,9 +30,9 @@ public class BotCommand {
     private String cmd;
 
     /**
-     * @see CommandMapping#useHtml()
+     * @see CommandMapping#parseMode()
      * */
-    private boolean useHtml;
+    private MessageParseMode parseMode;
 
     /**
      * @see CommandMapping#disableWebPagePreview()
@@ -67,6 +68,11 @@ public class BotCommand {
      * @see CommandMapping#onlyForGroup()
      * */
     private boolean onlyForGroup;
+
+    /**
+     * @see CommandMapping#onlyForPrivate()
+     * */
+    private boolean onlyForPrivate;
 
     /**
      * @see CommandMapping#onlyAdmin()

@@ -1,6 +1,7 @@
 package io.github.ndanhkhoi.telegram.bot.core.resolver;
 
 import io.github.ndanhkhoi.telegram.bot.constant.CommonConstant;
+import io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode;
 import io.github.ndanhkhoi.telegram.bot.core.SimpleTelegramLongPollingCommandBot;
 import io.github.ndanhkhoi.telegram.bot.model.BotCommand;
 import io.github.ndanhkhoi.telegram.bot.model.BotCommandParams;
@@ -32,16 +33,17 @@ public class StringResolver implements TypeResolver<String> {
             return;
         }
         Message message = params.getUpdate().getMessage();
+        MessageParseMode parseMode = botCommand.getParseMode();
         if (value.length() > CommonConstant.MAX_MESSAGE_CONTENT_LENGTH) {
             List<String> lineWrap = TelegramMessageUtils.lineWrap(value, CommonConstant.MAX_MESSAGE_CONTENT_LENGTH, false);
             String chatId = message.getChatId() + "";
             for (int i = 0; i < lineWrap.size(); i++) {
                 Integer messageId = i == 0 ? message.getMessageId() : null;
-                TelegramMessageUtils.replyMessage(telegramLongPollingBot, chatId, messageId, lineWrap.get(i), botCommand.isUseHtml(), botCommand.isDisableWebPagePreview());
+                TelegramMessageUtils.replyMessage(telegramLongPollingBot, chatId, messageId, lineWrap.get(i), parseMode, botCommand.isDisableWebPagePreview());
             }
         }
         else {
-            TelegramMessageUtils.replyMessage(telegramLongPollingBot, message, value, botCommand.isUseHtml(), botCommand.isDisableWebPagePreview());
+            TelegramMessageUtils.replyMessage(telegramLongPollingBot, message, value, parseMode, botCommand.isDisableWebPagePreview());
         }
         log.debug("Reply Message: {}", value);
     }

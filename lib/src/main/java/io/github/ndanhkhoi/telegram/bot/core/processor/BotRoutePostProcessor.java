@@ -79,7 +79,7 @@ public class BotRoutePostProcessor implements BeanPostProcessor, SmartInitializi
         this.validateCommand(cmd);
         return BotCommand.builder()
                 .withCmd(cmd)
-                .withUseHtml(mapping.useHtml())
+                .withParseMode(mapping.parseMode())
                 .withDisableWebPagePreview(mapping.disableWebPagePreview())
                 .withAccessUserIds(mapping.accessUserIds())
                 .withAccessMemberIds(mapping.accessMemberIds())
@@ -93,6 +93,7 @@ public class BotRoutePostProcessor implements BeanPostProcessor, SmartInitializi
                 .withDescription(commandDescription)
                 .withBodyDescription(bodyDescription)
                 .withOnlyForOwner(mapping.onlyForOwner())
+                .withOnlyForPrivate(mapping.onlyForPrivate())
                 .build();
     }
 

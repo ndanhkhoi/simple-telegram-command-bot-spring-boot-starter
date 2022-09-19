@@ -6,6 +6,7 @@ import io.github.ndanhkhoi.telegram.bot.annotation.CommandDescription;
 import io.github.ndanhkhoi.telegram.bot.annotation.CommandMapping;
 import io.github.ndanhkhoi.telegram.bot.constant.CommonConstant;
 import io.github.ndanhkhoi.telegram.bot.constant.MediaType;
+import io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode;
 import io.github.ndanhkhoi.telegram.bot.constant.TelegramTextStyled;
 import io.github.ndanhkhoi.telegram.bot.core.BotProperties;
 import io.github.ndanhkhoi.telegram.bot.core.SimpleTelegramLongPollingCommandBot;
@@ -59,7 +60,7 @@ public class DefaultRoute {
     }
 
     @CommandDescription(CommonConstant.HELP_CMD_DESCRIPTION)
-    @CommandMapping(value = CommonConstant.HELP_CMD, allowAllUserAccess = true, useHtml = true)
+    @CommandMapping(value = CommonConstant.HELP_CMD, allowAllUserAccess = true, parseMode = MessageParseMode.HTML)
     public Mono<String> getCmdByChat(Update update, @ChatId Long chatId) {
         boolean isMessageInGroup = TelegramMessageUtils.isMessageInGroup(update.getMessage());
         String title = TelegramMessageUtils.wrapByTag("List of available commands for this chat: ", TelegramTextStyled.BOLD);

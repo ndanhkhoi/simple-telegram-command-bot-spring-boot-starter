@@ -189,7 +189,7 @@ public class UpdateSubscriber implements ApplicationContextAware {
     private void sendUnknownErrorAlert(BotCommandParams params, Throwable t) {
         SimpleTelegramLongPollingCommandBot telegramLongPollingBot = applicationContext.getBean(SimpleTelegramLongPollingCommandBot.class);
         log.error("Error!", t);
-        TelegramMessageUtils.replyMessage(telegramLongPollingBot, params.getUpdate().getMessage(), CommonConstant.ERROR_NOTIFY_MESSAGE, false);
+        TelegramMessageUtils.replyMessage(telegramLongPollingBot, params.getUpdate().getMessage(), CommonConstant.ERROR_NOTIFY_MESSAGE, null);
     }
 
     public void executeCommandAdvice(Throwable t, BotCommandParams params) {
@@ -214,7 +214,7 @@ public class UpdateSubscriber implements ApplicationContextAware {
                 sendUnknownErrorAlert(params, t);
             }
             else if (returnValue instanceof String) {
-                TelegramMessageUtils.replyMessage(telegramLongPollingBot, params.getUpdate().getMessage(), (String) returnValue,false);
+                TelegramMessageUtils.replyMessage(telegramLongPollingBot, params.getUpdate().getMessage(), (String) returnValue,null);
             }
             else if (returnValue instanceof BotApiMethod) {
                 telegramLongPollingBot.executeSneakyThrows((BotApiMethod<? extends Serializable>) returnValue);
