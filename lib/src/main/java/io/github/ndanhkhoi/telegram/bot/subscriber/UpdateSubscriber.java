@@ -136,6 +136,17 @@ public class UpdateSubscriber implements ApplicationContextAware {
         }
     }
 
+    private void handleConsumeError(Throwable t, BotCommandParams botCommandParams) {
+        // Exception when invoke method. Ex: bot method throws exception manually
+        if (t instanceof InvocationTargetException) {
+            InvocationTargetException itex = (InvocationTargetException) t;
+            executeCommandAdvice(itex.getTargetException(), botCommandParams);
+        }
+        else {
+            executeCommandAdvice(t, botCommandParams);
+        }
+    }
+
     public void handleReturnedValue(Supplier<Object> returmedSupplier, BotCommand botCommand, BotCommandParams botCommandParams) {
         ResolverRegistry resolverRegistry = getResolverRegistry();
         Set<Class<Object>> supportedTypes = resolverRegistry.getSupportedTypes();
@@ -143,9 +154,6 @@ public class UpdateSubscriber implements ApplicationContextAware {
                 .map(Class::getName)
                 .collect(Collectors.toSet());
         Mono.fromSupplier(returmedSupplier)
-                // Exception when invoke method. Ex: bot method throws exception manually
-                .doOnError(InvocationTargetException.class, itex -> executeCommandAdvice(itex.getTargetException(), botCommandParams))
-                .doOnError(Exception.class, ex -> executeCommandAdvice(ex, botCommandParams))
                 .flatMapMany(rawReturnedValue -> {
                     if (Objects.isNull(rawReturnedValue)) {
                         log.info("Nothing to reply. Cause return value is null or it's type is Void");
@@ -172,7 +180,7 @@ public class UpdateSubscriber implements ApplicationContextAware {
                     else {
                         log.warn("Nothing to reply. Cause the return type is not supported ({}}). Supported types are: {}", type.getName(), supportedTypesName);
                     }
-                }, t -> executeCommandAdvice(t, botCommandParams));
+                }, t -> handleConsumeError(t, botCommandParams));
     }
 
     @SneakyThrows
