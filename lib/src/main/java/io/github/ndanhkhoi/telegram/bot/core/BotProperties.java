@@ -18,6 +18,7 @@ import java.util.List;
 @ConfigurationProperties(prefix = "khoinda.bot", ignoreUnknownFields = false)
 public class BotProperties {
 
+    private Boolean enableAutoConfig = true;
     private String username;
     private String token;
     private String loggingChatId;

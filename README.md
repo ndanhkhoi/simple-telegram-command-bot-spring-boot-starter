@@ -37,16 +37,19 @@ A simple-to-use library to create Telegram Long Polling Bots in Java and Spring 
   * [Jitpack](#jitpack)
   * [License](#license)
 
-<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
-
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with
+markdown-toc</a></i></small>
 
 ## Usage
 
 Just import add the library to your project with one of these options:
 
 1. Using Maven Central Repository:
+
 - Step 1. Add the JitPack repository to your build file
+
 ```xml
+
 <repositories>
     <repository>
         <id>jitpack.io</id>
@@ -54,25 +57,33 @@ Just import add the library to your project with one of these options:
     </repository>
 </repositories>
 ```
+
 - Step 2. Add the dependency
+
 ```xml
+
 <dependency>
-    <groupId>com.github.ndanhkhoi</groupId>
-    <artifactId>simple-telegram-command-bot-spring-boot-starter</artifactId>
-    <version>2022.09.30</version>
+  <groupId>com.github.ndanhkhoi</groupId>
+  <artifactId>simple-telegram-command-bot-spring-boot-starter</artifactId>
+  <version>2022.10.03</version>
 </dependency>
 ```
+
 2. Using Gradle:
+
 - Step 1. Add the JitPack repository to your build file
+
 ```gradle
 repositories {
     maven { url 'https://jitpack.io' }
 }
 ```
+
 - Step 2. Add the dependency
+
 ```gradle
 dependencies {
-    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:2022.09.30'
+    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:2022.10.03'
 }
 ```
 
@@ -82,21 +93,25 @@ dependencies {
 
 - Add [Telegram Bot Java Library](https://github.com/rubenlagus/TelegramBots) as dependency
 
-- Add [Simple Telegram Command Bot Spring Boot Starter](https://github.com/ndanhkhoi/simple-telegram-command-bot-spring-boot-starter)
+-
 
-- Add bot's properties to your **application.yml** 
+Add [Simple Telegram Command Bot Spring Boot Starter](https://github.com/ndanhkhoi/simple-telegram-command-bot-spring-boot-starter)
+
+- Add bot's properties to your **application.yml**
 
 ```yaml
 khoinda:
   bot:
-    username: {YOUR_BOT_USERNAME}
-    token: {YOUR_BOT_TOKEN}
+    username: { YOUR_BOT_USERNAME }
+    token: { YOUR_BOT_TOKEN }
     bot-route-packages:
-        - {YOUR_BOT_ROUTES_PACKAGE}
+      - { YOUR_BOT_ROUTES_PACKAGE }
 ```
+
 - Create your bot route
 
 ```java
+
 @BotRoute
 public class HelloWorldBotRoute {
 
@@ -109,34 +124,43 @@ public class HelloWorldBotRoute {
 }
 
 ```
+
 ## BotRoute
+
 An annotation indicates that a particular class serves the role of a router.
 
 ## CommandMapping
-An annotation is used to map bot requests to route methods. 
+
+An annotation is used to map bot requests to route methods.
 
 ## CommandDescription
+
 An annotation is used to describe command. You can see it which default `/help` command
 
 ## Authorization
+
 You can authorize command with these properties in `@CommandMapping` annotaion:
+
 - `allowAllUserAccess` - boolean, if true all users/group can be call this command
 - `allowAllGroupAccess` - a flag to mark a command can be called by any groups
 - `accessUserIds` - an array contains user id can call this command
 - `accessGroupIds` - an array contains group id can call this command
 - `accessMemberIds` - an array contains user id can call this command in the group
-- `onlyAdmin` - boolean, if true only admin of group can call this command
-- `onlyForGroup` - boolean, a flag to mark a command can be called in groups only
-- `onlyForPrivate` - boolean, a flag to mark a command can be called in private chat only
+- `onlyAdmin` - boolean, if true only admin of group can be call this command
+- `onlyForGroup` - boolean, a flag to mark a command can be called in groups
 - `onlyForOwner` - boolean, if true only bot's owner can be call this command
 
 ## Supported arguments
+
 ### Arguments by type
+
 - `Update` - An Update object of telegram bot API
 - `Message` - A message object of telegram bot API
 - `List<PhotoSize>` - If message contains photo, it will be hold them, or else it will be return `null`
 - `Document` - If message contains file, it will be hold them, or else it will be return `null`
+
 ### Arguments by annotation
+
 - `@CommandName` - An annotation to mark a param in command method as a command name
 - `@CommandBody` - An annotation to mark a param in command method as a command body
 - `@ChatId` - An annotation to mark a param in command method as a chat id, can be use on `Long` type
@@ -146,47 +170,61 @@ You can authorize command with these properties in `@CommandMapping` annotaion:
 ## Supported return values
 
 ### Single value
+
 - `String` - the text will be reply to user make a request
 - `InputFile/File/byte[]/ByteArrayResource` - the file will be reply to user make a request
 - `BotApiMethod` - it will be excuted automatically
 - `Void` - do nothing
 
 ### Collection value
-- `Collection<T>` - with T is one of single value types, it will be do a same job with single value types for each element in this collection
+
+- `Collection<T>` - with T is one of single value types, it will be do a same job with single value types for each
+  element in this collection
 
 ### Reactive support
+
 - `Mono<T>` - same as single value but for Reactive
 - `Flux<T>` - same as collection value but for Reactive
 
 ## Default Commands
+
 - `/help` - List of available command(s) for this chat
-- `/get_log_file` - Get an application log file. This command must be called by owner of a bot in `khoinda.bot.bot-owner-chat-id` in application.properties or application.yml
+- `/get_log_file` - Get an application log file. This command must be called by owner of a bot
+  in `khoinda.bot.bot-owner-chat-id` in application.properties or application.yml
 
 ## Logging Channel
-If you want to send log when new update received, you can config your channel id to `khoinda.bot.logging-chat-id` in application.properties or application.yml
+
+If you want to send log when new update received, you can config your channel id to `khoinda.bot.logging-chat-id` in
+application.properties or application.yml
 
 ## Handle Exception
 
-Here is an example for handler of `NoSuchElementException`. When bot command request throw `NoSuchElementException`, it will reply a text: `"404 Not Found !"`
+Here is an example for handler of `NoSuchElementException`. When bot command request throw `NoSuchElementException`, it
+will reply a text: `"404 Not Found !"`
+
 ```java
+
 @BotRouteAdvice
 public class RouteAdvice {
 
-    @BotExceptionHandler(NoSuchElementException.class)
-    public String handleNoSuchElement(Update update, NoSuchElementException ex) {
-        return "404 Not Found !";
-    }
+  @BotExceptionHandler(NoSuchElementException.class)
+  public String handleNoSuchElement(Update update, NoSuchElementException ex) {
+    return "404 Not Found !";
+  }
 
 }
 ```
 
 ### BotRouteAdvice
+
 An annotation indicates that a particular class serves the role of a router for exception.
 
 ### BotExceptionHandler
+
 An annotation is used to mark method is a exception handler.
 
 ### Supported return values of BotExceptionHandler
+
 - `String` - the text will be replied to user make a request
 - `BotApiMethod` - it will be excuted automatically
 
@@ -195,29 +233,32 @@ An annotation is used to mark method is a exception handler.
 You can create a bean that inplements `CallbackQuerySubscriber` to trigger callback query:
 
 ```java
+
 @Component
 public class CustomCallbackQuerySubscriber implements CallbackQuerySubscriber {
 
-    private final SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot;
-    
-    public CustomCallbackQuerySubscriber(SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot) {
-        this.simpleTelegramLongPollingCommandBot = simpleTelegramLongPollingCommandBot;
-    }
+  private final SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot;
 
-    @Override
-    public void accept(Update update) {
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setText("Callback query data: " + update.getCallbackQuery().getData());
-        sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId() + "");
-        simpleTelegramLongPollingCommandBot.executeSneakyThrows(sendMessage);
-    }
+  public CustomCallbackQuerySubscriber(SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot) {
+    this.simpleTelegramLongPollingCommandBot = simpleTelegramLongPollingCommandBot;
+  }
+
+  @Override
+  public void accept(Update update) {
+    SendMessage sendMessage = new SendMessage();
+    sendMessage.setText("Callback query data: " + update.getCallbackQuery().getData());
+    sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId() + "");
+    simpleTelegramLongPollingCommandBot.executeSneakyThrows(sendMessage);
+  }
 
 }
 
 ```
+
 ## Others Subscriber Bean
 
 There are some beans that you can create an inplements to do your stuff
+
 - `CallbackQuerySubscriber` - handle callback query (like button pressed, etc, ...)
 - `CommandNotFoundUpdateSubscriber` - handle unknown commands
 - `NonCommandUpdateSubscriber` - handle an update does not contain command
@@ -227,10 +268,12 @@ There are some beans that you can create an inplements to do your stuff
 ## Configurations
 
 ### Properties
+
 By default, you can configure only these properties:
 
 | Property                                | Description                                                      | Default value       |
 |-----------------------------------------|------------------------------------------------------------------|---------------------|
+| khoinda.bot.enable-auto-config          | Enable bot auto configuration                                    | `true`              |
 | khoinda.bot.username                    | Bot's username                                                   |                     |
 | khoinda.bot.token                       | Bot's token                                                      |                     |
 | khoinda.bot.logging-chat-id             | Chat id can received logging when new `Update` recieved          |                     |
@@ -245,7 +288,9 @@ By default, you can configure only these properties:
 | khoinda.bot.register-delay              | Number of second(s) delay to register bot when application ready | `0`                 |
 
 ## Dependencies
+
 This library uses following dependencies:
+
 1. [Spring Boot Starter](https://github.com/spring-projects/spring-boot/tree/main/spring-boot-project/spring-boot-starters)
 2. [Telegram Bot Java Library](https://github.com/rubenlagus/TelegramBots)
 3. [Lombok](https://github.com/projectlombok/lombok)
@@ -256,14 +301,15 @@ This library uses following dependencies:
 8. [Apache Commons IO](https://github.com/apache/commons-io)
 
 ## Telegram Bot API
+
 This library use [Telegram bot API](https://core.telegram.org/bots), you can find more information following the link.
 
 ## Jitpack
 
 More infomation from [Jitpack](https://jitpack.io/#ndanhkhoi/simple-telegram-command-bot-spring-boot-starter)
 
-
 ## License
+
 MIT License
 
 Copyright (c) 2021 Nguyen Duc Anh Khoi
