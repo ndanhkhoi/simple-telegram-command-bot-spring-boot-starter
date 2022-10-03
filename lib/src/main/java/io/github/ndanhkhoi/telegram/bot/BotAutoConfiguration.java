@@ -5,12 +5,14 @@ import io.github.ndanhkhoi.telegram.bot.core.SimpleTelegramLongPollingCommandBot
 import io.github.ndanhkhoi.telegram.bot.core.processor.ProcessorConfig;
 import io.github.ndanhkhoi.telegram.bot.core.registry.RegistryConfig;
 import io.github.ndanhkhoi.telegram.bot.core.resolver.TypeResolverConfig;
+import io.github.ndanhkhoi.telegram.bot.exception.BotException;
 import io.github.ndanhkhoi.telegram.bot.mapper.MapperConfig;
 import io.github.ndanhkhoi.telegram.bot.repository.RepositoryConfig;
 import io.github.ndanhkhoi.telegram.bot.subscriber.SubscriberConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -30,6 +32,7 @@ import java.time.Duration;
 
 @Slf4j
 @RequiredArgsConstructor
+@ConditionalOnProperty(value = "khoinda.bot.enable-auto-config", havingValue = "true", matchIfMissing = true)
 @Configuration
 @ComponentScan
 @EnableConfigurationProperties({BotProperties.class})
@@ -77,7 +80,7 @@ public class BotAutoConfiguration {
                         api.registerBot(bot);
                     }
                     catch (Exception ex) {
-                        throw new RuntimeException(ex);
+                        throw new BotException(ex);
                     }
                 });
     }
