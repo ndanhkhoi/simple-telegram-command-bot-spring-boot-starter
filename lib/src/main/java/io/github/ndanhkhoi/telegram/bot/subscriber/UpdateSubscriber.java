@@ -7,6 +7,7 @@ import io.github.ndanhkhoi.telegram.bot.core.BotProperties;
 import io.github.ndanhkhoi.telegram.bot.core.SimpleTelegramLongPollingCommandBot;
 import io.github.ndanhkhoi.telegram.bot.core.registry.AdviceRegistry;
 import io.github.ndanhkhoi.telegram.bot.core.registry.ResolverRegistry;
+import io.github.ndanhkhoi.telegram.bot.exception.BotAccessDeniedException;
 import io.github.ndanhkhoi.telegram.bot.mapper.UpdateMapper;
 import io.github.ndanhkhoi.telegram.bot.model.BotCommand;
 import io.github.ndanhkhoi.telegram.bot.model.BotCommandParams;
@@ -238,12 +239,22 @@ public class UpdateSubscriber implements ApplicationContextAware {
     }
 
     private void excuteCommand(Update update, BotCommandParams botCommandParams, SimpleTelegramLongPollingCommandBot telegramLongPollingBot) {
-        telegramLongPollingBot
-                .getCommand(update)
-                .ifPresentOrElse(botCommand -> {
-                    botCommandParams.setCommandName(botCommand.getCmd());
-                    handleCmd(botCommand, botCommandParams);
-                }, () -> applicationContext.getBean(CommandNotFoundUpdateSubscriber.class).accept(update, botCommandParams.getCommandName()));
+        try {
+            telegramLongPollingBot
+                    .getCommand(update)
+                    .ifPresentOrElse(botCommand -> {
+                        botCommandParams.setCommandName(botCommand.getCmd());
+                        handleCmd(botCommand, botCommandParams);
+                    }, () -> applicationContext.getBean(CommandNotFoundUpdateSubscriber.class).accept(update, botCommandParams.getCommandName()));
+        }
+        catch (BotAccessDeniedException ex) {
+            SendMessage sendMessage = SendMessage.builder()
+                    .chatId(botCommandParams.getChatId())
+                    .replyToMessageId(botCommandParams.getMessage().getMessageId())
+                    .text(ex.getMessage())
+                    .build();
+            telegramLongPollingBot.executeSneakyThrows(sendMessage);
+        }
     }
 
     private void process(Update update) {

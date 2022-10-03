@@ -3,6 +3,7 @@ package io.github.ndanhkhoi.telegram.bot.core;
 import io.github.ndanhkhoi.telegram.bot.constant.ChatMemberStatus;
 import io.github.ndanhkhoi.telegram.bot.constant.CommonConstant;
 import io.github.ndanhkhoi.telegram.bot.core.registry.CommandRegistry;
+import io.github.ndanhkhoi.telegram.bot.exception.BotAccessDeniedException;
 import io.github.ndanhkhoi.telegram.bot.model.BotCommand;
 import io.github.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import io.github.ndanhkhoi.telegram.bot.model.MessageParser;
@@ -27,7 +28,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -112,8 +116,13 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
         Message message = update.getMessage();
         MessageParser messageParser = new MessageParser(message.getText());
         String truncatedCmd = truncatedBotUsername(messageParser.getFirstWord());
-        if (commandRegistry.hasCommand(truncatedCmd) && hasPermission(update, commandRegistry.getCommand(truncatedCmd))) {
-            botCommand = commandRegistry.getCommand(truncatedCmd);
+        if (commandRegistry.hasCommand(truncatedCmd)) {
+            if (hasPermission(update, commandRegistry.getCommand(truncatedCmd))) {
+                botCommand = commandRegistry.getCommand(truncatedCmd);
+            }
+            else {
+                throw new BotAccessDeniedException(CommonConstant.ACCESS_DENIED_ERROR);
+            }
         }
         return Optional.ofNullable(botCommand);
     }
@@ -166,7 +175,21 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
     @Override
     public void onRegister() {
         super.onRegister();
-        SetMyCommands setMyCommands = new SetMyCommands(Collections.singletonList(CommonConstant.HELP_BOT_COMMAND), new BotCommandScopeDefault(), null);
+        List<org.telegram.telegrambots.meta.api.objects.commands.BotCommand> commandList = getCommandRegistry().getAllCommands()
+                .stream()
+                .sorted((e1, e2) -> StringUtils.compare(e1.getCmd(), e2.getCmd()))
+                .map(e -> {
+                    StringBuilder description = new StringBuilder();
+                    if (StringUtils.isNotBlank(e.getDescription())) {
+                        description.append(e.getDescription());
+                    }
+                    if (StringUtils.isNotBlank(e.getBodyDescription())) {
+                        description.append(" [").append(e.getBodyDescription()).append("]");
+                    }
+                    return new org.telegram.telegrambots.meta.api.objects.commands.BotCommand(e.getCmd(), description.toString());
+                })
+                .collect(Collectors.toList());
+        SetMyCommands setMyCommands = new SetMyCommands(commandList, new BotCommandScopeDefault(), null);
         executeSneakyThrows(setMyCommands);
         log.info("Bot {} has started successfully", botProperties.getUsername());
     }
