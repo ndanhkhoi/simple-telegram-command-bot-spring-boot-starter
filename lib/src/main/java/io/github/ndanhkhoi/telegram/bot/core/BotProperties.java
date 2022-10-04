@@ -28,6 +28,7 @@ public class BotProperties {
     private Boolean disableDefaultCommands = false;
     private Executor executor = new Executor();
     private Integer registerDelay = 0;
+    private Boolean showCommandMenu = true;
 
     @Getter
     @Setter
