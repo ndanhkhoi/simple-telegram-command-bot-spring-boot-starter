@@ -1,6 +1,7 @@
 io.github.ndanhkhoi.telegram.bot
 io.github.ndanhkhoi.telegram.bot.annotation
 io.github.ndanhkhoi.telegram.bot.constant
+io.github.ndanhkhoi.telegram.bot.controller
 io.github.ndanhkhoi.telegram.bot.core
 io.github.ndanhkhoi.telegram.bot.core.processor
 io.github.ndanhkhoi.telegram.bot.core.registry

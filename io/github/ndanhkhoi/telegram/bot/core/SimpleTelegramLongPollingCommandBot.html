@@ -6,15 +6,16 @@
 <title>SimpleTelegramLongPollingCommandBot (Simple Telegram Command Bot Spring Boot Starter API)</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
-<link rel="stylesheet" type="text/css" href="../../../../../../jquery/jquery-ui.css" title="Style">
+<link rel="stylesheet" type="text/css" href="../../../../../../jquery/jquery-ui.min.css" title="Style">
+<link rel="stylesheet" type="text/css" href="../../../../../../jquery-ui.overrides.css" title="Style">
 <script type="text/javascript" src="../../../../../../script.js"></script>
 <script type="text/javascript" src="../../../../../../jquery/jszip/dist/jszip.min.js"></script>
 <script type="text/javascript" src="../../../../../../jquery/jszip-utils/dist/jszip-utils.min.js"></script>
 <!--[if IE]>
 <script type="text/javascript" src="../../../../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
 <![endif]-->
-<script type="text/javascript" src="../../../../../../jquery/jquery-3.5.1.js"></script>
-<script type="text/javascript" src="../../../../../../jquery/jquery-ui.js"></script>
+<script type="text/javascript" src="../../../../../../jquery/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="../../../../../../jquery/jquery-ui.min.js"></script>
 </head>
 <body>
 <script type="text/javascript"><!--
@@ -26,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -146,12 +147,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code>org.springframework.beans.factory.Aware</code>, <code>org.springframework.context.ApplicationContextAware</code>, <code>org.telegram.telegrambots.meta.generics.LongPollingBot</code>, <code>org.telegram.telegrambots.meta.generics.TelegramBot</code></dd>
+<dd><code>org.telegram.telegrambots.meta.generics.LongPollingBot</code>, <code>org.telegram.telegrambots.meta.generics.TelegramBot</code></dd>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">SimpleTelegramLongPollingCommandBot</span>
-extends org.telegram.telegrambots.bots.TelegramLongPollingBot
-implements org.springframework.context.ApplicationContextAware</pre>
+extends org.telegram.telegrambots.bots.TelegramLongPollingBot</pre>
 </li>
 </ul>
 </div>
@@ -159,7 +159,7 @@ implements org.springframework.context.ApplicationContextAware</pre>
 <ul class="blockList">
 <li class="blockList">
 <!-- =========== FIELD SUMMARY =========== -->
-<section role="region">
+<section>
 <ul class="blockList">
 <li class="blockList"><a id="field.summary">
 <!--   -->
@@ -176,7 +176,7 @@ implements org.springframework.context.ApplicationContextAware</pre>
 </ul>
 </section>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
-<section role="region">
+<section>
 <ul class="blockList">
 <li class="blockList"><a id="constructor.summary">
 <!--   -->
@@ -197,7 +197,7 @@ implements org.springframework.context.ApplicationContextAware</pre>
 </ul>
 </section>
 <!-- ========== METHOD SUMMARY =========== -->
-<section role="region">
+<section>
 <ul class="blockList">
 <li class="blockList"><a id="method.summary">
 <!--   -->
@@ -211,63 +211,28 @@ implements org.springframework.context.ApplicationContextAware</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>&lt;T extends java.io.Serializable,&#8203;M extends org.telegram.telegrambots.meta.api.methods.BotApiMethod&lt;T&gt;&gt;<br>T</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#executeSneakyThrows(M)">executeSneakyThrows</a></span>&#8203;(M&nbsp;method)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>java.util.List&lt;<a href="../model/BotCommand.html" title="class in io.github.ndanhkhoi.telegram.bot.model">BotCommand</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAvailableBotCommands(org.telegram.telegrambots.meta.api.objects.Update)">getAvailableBotCommands</a></span>&#8203;(org.telegram.telegrambots.meta.api.objects.Update&nbsp;update)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i2" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBotToken()">getBotToken</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBotUsername()">getBotUsername</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>java.util.Optional&lt;<a href="../model/BotCommand.html" title="class in io.github.ndanhkhoi.telegram.bot.model">BotCommand</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCommand(org.telegram.telegrambots.meta.api.objects.Update)">getCommand</a></span>&#8203;(org.telegram.telegrambots.meta.api.objects.Update&nbsp;update)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code><a href="../model/BotCommandParams.html" title="class in io.github.ndanhkhoi.telegram.bot.model">BotCommandParams</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCommandParams(org.telegram.telegrambots.meta.api.objects.Update)">getCommandParams</a></span>&#8203;(org.telegram.telegrambots.meta.api.objects.Update&nbsp;update)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code><a href="registry/CommandRegistry.html" title="class in io.github.ndanhkhoi.telegram.bot.core.registry">CommandRegistry</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCommandRegistry()">getCommandRegistry</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code><a href="../subscriber/UpdateSubscriber.html" title="class in io.github.ndanhkhoi.telegram.bot.subscriber">UpdateSubscriber</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUpdateSubscriber()">getUpdateSubscriber</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i8" class="altColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onRegister()">onRegister</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onUpdateReceived(org.telegram.telegrambots.meta.api.objects.Update)">onUpdateReceived</a></span>&#8203;(org.telegram.telegrambots.meta.api.objects.Update&nbsp;update)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onUpdatesReceived(java.util.List)">onUpdatesReceived</a></span>&#8203;(java.util.List&lt;org.telegram.telegrambots.meta.api.objects.Update&gt;&nbsp;updates)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i11" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setApplicationContext(org.springframework.context.ApplicationContext)">setApplicationContext</a></span>&#8203;(org.springframework.context.ApplicationContext&nbsp;applicationContext)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -316,7 +281,7 @@ implements org.springframework.context.ApplicationContextAware</pre>
 <ul class="blockList">
 <li class="blockList">
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
-<section role="region">
+<section>
 <ul class="blockList">
 <li class="blockList"><a id="constructor.detail">
 <!--   -->
@@ -335,68 +300,12 @@ implements org.springframework.context.ApplicationContextAware</pre>
 </ul>
 </section>
 <!-- ============ METHOD DETAIL ========== -->
-<section role="region">
+<section>
 <ul class="blockList">
 <li class="blockList"><a id="method.detail">
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="getUpdateSubscriber()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getUpdateSubscriber</h4>
-<pre class="methodSignature">public&nbsp;<a href="../subscriber/UpdateSubscriber.html" title="class in io.github.ndanhkhoi.telegram.bot.subscriber">UpdateSubscriber</a>&nbsp;getUpdateSubscriber()</pre>
-</li>
-</ul>
-<a id="getCommandRegistry()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getCommandRegistry</h4>
-<pre class="methodSignature">public&nbsp;<a href="registry/CommandRegistry.html" title="class in io.github.ndanhkhoi.telegram.bot.core.registry">CommandRegistry</a>&nbsp;getCommandRegistry()</pre>
-</li>
-</ul>
-<a id="executeSneakyThrows(org.telegram.telegrambots.meta.api.methods.BotApiMethod)">
-<!--   -->
-</a><a id="executeSneakyThrows(M)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>executeSneakyThrows</h4>
-<pre class="methodSignature">public&nbsp;&lt;T extends java.io.Serializable,&#8203;M extends org.telegram.telegrambots.meta.api.methods.BotApiMethod&lt;T&gt;&gt;&nbsp;T&nbsp;executeSneakyThrows&#8203;(M&nbsp;method)</pre>
-</li>
-</ul>
-<a id="getAvailableBotCommands(org.telegram.telegrambots.meta.api.objects.Update)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getAvailableBotCommands</h4>
-<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../model/BotCommand.html" title="class in io.github.ndanhkhoi.telegram.bot.model">BotCommand</a>&gt;&nbsp;getAvailableBotCommands&#8203;(org.telegram.telegrambots.meta.api.objects.Update&nbsp;update)</pre>
-</li>
-</ul>
-<a id="getCommand(org.telegram.telegrambots.meta.api.objects.Update)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getCommand</h4>
-<pre class="methodSignature">public&nbsp;java.util.Optional&lt;<a href="../model/BotCommand.html" title="class in io.github.ndanhkhoi.telegram.bot.model">BotCommand</a>&gt;&nbsp;getCommand&#8203;(org.telegram.telegrambots.meta.api.objects.Update&nbsp;update)</pre>
-</li>
-</ul>
-<a id="getCommandParams(org.telegram.telegrambots.meta.api.objects.Update)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getCommandParams</h4>
-<pre class="methodSignature">public&nbsp;<a href="../model/BotCommandParams.html" title="class in io.github.ndanhkhoi.telegram.bot.model">BotCommandParams</a>&nbsp;getCommandParams&#8203;(org.telegram.telegrambots.meta.api.objects.Update&nbsp;update)</pre>
-</li>
-</ul>
 <a id="getBotUsername()">
 <!--   -->
 </a>
@@ -404,10 +313,6 @@ implements org.springframework.context.ApplicationContextAware</pre>
 <li class="blockList">
 <h4>getBotUsername</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getBotUsername()</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>getBotUsername</code>&nbsp;in interface&nbsp;<code>org.telegram.telegrambots.meta.generics.TelegramBot</code></dd>
-</dl>
 </li>
 </ul>
 <a id="getBotToken()">
@@ -432,10 +337,6 @@ implements org.springframework.context.ApplicationContextAware</pre>
 <li class="blockList">
 <h4>onRegister</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;onRegister()</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>onRegister</code>&nbsp;in interface&nbsp;<code>org.telegram.telegrambots.meta.generics.TelegramBot</code></dd>
-</dl>
 </li>
 </ul>
 <a id="onUpdateReceived(org.telegram.telegrambots.meta.api.objects.Update)">
@@ -445,39 +346,15 @@ implements org.springframework.context.ApplicationContextAware</pre>
 <li class="blockList">
 <h4>onUpdateReceived</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;onUpdateReceived&#8203;(org.telegram.telegrambots.meta.api.objects.Update&nbsp;update)</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>onUpdateReceived</code>&nbsp;in interface&nbsp;<code>org.telegram.telegrambots.meta.generics.LongPollingBot</code></dd>
-</dl>
 </li>
 </ul>
 <a id="onUpdatesReceived(java.util.List)">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>onUpdatesReceived</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;onUpdatesReceived&#8203;(java.util.List&lt;org.telegram.telegrambots.meta.api.objects.Update&gt;&nbsp;updates)</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>onUpdatesReceived</code>&nbsp;in interface&nbsp;<code>org.telegram.telegrambots.meta.generics.LongPollingBot</code></dd>
-</dl>
-</li>
-</ul>
-<a id="setApplicationContext(org.springframework.context.ApplicationContext)">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>setApplicationContext</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setApplicationContext&#8203;(org.springframework.context.ApplicationContext&nbsp;applicationContext)
-                           throws org.springframework.beans.BeansException</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>setApplicationContext</code>&nbsp;in interface&nbsp;<code>org.springframework.context.ApplicationContextAware</code></dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>org.springframework.beans.BeansException</code></dd>
-</dl>
 </li>
 </ul>
 </li>

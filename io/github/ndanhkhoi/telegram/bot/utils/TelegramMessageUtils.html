@@ -6,15 +6,16 @@
 <title>TelegramMessageUtils (Simple Telegram Command Bot Spring Boot Starter API)</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
-<link rel="stylesheet" type="text/css" href="../../../../../../jquery/jquery-ui.css" title="Style">
+<link rel="stylesheet" type="text/css" href="../../../../../../jquery/jquery-ui.min.css" title="Style">
+<link rel="stylesheet" type="text/css" href="../../../../../../jquery-ui.overrides.css" title="Style">
 <script type="text/javascript" src="../../../../../../script.js"></script>
 <script type="text/javascript" src="../../../../../../jquery/jszip/dist/jszip.min.js"></script>
 <script type="text/javascript" src="../../../../../../jquery/jszip-utils/dist/jszip-utils.min.js"></script>
 <!--[if IE]>
 <script type="text/javascript" src="../../../../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
 <![endif]-->
-<script type="text/javascript" src="../../../../../../jquery/jquery-3.5.1.js"></script>
-<script type="text/javascript" src="../../../../../../jquery/jquery-ui.js"></script>
+<script type="text/javascript" src="../../../../../../jquery/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="../../../../../../jquery/jquery-ui.min.js"></script>
 </head>
 <body>
 <script type="text/javascript"><!--
@@ -139,7 +140,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <!-- ========== METHOD SUMMARY =========== -->
-<section role="region">
+<section>
 <ul class="blockList">
 <li class="blockList"><a id="method.summary">
 <!--   -->
@@ -171,7 +172,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#replyMessage(org.telegram.telegrambots.bots.TelegramLongPollingBot,java.lang.String,java.lang.Integer,java.lang.String,io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode,boolean)">replyMessage</a></span>&#8203;(org.telegram.telegrambots.bots.TelegramLongPollingBot&nbsp;bot,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#replyMessage(org.telegram.telegrambots.meta.bots.AbsSender,java.lang.String,java.lang.Integer,java.lang.String,io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode,boolean)">replyMessage</a></span>&#8203;(org.telegram.telegrambots.meta.bots.AbsSender&nbsp;bot,
             java.lang.String&nbsp;chatId,
             java.lang.Integer&nbsp;messageId,
             java.lang.String&nbsp;replyContent,
@@ -181,7 +182,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>static void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#replyMessage(org.telegram.telegrambots.bots.TelegramLongPollingBot,org.telegram.telegrambots.meta.api.objects.Message,java.lang.String,io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode)">replyMessage</a></span>&#8203;(org.telegram.telegrambots.bots.TelegramLongPollingBot&nbsp;bot,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#replyMessage(org.telegram.telegrambots.meta.bots.AbsSender,org.telegram.telegrambots.meta.api.objects.Message,java.lang.String,io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode)">replyMessage</a></span>&#8203;(org.telegram.telegrambots.meta.bots.AbsSender&nbsp;bot,
             org.telegram.telegrambots.meta.api.objects.Message&nbsp;messageToReply,
             java.lang.String&nbsp;replyContent,
             <a href="../constant/MessageParseMode.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">MessageParseMode</a>&nbsp;parseMode)</code></th>
@@ -189,7 +190,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#replyMessage(org.telegram.telegrambots.bots.TelegramLongPollingBot,org.telegram.telegrambots.meta.api.objects.Message,java.lang.String,io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode,boolean)">replyMessage</a></span>&#8203;(org.telegram.telegrambots.bots.TelegramLongPollingBot&nbsp;bot,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#replyMessage(org.telegram.telegrambots.meta.bots.AbsSender,org.telegram.telegrambots.meta.api.objects.Message,java.lang.String,io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode,boolean)">replyMessage</a></span>&#8203;(org.telegram.telegrambots.meta.bots.AbsSender&nbsp;bot,
             org.telegram.telegrambots.meta.api.objects.Message&nbsp;messageToReply,
             java.lang.String&nbsp;replyContent,
             <a href="../constant/MessageParseMode.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">MessageParseMode</a>&nbsp;parseMode,
@@ -220,7 +221,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <!-- ============ METHOD DETAIL ========== -->
-<section role="region">
+<section>
 <ul class="blockList">
 <li class="blockList"><a id="method.detail">
 <!--   -->
@@ -236,26 +237,26 @@ extends java.lang.Object</pre>
                                          <a href="../constant/TelegramTextStyled.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">TelegramTextStyled</a>&nbsp;styled)</pre>
 </li>
 </ul>
-<a id="replyMessage(org.telegram.telegrambots.bots.TelegramLongPollingBot,org.telegram.telegrambots.meta.api.objects.Message,java.lang.String,io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode,boolean)">
+<a id="replyMessage(org.telegram.telegrambots.meta.bots.AbsSender,org.telegram.telegrambots.meta.api.objects.Message,java.lang.String,io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode,boolean)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>replyMessage</h4>
-<pre class="methodSignature">public static&nbsp;void&nbsp;replyMessage&#8203;(org.telegram.telegrambots.bots.TelegramLongPollingBot&nbsp;bot,
+<pre class="methodSignature">public static&nbsp;void&nbsp;replyMessage&#8203;(org.telegram.telegrambots.meta.bots.AbsSender&nbsp;bot,
                                 org.telegram.telegrambots.meta.api.objects.Message&nbsp;messageToReply,
                                 java.lang.String&nbsp;replyContent,
                                 <a href="../constant/MessageParseMode.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">MessageParseMode</a>&nbsp;parseMode,
                                 boolean&nbsp;disableWebPagePreview)</pre>
 </li>
 </ul>
-<a id="replyMessage(org.telegram.telegrambots.bots.TelegramLongPollingBot,java.lang.String,java.lang.Integer,java.lang.String,io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode,boolean)">
+<a id="replyMessage(org.telegram.telegrambots.meta.bots.AbsSender,java.lang.String,java.lang.Integer,java.lang.String,io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode,boolean)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>replyMessage</h4>
-<pre class="methodSignature">public static&nbsp;void&nbsp;replyMessage&#8203;(org.telegram.telegrambots.bots.TelegramLongPollingBot&nbsp;bot,
+<pre class="methodSignature">public static&nbsp;void&nbsp;replyMessage&#8203;(org.telegram.telegrambots.meta.bots.AbsSender&nbsp;bot,
                                 java.lang.String&nbsp;chatId,
                                 @Nullable
                                 java.lang.Integer&nbsp;messageId,
@@ -264,13 +265,13 @@ extends java.lang.Object</pre>
                                 boolean&nbsp;disableWebPagePreview)</pre>
 </li>
 </ul>
-<a id="replyMessage(org.telegram.telegrambots.bots.TelegramLongPollingBot,org.telegram.telegrambots.meta.api.objects.Message,java.lang.String,io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode)">
+<a id="replyMessage(org.telegram.telegrambots.meta.bots.AbsSender,org.telegram.telegrambots.meta.api.objects.Message,java.lang.String,io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>replyMessage</h4>
-<pre class="methodSignature">public static&nbsp;void&nbsp;replyMessage&#8203;(org.telegram.telegrambots.bots.TelegramLongPollingBot&nbsp;bot,
+<pre class="methodSignature">public static&nbsp;void&nbsp;replyMessage&#8203;(org.telegram.telegrambots.meta.bots.AbsSender&nbsp;bot,
                                 org.telegram.telegrambots.meta.api.objects.Message&nbsp;messageToReply,
                                 java.lang.String&nbsp;replyContent,
                                 <a href="../constant/MessageParseMode.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">MessageParseMode</a>&nbsp;parseMode)</pre>
