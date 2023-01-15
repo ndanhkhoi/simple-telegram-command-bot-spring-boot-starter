@@ -5,13 +5,13 @@ import io.github.ndanhkhoi.telegram.bot.constant.MediaType;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.send.SendSticker;
 import org.telegram.telegrambots.meta.api.methods.send.SendVoice;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.bots.AbsSender;
 import reactor.function.Consumer4;
 
 import javax.annotation.Nullable;
@@ -25,7 +25,7 @@ import java.util.Map;
 @UtilityClass
 public class SendMediaUtils {
 
-    private static final Map<MediaType, Consumer4<Message, InputFile, Long, TelegramLongPollingBot>> inputfileConsumerMap = ImmutableMap.<MediaType, Consumer4<Message, InputFile, Long, TelegramLongPollingBot>>builder()
+    private static final Map<MediaType, Consumer4<Message, InputFile, Long, AbsSender>> inputfileConsumerMap = ImmutableMap.<MediaType, Consumer4<Message, InputFile, Long, AbsSender>>builder()
             .put(MediaType.STICKER, SendMediaUtils::sendSticker)
             .put(MediaType.DOCUMENT, SendMediaUtils::sendDocument)
             .put(MediaType.PHOTO, SendMediaUtils::sendPhoto)
@@ -33,7 +33,7 @@ public class SendMediaUtils {
             .build();
 
     @SneakyThrows
-    public static void sendDocument(@Nullable Message messageToReply, InputFile inputFile, Long chatId, TelegramLongPollingBot bot) {
+    public static void sendDocument(@Nullable Message messageToReply, InputFile inputFile, Long chatId, AbsSender bot) {
         SendDocument sendDocument = new SendDocument();
         sendDocument.setDocument(inputFile);
         if (messageToReply != null) {
@@ -44,7 +44,7 @@ public class SendMediaUtils {
     }
 
     @SneakyThrows
-    public static void sendPhoto(@Nullable Message messageToReply, InputFile inputFile, Long chatId, TelegramLongPollingBot bot) {
+    public static void sendPhoto(@Nullable Message messageToReply, InputFile inputFile, Long chatId, AbsSender bot) {
         SendPhoto sendPhoto = new SendPhoto();
         sendPhoto.setPhoto(inputFile);
         if (messageToReply != null) {
@@ -55,7 +55,7 @@ public class SendMediaUtils {
     }
 
     @SneakyThrows
-    public static void sendVoice(@Nullable Message messageToReply, InputFile inputFile, Long chatId, TelegramLongPollingBot bot) {
+    public static void sendVoice(@Nullable Message messageToReply, InputFile inputFile, Long chatId, AbsSender bot) {
         SendVoice sendVoice = new SendVoice();
         sendVoice.setVoice(inputFile);
         if (messageToReply != null) {
@@ -66,7 +66,7 @@ public class SendMediaUtils {
     }
 
     @SneakyThrows
-    public static void sendSticker(@Nullable Message messageToReply, InputFile sticker, Long chatId, TelegramLongPollingBot bot) {
+    public static void sendSticker(@Nullable Message messageToReply, InputFile sticker, Long chatId, AbsSender bot) {
         SendSticker sendSticker = new SendSticker();
         sendSticker.setSticker(sticker);
         sendSticker.setChatId(String.valueOf(chatId));
@@ -76,7 +76,7 @@ public class SendMediaUtils {
         bot.execute(sendSticker);
     }
 
-    public static void sendMedia(@Nullable Message message, InputFile inputFile, Long chatId, MediaType mediaType, TelegramLongPollingBot bot) {
+    public static void sendMedia(@Nullable Message message, InputFile inputFile, Long chatId, MediaType mediaType, AbsSender bot) {
         if (inputfileConsumerMap.containsKey(mediaType)) {
             inputfileConsumerMap.get(mediaType).accept(message, inputFile, chatId, bot);
         }

@@ -1,7 +1,6 @@
 package io.github.ndanhkhoi.telegram.bot.core.resolver;
 
 import io.github.ndanhkhoi.telegram.bot.annotation.ConditionalOnMissingTypeResolverBean;
-import io.github.ndanhkhoi.telegram.bot.core.SimpleTelegramLongPollingCommandBot;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ByteArrayResource;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -19,39 +18,39 @@ public class TypeResolverConfig {
 
     @Bean
     @ConditionalOnMissingTypeResolverBean(BotApiMethod.class)
-    TypeResolver<BotApiMethod> botApiMethodTypeResolver(SimpleTelegramLongPollingCommandBot telegramLongPollingCommandBot) {
-        return new BotApiMethodResolver(telegramLongPollingCommandBot);
+    TypeResolver<BotApiMethod> botApiMethodTypeResolver() {
+        return new BotApiMethodResolver();
     }
 
 
     @Bean
     @ConditionalOnMissingTypeResolverBean(byte[].class)
-    TypeResolver<byte[]> byteArrayResolver(SimpleTelegramLongPollingCommandBot telegramLongPollingCommandBot) {
-        return new ByteArrayResolver(telegramLongPollingCommandBot);
+    TypeResolver<byte[]> byteArrayResolver() {
+        return new ByteArrayResolver();
     }
 
     @Bean
     @ConditionalOnMissingTypeResolverBean(ByteArrayResource.class)
-    TypeResolver<ByteArrayResource> byteArrayResourceTypeResolver(SimpleTelegramLongPollingCommandBot telegramLongPollingCommandBot) {
-        return new ByteArrayResourceResolver(telegramLongPollingCommandBot);
+    TypeResolver<ByteArrayResource> byteArrayResourceTypeResolver() {
+        return new ByteArrayResourceResolver();
     }
 
     @Bean
     @ConditionalOnMissingTypeResolverBean(File.class)
-    TypeResolver<File> fileTypeResolver(SimpleTelegramLongPollingCommandBot telegramLongPollingCommandBot) {
-        return new FileResolver(telegramLongPollingCommandBot);
+    TypeResolver<File> fileTypeResolver() {
+        return new FileResolver();
     }
 
     @Bean
     @ConditionalOnMissingTypeResolverBean(InputFile.class)
-    TypeResolver<InputFile> inputFileResolver(SimpleTelegramLongPollingCommandBot telegramLongPollingCommandBot) {
-        return new InputFileResolver(telegramLongPollingCommandBot);
+    TypeResolver<InputFile> inputFileResolver() {
+        return new InputFileResolver();
     }
 
     @Bean
     @ConditionalOnMissingTypeResolverBean(String.class)
-    TypeResolver<String> stringResolver(SimpleTelegramLongPollingCommandBot telegramLongPollingCommandBot) {
-        return new StringResolver(telegramLongPollingCommandBot);
+    TypeResolver<String> stringResolver() {
+        return new StringResolver();
     }
 
     @Bean

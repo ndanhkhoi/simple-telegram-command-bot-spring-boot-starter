@@ -3,8 +3,8 @@ package io.github.ndanhkhoi.telegram.bot.subscriber;
 import io.github.ndanhkhoi.telegram.bot.annotation.AnnotaionArg;
 import io.github.ndanhkhoi.telegram.bot.annotation.TypeArg;
 import io.github.ndanhkhoi.telegram.bot.constant.CommonConstant;
+import io.github.ndanhkhoi.telegram.bot.core.BotDispatcher;
 import io.github.ndanhkhoi.telegram.bot.core.BotProperties;
-import io.github.ndanhkhoi.telegram.bot.core.SimpleTelegramLongPollingCommandBot;
 import io.github.ndanhkhoi.telegram.bot.core.registry.AdviceRegistry;
 import io.github.ndanhkhoi.telegram.bot.core.registry.ResolverRegistry;
 import io.github.ndanhkhoi.telegram.bot.exception.BotAccessDeniedException;
@@ -55,10 +55,6 @@ import java.util.stream.IntStream;
 public class UpdateSubscriber implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
-
-    private SimpleTelegramLongPollingCommandBot getBotInstance() {
-        return applicationContext.getBean(SimpleTelegramLongPollingCommandBot.class);
-    }
 
     private BotProperties getBotProperties() {
         return applicationContext.getBean(BotProperties.class);
@@ -127,13 +123,12 @@ public class UpdateSubscriber implements ApplicationContextAware {
     private void logUpdate(Update update) {
         UpdateMapper updateMapper = getUpdateMapper();
         BotProperties botProperties = getBotProperties();
-        SimpleTelegramLongPollingCommandBot telegramLongPollingBot = getBotInstance();
         log.debug("New update detected -> {}", getUpdateMapper().writeValueAsString(update));
         if (StringUtils.isNotBlank(botProperties.getLoggingChatId())) {
             SendMessage sendMessage = new SendMessage();
             sendMessage.setText("New update detected -> \n" + updateMapper.writeValueAsPrettyString(update));
             sendMessage.setChatId(botProperties.getLoggingChatId());
-            telegramLongPollingBot.executeSneakyThrows(sendMessage);
+            BotDispatcher.getInstance().executeSneakyThrows(sendMessage);
         }
     }
 
@@ -164,7 +159,7 @@ public class UpdateSubscriber implements ApplicationContextAware {
                         return ((Mono<?>) rawReturnedValue).flux();
                     }
                     else if (rawReturnedValue instanceof Flux) {
-                        return  (Flux<?>) rawReturnedValue;
+                        return (Flux<?>) rawReturnedValue;
                     }
                     return Flux.just(rawReturnedValue);
                 })
@@ -185,7 +180,7 @@ public class UpdateSubscriber implements ApplicationContextAware {
     }
 
     @SneakyThrows
-    private Object invokeMethod(Object bean, Method method, Object ...args) {
+    private Object invokeMethod(Object bean, Method method, Object... args) {
         return method.invoke(bean, args);
     }
 
@@ -196,14 +191,12 @@ public class UpdateSubscriber implements ApplicationContextAware {
     }
 
     private void sendUnknownErrorAlert(BotCommandParams params, Throwable t) {
-        SimpleTelegramLongPollingCommandBot telegramLongPollingBot = applicationContext.getBean(SimpleTelegramLongPollingCommandBot.class);
         log.error("Error!", t);
-        TelegramMessageUtils.replyMessage(telegramLongPollingBot, params.getUpdate().getMessage(), CommonConstant.ERROR_NOTIFY_MESSAGE, null);
+        TelegramMessageUtils.replyMessage(BotDispatcher.getInstance().getSender(), params.getUpdate().getMessage(), CommonConstant.ERROR_NOTIFY_MESSAGE, null);
     }
 
     public void executeCommandAdvice(Throwable t, BotCommandParams params) {
         AdviceRegistry adviceRegistry = applicationContext.getBean(AdviceRegistry.class);
-        SimpleTelegramLongPollingCommandBot telegramLongPollingBot = applicationContext.getBean(SimpleTelegramLongPollingCommandBot.class);
         if (adviceRegistry.hasAdvice(t.getClass())) {
             Method handleMethod = adviceRegistry.getAdvice(t.getClass()).getMethod();
             Object adviceBean = adviceRegistry.getAdvice(t.getClass()).getBean();
@@ -223,10 +216,10 @@ public class UpdateSubscriber implements ApplicationContextAware {
                 sendUnknownErrorAlert(params, t);
             }
             else if (returnValue instanceof String) {
-                TelegramMessageUtils.replyMessage(telegramLongPollingBot, params.getUpdate().getMessage(), (String) returnValue,null);
+                TelegramMessageUtils.replyMessage(BotDispatcher.getInstance().getSender(), params.getUpdate().getMessage(), (String) returnValue, null);
             }
             else if (returnValue instanceof BotApiMethod) {
-                telegramLongPollingBot.executeSneakyThrows((BotApiMethod<? extends Serializable>) returnValue);
+                BotDispatcher.getInstance().executeSneakyThrows((BotApiMethod<? extends Serializable>) returnValue);
             }
             else {
                 log.warn("Returnd value of {}#{} is not supported ({}), so default error handler will be called as a callback", adviceBean.getClass().getSimpleName(), handleMethod.getName(), returnValue.getClass().getName());
@@ -238,9 +231,9 @@ public class UpdateSubscriber implements ApplicationContextAware {
         }
     }
 
-    private void excuteCommand(Update update, BotCommandParams botCommandParams, SimpleTelegramLongPollingCommandBot telegramLongPollingBot) {
+    private void excuteCommand(Update update, BotCommandParams botCommandParams) {
         try {
-            telegramLongPollingBot
+            BotDispatcher.getInstance()
                     .getCommand(update)
                     .ifPresentOrElse(botCommand -> {
                         botCommandParams.setCommandName(botCommand.getCmd());
@@ -253,12 +246,11 @@ public class UpdateSubscriber implements ApplicationContextAware {
                     .replyToMessageId(botCommandParams.getMessage().getMessageId())
                     .text(ex.getMessage())
                     .build();
-            telegramLongPollingBot.executeSneakyThrows(sendMessage);
+            BotDispatcher.getInstance().executeSneakyThrows(sendMessage);
         }
     }
 
     private void process(Update update) {
-        SimpleTelegramLongPollingCommandBot telegramLongPollingBot = getBotInstance();
         if (update.getCallbackQuery() != null) {
             applicationContext.getBean(CallbackQuerySubscriber.class).accept(update);
         }
@@ -274,9 +266,9 @@ public class UpdateSubscriber implements ApplicationContextAware {
                 nonCommandUpdateSubscriber.accept(update);
             }
             else {
-                BotCommandParams botCommandParams = telegramLongPollingBot.getCommandParams(update);
+                BotCommandParams botCommandParams = BotDispatcher.getInstance().getCommandParams(update);
                 if (botCommandParams != null) {
-                    excuteCommand(update, botCommandParams, telegramLongPollingBot);
+                    excuteCommand(update, botCommandParams);
                 }
             }
         }

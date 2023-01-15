@@ -6,10 +6,10 @@ import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.bots.AbsSender;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -24,12 +24,12 @@ public final class TelegramMessageUtils {
     }
 
     @SneakyThrows
-    public static void replyMessage(TelegramLongPollingBot bot, Message messageToReply, String replyContent, MessageParseMode parseMode, boolean disableWebPagePreview) {
+    public static void replyMessage(AbsSender bot, Message messageToReply, String replyContent, MessageParseMode parseMode, boolean disableWebPagePreview) {
         replyMessage(bot, messageToReply.getChatId() + "", messageToReply.getMessageId(), replyContent, parseMode, disableWebPagePreview);
     }
 
     @SneakyThrows
-    public static void replyMessage(TelegramLongPollingBot bot, String chatId, @Nullable Integer messageId, String replyContent, MessageParseMode parseMode, boolean disableWebPagePreview) {
+    public static void replyMessage(AbsSender bot, String chatId, @Nullable Integer messageId, String replyContent, MessageParseMode parseMode, boolean disableWebPagePreview) {
         SendMessage message = new SendMessage();
         if (parseMode != null && parseMode != MessageParseMode.PLAIN) {
             message.setParseMode(parseMode.getValue());
@@ -45,7 +45,7 @@ public final class TelegramMessageUtils {
         bot.execute(message);
     }
 
-    public static void replyMessage(TelegramLongPollingBot bot, Message messageToReply, String replyContent, MessageParseMode parseMode) {
+    public static void replyMessage(AbsSender bot, Message messageToReply, String replyContent, MessageParseMode parseMode) {
         replyMessage(bot, messageToReply, replyContent, parseMode, false);
     }
 

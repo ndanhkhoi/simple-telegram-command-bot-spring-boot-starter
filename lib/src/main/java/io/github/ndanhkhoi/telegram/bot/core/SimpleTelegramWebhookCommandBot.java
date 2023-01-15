@@ -3,20 +3,15 @@ package io.github.ndanhkhoi.telegram.bot.core;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.bots.TelegramWebhookBot;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
-/**
- * @author ndanhkhoi
- * Created at 11:33:32 October 08, 2021
- */
 @Slf4j
 @RequiredArgsConstructor
-public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot {
+public class SimpleTelegramWebhookCommandBot extends TelegramWebhookBot {
+
     private final BotProperties botProperties;
 
     @Override
@@ -37,13 +32,15 @@ public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot 
     }
 
     @Override
-    public void onUpdateReceived(Update update) {
+    public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
         BotDispatcher.getInstance().getUpdateSubscriber().consume(Mono.just(update));
+        return null;
     }
 
     @Override
-    public void onUpdatesReceived(List<Update> updates) {
-        BotDispatcher.getInstance().getUpdateSubscriber().consume(Flux.fromIterable(updates));
+    public String getBotPath() {
+        return getBotUsername();
     }
 
 }
+
