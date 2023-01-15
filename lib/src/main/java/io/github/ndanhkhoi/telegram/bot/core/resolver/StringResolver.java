@@ -2,10 +2,11 @@ package io.github.ndanhkhoi.telegram.bot.core.resolver;
 
 import io.github.ndanhkhoi.telegram.bot.constant.CommonConstant;
 import io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode;
-import io.github.ndanhkhoi.telegram.bot.core.SimpleTelegramLongPollingCommandBot;
+import io.github.ndanhkhoi.telegram.bot.core.BotDispatcher;
 import io.github.ndanhkhoi.telegram.bot.model.BotCommand;
 import io.github.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import io.github.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -17,14 +18,8 @@ import java.util.List;
  * Created at 22:21:06 February 26, 2022
  */
 @Slf4j
+@NoArgsConstructor
 public class StringResolver implements TypeResolver<String> {
-
-    private final SimpleTelegramLongPollingCommandBot telegramLongPollingBot;
-
-
-    public StringResolver(SimpleTelegramLongPollingCommandBot telegramLongPollingBot) {
-        this.telegramLongPollingBot = telegramLongPollingBot;
-    }
 
     @Override
     public void resolve(String value, BotCommand botCommand, BotCommandParams params) {
@@ -39,11 +34,11 @@ public class StringResolver implements TypeResolver<String> {
             String chatId = message.getChatId() + "";
             for (int i = 0; i < lineWrap.size(); i++) {
                 Integer messageId = i == 0 ? message.getMessageId() : null;
-                TelegramMessageUtils.replyMessage(telegramLongPollingBot, chatId, messageId, lineWrap.get(i), parseMode, botCommand.isDisableWebPagePreview());
+                TelegramMessageUtils.replyMessage(BotDispatcher.getInstance().getSender(), chatId, messageId, lineWrap.get(i), parseMode, botCommand.isDisableWebPagePreview());
             }
         }
         else {
-            TelegramMessageUtils.replyMessage(telegramLongPollingBot, message, value, parseMode, botCommand.isDisableWebPagePreview());
+            TelegramMessageUtils.replyMessage(BotDispatcher.getInstance().getSender(), message, value, parseMode, botCommand.isDisableWebPagePreview());
         }
         log.debug("Reply Message: {}", value);
     }

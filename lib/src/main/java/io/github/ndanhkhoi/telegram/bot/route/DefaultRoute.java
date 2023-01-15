@@ -8,8 +8,8 @@ import io.github.ndanhkhoi.telegram.bot.constant.CommonConstant;
 import io.github.ndanhkhoi.telegram.bot.constant.MediaType;
 import io.github.ndanhkhoi.telegram.bot.constant.MessageParseMode;
 import io.github.ndanhkhoi.telegram.bot.constant.TelegramTextStyled;
+import io.github.ndanhkhoi.telegram.bot.core.BotDispatcher;
 import io.github.ndanhkhoi.telegram.bot.core.BotProperties;
-import io.github.ndanhkhoi.telegram.bot.core.SimpleTelegramLongPollingCommandBot;
 import io.github.ndanhkhoi.telegram.bot.model.BotCommand;
 import io.github.ndanhkhoi.telegram.bot.utils.FileUtils;
 import io.github.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DefaultRoute {
 
-    private final SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot;
+    private final BotDispatcher botDispatcher;
     private final BotProperties botProperties;
 
     @Value("${logging.file.name:#{null}}")
@@ -65,7 +65,7 @@ public class DefaultRoute {
         boolean isMessageInGroup = TelegramMessageUtils.isMessageInGroup(update.getMessage());
         String title = TelegramMessageUtils.wrapByTag("List of available commands for this chat: ", TelegramTextStyled.BOLD);
         AtomicInteger index = new AtomicInteger(1);
-        List<String> result =  simpleTelegramLongPollingCommandBot.getAvailableBotCommands(update)
+        List<String> result =  botDispatcher.getAvailableBotCommands(update)
                 .stream()
                 .map(botCommand -> described(botCommand, isMessageInGroup))
                 .sorted()

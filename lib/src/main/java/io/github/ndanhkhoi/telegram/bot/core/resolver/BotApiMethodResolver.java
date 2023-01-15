@@ -1,8 +1,9 @@
 package io.github.ndanhkhoi.telegram.bot.core.resolver;
 
-import io.github.ndanhkhoi.telegram.bot.core.SimpleTelegramLongPollingCommandBot;
+import io.github.ndanhkhoi.telegram.bot.core.BotDispatcher;
 import io.github.ndanhkhoi.telegram.bot.model.BotCommand;
 import io.github.ndanhkhoi.telegram.bot.model.BotCommandParams;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
@@ -12,17 +13,12 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
  */
 @SuppressWarnings("rawtypes")
 @Slf4j
+@NoArgsConstructor
 public class BotApiMethodResolver implements TypeResolver<BotApiMethod> {
-
-    private final SimpleTelegramLongPollingCommandBot telegramLongPollingBot;
-
-    public BotApiMethodResolver(SimpleTelegramLongPollingCommandBot telegramLongPollingBot) {
-        this.telegramLongPollingBot = telegramLongPollingBot;
-    }
 
     @Override
     public void resolve(BotApiMethod value, BotCommand botCommand, BotCommandParams params) {
-        telegramLongPollingBot.executeSneakyThrows(value);
+        BotDispatcher.getInstance().executeSneakyThrows(value);
         log.debug("Excuted API method {}", value);
     }
 

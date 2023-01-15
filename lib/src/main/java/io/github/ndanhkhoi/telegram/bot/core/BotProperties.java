@@ -29,6 +29,7 @@ public class BotProperties {
     private Executor executor = new Executor();
     private Integer registerDelay = 0;
     private Boolean showCommandMenu = true;
+    private Webhook webhook = new Webhook();
 
     @Getter
     @Setter
@@ -38,6 +39,15 @@ public class BotProperties {
         private int maxPoolSize = Integer.MAX_VALUE;
         private int queueCapacity = Integer.MAX_VALUE;
         private String threadNamePrefix = "bot-task-";
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class Webhook {
+        private Boolean useWebhook = false;
+        private String url;
+        private String secretToken;
     }
 
 }

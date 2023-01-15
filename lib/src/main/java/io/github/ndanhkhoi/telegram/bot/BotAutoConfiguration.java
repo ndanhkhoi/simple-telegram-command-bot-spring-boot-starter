@@ -1,11 +1,12 @@
 package io.github.ndanhkhoi.telegram.bot;
 
+import io.github.ndanhkhoi.telegram.bot.core.BotDispatcher;
 import io.github.ndanhkhoi.telegram.bot.core.BotProperties;
 import io.github.ndanhkhoi.telegram.bot.core.SimpleTelegramLongPollingCommandBot;
+import io.github.ndanhkhoi.telegram.bot.core.SimpleTelegramWebhookCommandBot;
 import io.github.ndanhkhoi.telegram.bot.core.processor.ProcessorConfig;
 import io.github.ndanhkhoi.telegram.bot.core.registry.RegistryConfig;
 import io.github.ndanhkhoi.telegram.bot.core.resolver.TypeResolverConfig;
-import io.github.ndanhkhoi.telegram.bot.exception.BotException;
 import io.github.ndanhkhoi.telegram.bot.mapper.MapperConfig;
 import io.github.ndanhkhoi.telegram.bot.repository.RepositoryConfig;
 import io.github.ndanhkhoi.telegram.bot.subscriber.SubscriberConfig;
@@ -24,7 +25,11 @@ import org.springframework.context.event.EventListener;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
+import org.telegram.telegrambots.meta.bots.AbsSender;
+import org.telegram.telegrambots.meta.generics.Webhook;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import org.telegram.telegrambots.updatesreceivers.ServerlessWebhook;
 import reactor.core.Exceptions;
 import reactor.core.publisher.Mono;
 
@@ -61,28 +66,67 @@ public class BotAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnProperty(value = "khoinda.bot.webhook.useWebhook", havingValue = "false", matchIfMissing = true)
     SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot() {
         return new SimpleTelegramLongPollingCommandBot(botProperties);
+    }
+
+    @Bean
+    @ConditionalOnProperty(value = "khoinda.bot.webhook.useWebhook", havingValue = "true")
+    SimpleTelegramWebhookCommandBot simpleTelegramWebhookCommandBot() {
+        return new SimpleTelegramWebhookCommandBot(botProperties);
+    }
+
+
+    @Bean
+    BotDispatcher botDispatcher(BotProperties botProperties) {
+        boolean useWebhook = botProperties.getWebhook().getUseWebhook();
+        AbsSender sender = useWebhook ? applicationContext.getBean(SimpleTelegramWebhookCommandBot.class)
+                : applicationContext.getBean(SimpleTelegramLongPollingCommandBot.class);
+        return new BotDispatcher(botProperties, sender);
+    }
+
+    @Bean
+    @ConditionalOnProperty(value = "khoinda.bot.webhook.useWebhook", havingValue = "true")
+    SetWebhook setWebhook() {
+        SetWebhook setWebhook = new SetWebhook();
+        setWebhook.setUrl(botProperties.getWebhook().getUrl());
+        setWebhook.setSecretToken(botProperties.getWebhook().getSecretToken());
+        return setWebhook;
+    }
+
+    @Bean
+    @ConditionalOnProperty(value = "khoinda.bot.webhook.useWebhook", havingValue = "true")
+    ServerlessWebhook webhook() {
+        return new ServerlessWebhook();
     }
 
     @SneakyThrows
     @EventListener(ApplicationReadyEvent.class)
     public void registerBot() {
-        SimpleTelegramLongPollingCommandBot bot = applicationContext.getBean(SimpleTelegramLongPollingCommandBot.class);
-        Mono.just(new TelegramBotsApi(DefaultBotSession.class))
+        Mono.just(botProperties.getWebhook().getUseWebhook())
                 .delaySubscription(Duration.ofSeconds(botProperties.getRegisterDelay()))
                 .doOnSuccess(api -> log.info("Spring Boot Telegram Command Bot Auto Configuration by @ndanhkhoi"))
                 .doOnError(ex -> {
                     throw Exceptions.errorCallbackNotImplemented(ex);
                 })
-                .subscribe(api -> {
-                    try {
-                        api.registerBot(bot);
-                    }
-                    catch (Exception ex) {
-                        throw new BotException(ex);
-                    }
-                });
+                .subscribe(this::registerBot);
+    }
+
+    @SneakyThrows
+    private void registerBot(boolean useWebhook) {
+        if (useWebhook) {
+            Webhook webhook = applicationContext.getBean(ServerlessWebhook.class);
+            SimpleTelegramWebhookCommandBot bot = applicationContext.getBean(SimpleTelegramWebhookCommandBot.class);
+            TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class, webhook);
+            SetWebhook setWebhook = applicationContext.getBean(SetWebhook.class);
+            telegramBotsApi.registerBot(bot, setWebhook);
+        }
+        else {
+            SimpleTelegramLongPollingCommandBot bot = applicationContext.getBean(SimpleTelegramLongPollingCommandBot.class);
+            TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
+            telegramBotsApi.registerBot(bot);
+        }
     }
 
 }
