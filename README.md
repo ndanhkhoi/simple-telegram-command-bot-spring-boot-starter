@@ -32,6 +32,7 @@ A simple-to-use library to create Telegram Long Polling Bots in Java and Spring 
     * [Others Subscriber Bean](#others-subscriber-bean)
     * [Configurations](#configurations)
         + [Properties](#properties)
+    * [JavaDocs](#java-docs)
     * [Dependencies](#dependencies)
     * [Telegram Bot API](#telegram-bot-api)
     * [Jitpack](#jitpack)
@@ -284,6 +285,10 @@ By default, you can configure only these properties:
 | khoinda.webhook.useWebhook              | Use webhook bot instead of long polling                                                                                                                                                                                                                  | `false`             |
 | khoinda.webhook.url                     | Base URL for webhook                                                                                                                                                                                                                                     |                     |
 | khoinda.webhook.secretToken             | A secret token to be sent in a header “X-Telegram-Bot-Api-Secret-Token” in every webhook request, 1-256 characters. Only characters A-Z, a-z, 0-9, _ and - are allowed. The header is useful to ensure that the request comes from a webhook set by you. |                     |
+
+## Java Docs
+
+Visit javadoc for this library on [Github Page](https://ndanhkhoi.github.io/simple-telegram-command-bot-spring-boot-starter/index.html)
 
 ## Dependencies
 
