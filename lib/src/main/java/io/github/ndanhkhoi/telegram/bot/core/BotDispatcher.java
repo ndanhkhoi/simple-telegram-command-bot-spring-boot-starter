@@ -50,7 +50,7 @@ public class BotDispatcher implements ApplicationContextAware {
         return instance;
     }
 
-    public synchronized void setInstance() {
+    private synchronized void setInstance() {
         instance = this;
     }
 
