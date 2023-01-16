@@ -43,11 +43,15 @@ public class BotDispatcher implements ApplicationContextAware {
 
     @PostConstruct
     public void postConstruct() {
-        instance = this;
+        setInstance();
     }
 
     public static BotDispatcher getInstance() {
         return instance;
+    }
+
+    public synchronized void setInstance() {
+        instance = this;
     }
 
     public AbsSender getSender() {
