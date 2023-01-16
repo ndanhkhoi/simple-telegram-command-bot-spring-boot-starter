@@ -20,6 +20,8 @@ import java.util.NoSuchElementException;
 
 /**
  * Created at 15:53:17 January 12, 2023,
+ * <br>
+ * Callback controller for webhook bot
  */
 @Slf4j
 @RestController
