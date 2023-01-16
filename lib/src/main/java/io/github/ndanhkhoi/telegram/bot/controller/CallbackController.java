@@ -37,13 +37,7 @@ public class CallbackController {
     public ResponseEntity<CallbackResponse> updateReceived(@RequestHeader("X-Telegram-Bot-Api-Secret-Token") String secretToken, @PathVariable("botPath") String botPath, @RequestBody Update update) {
         CallbackResponse response;
 
-        if (!StringUtils.equals(botProperties.getWebhook().getSecretToken(), secretToken)) {
-            response = CallbackResponse.builder()
-                    .success(false)
-                    .message(HttpStatus.UNAUTHORIZED.toString())
-                    .build();
-        }
-        else {
+        if (StringUtils.equals(botProperties.getWebhook().getSecretToken(), secretToken)) {
             try {
                 webhook.updateReceived(botPath, update);
                 response = CallbackResponse.builder()
@@ -63,6 +57,12 @@ public class CallbackController {
                         .message(HttpStatus.INTERNAL_SERVER_ERROR.toString())
                         .build();
             }
+        }
+        else {
+            response = CallbackResponse.builder()
+                    .success(false)
+                    .message(HttpStatus.UNAUTHORIZED.toString())
+                    .build();
         }
         return ResponseEntity.ok()
                 .body(response);

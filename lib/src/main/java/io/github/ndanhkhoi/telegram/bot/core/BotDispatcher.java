@@ -50,8 +50,10 @@ public class BotDispatcher implements ApplicationContextAware {
         return instance;
     }
 
-    private synchronized void setInstance() {
-        instance = this;
+    private void setInstance() {
+        synchronized (BotDispatcher.class) {
+            instance = this;
+        }
     }
 
     public AbsSender getSender() {
@@ -131,7 +133,7 @@ public class BotDispatcher implements ApplicationContextAware {
             if (hasPermission(update, commandRegistry.getCommand(truncatedCmd))) {
                 botCommand = commandRegistry.getCommand(truncatedCmd);
             }
-            else if (botProperties.getShowCommandMenu()) {
+            else if (Boolean.TRUE.equals(botProperties.getShowCommandMenu())) {
                 throw new BotAccessDeniedException(CommonConstant.ACCESS_DENIED_ERROR);
             }
         }
@@ -177,7 +179,7 @@ public class BotDispatcher implements ApplicationContextAware {
     @SneakyThrows
     public void onRegisterBot() {
         SetMyCommands setMyCommands;
-        if (botProperties.getShowCommandMenu()) {
+        if (Boolean.TRUE.equals(botProperties.getShowCommandMenu())) {
             List<org.telegram.telegrambots.meta.api.objects.commands.BotCommand> commandList = getCommandRegistry().getAllCommands()
                     .stream()
                     .sorted((e1, e2) -> StringUtils.compare(e1.getCmd(), e2.getCmd()))

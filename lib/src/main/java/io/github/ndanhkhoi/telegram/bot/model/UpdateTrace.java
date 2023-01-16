@@ -3,7 +3,8 @@ package io.github.ndanhkhoi.telegram.bot.model;
 import lombok.Getter;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.time.Instant;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * @author ndanhkhoi
@@ -12,13 +13,13 @@ import java.time.Instant;
 @Getter
 public class UpdateTrace {
 
-    private final Instant timestamp;
+    private final Date timestamp;
     private final long startNanoTime;
     private final Update update;
 
     public UpdateTrace(Update update) {
         this.update = update;
-        this.timestamp = Instant.now();
+        this.timestamp = Calendar.getInstance().getTime();
         this.startNanoTime = System.nanoTime();
     }
 
