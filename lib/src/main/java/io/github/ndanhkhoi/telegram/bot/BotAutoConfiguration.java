@@ -83,7 +83,8 @@ public class BotAutoConfiguration {
         boolean useWebhook = botProperties.getWebhook().getUseWebhook();
         AbsSender sender = useWebhook ? applicationContext.getBean(SimpleTelegramWebhookCommandBot.class)
                 : applicationContext.getBean(SimpleTelegramLongPollingCommandBot.class);
-        return new BotDispatcher(botProperties, sender);
+        BotDispatcher.createInstance(applicationContext, botProperties, sender);
+        return BotDispatcher.getInstance();
     }
 
     @Bean
