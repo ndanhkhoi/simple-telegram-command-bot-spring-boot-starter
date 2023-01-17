@@ -9,14 +9,10 @@ import io.github.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import io.github.ndanhkhoi.telegram.bot.model.MessageParser;
 import io.github.ndanhkhoi.telegram.bot.subscriber.UpdateSubscriber;
 import io.github.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMember;
@@ -26,33 +22,36 @@ import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMember;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
-import javax.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
-@RequiredArgsConstructor
-public class BotDispatcher implements ApplicationContextAware {
-
+public class BotDispatcher {
+    private final ApplicationContext applicationContext;
     private final BotProperties botProperties;
     private final AbsSender sender;
-    private ApplicationContext applicationContext;
 
     private static BotDispatcher instance;
 
-    @PostConstruct
-    public void postConstruct() {
-        setInstance();
+    private BotDispatcher(ApplicationContext applicationContext, BotProperties botProperties, AbsSender sender) {
+        this.applicationContext = applicationContext;
+        this.botProperties = botProperties;
+        this.sender = sender;
     }
 
     public static BotDispatcher getInstance() {
         return instance;
     }
 
-    private void setInstance() {
+    public static void createInstance(ApplicationContext applicationContext, BotProperties botProperties, AbsSender sender) {
         synchronized (BotDispatcher.class) {
-            instance = this;
+            if (instance == null) {
+                instance = new BotDispatcher(applicationContext, botProperties, sender);
+            }
+            else {
+                throw new java.lang.UnsupportedOperationException("This is a singleton class and cannot be instantiated more than once");
+            }
         }
     }
 
@@ -206,11 +205,6 @@ public class BotDispatcher implements ApplicationContextAware {
     @SneakyThrows
     public <T extends Serializable, M extends BotApiMethod<T>> T executeSneakyThrows(M method) {
         return sender.execute(method);
-    }
-
-    @Override
-    public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
     }
 
 }
