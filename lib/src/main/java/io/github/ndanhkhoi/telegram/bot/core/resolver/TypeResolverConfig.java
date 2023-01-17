@@ -48,6 +48,12 @@ public class TypeResolverConfig {
     }
 
     @Bean
+    @ConditionalOnMissingTypeResolverBean(NumberResolver.class)
+    TypeResolver<Number> numberResolver() {
+        return new NumberResolver();
+    }
+
+    @Bean
     @ConditionalOnMissingTypeResolverBean(String.class)
     TypeResolver<String> stringResolver() {
         return new StringResolver();
