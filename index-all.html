@@ -203,8 +203,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><a href="io/github/ndanhkhoi/telegram/bot/core/BotDispatcher.html" title="class in io.github.ndanhkhoi.telegram.bot.core"><span class="typeNameLink">BotDispatcher</span></a> - Class in <a href="io/github/ndanhkhoi/telegram/bot/core/package-summary.html">io.github.ndanhkhoi.telegram.bot.core</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/github/ndanhkhoi/telegram/bot/core/BotDispatcher.html#%3Cinit%3E(io.github.ndanhkhoi.telegram.bot.core.BotProperties,org.telegram.telegrambots.meta.bots.AbsSender)">BotDispatcher(BotProperties, AbsSender)</a></span> - Constructor for class io.github.ndanhkhoi.telegram.bot.core.<a href="io/github/ndanhkhoi/telegram/bot/core/BotDispatcher.html" title="class in io.github.ndanhkhoi.telegram.bot.core">BotDispatcher</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="io/github/ndanhkhoi/telegram/bot/exception/BotException.html" title="class in io.github.ndanhkhoi.telegram.bot.exception"><span class="typeNameLink">BotException</span></a> - Exception in <a href="io/github/ndanhkhoi/telegram/bot/exception/package-summary.html">io.github.ndanhkhoi.telegram.bot.exception</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/github/ndanhkhoi/telegram/bot/exception/BotException.html#%3Cinit%3E()">BotException()</a></span> - Constructor for exception io.github.ndanhkhoi.telegram.bot.exception.<a href="io/github/ndanhkhoi/telegram/bot/exception/BotException.html" title="class in io.github.ndanhkhoi.telegram.bot.exception">BotException</a></dt>
@@ -311,6 +309,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/github/ndanhkhoi/telegram/bot/subscriber/UpdateSubscriber.html#consume(reactor.core.publisher.Flux)">consume(Flux&lt;Update&gt;)</a></span> - Method in class io.github.ndanhkhoi.telegram.bot.subscriber.<a href="io/github/ndanhkhoi/telegram/bot/subscriber/UpdateSubscriber.html" title="class in io.github.ndanhkhoi.telegram.bot.subscriber">UpdateSubscriber</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/github/ndanhkhoi/telegram/bot/subscriber/UpdateSubscriber.html#consume(reactor.core.publisher.Mono)">consume(Mono&lt;Update&gt;)</a></span> - Method in class io.github.ndanhkhoi.telegram.bot.subscriber.<a href="io/github/ndanhkhoi/telegram/bot/subscriber/UpdateSubscriber.html" title="class in io.github.ndanhkhoi.telegram.bot.subscriber">UpdateSubscriber</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/github/ndanhkhoi/telegram/bot/core/BotDispatcher.html#createInstance(org.springframework.context.ApplicationContext,io.github.ndanhkhoi.telegram.bot.core.BotProperties,org.telegram.telegrambots.meta.bots.AbsSender)">createInstance(ApplicationContext, BotProperties, AbsSender)</a></span> - Static method in class io.github.ndanhkhoi.telegram.bot.core.<a href="io/github/ndanhkhoi/telegram/bot/core/BotDispatcher.html" title="class in io.github.ndanhkhoi.telegram.bot.core">BotDispatcher</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/github/ndanhkhoi/telegram/bot/constant/ChatMemberStatus.html#CREATOR">CREATOR</a></span> - io.github.ndanhkhoi.telegram.bot.constant.<a href="io/github/ndanhkhoi/telegram/bot/constant/ChatMemberStatus.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">ChatMemberStatus</a></dt>
 <dd>&nbsp;</dd>
@@ -572,6 +572,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/github/ndanhkhoi/telegram/bot/core/resolver/InputFileResolver.html#getType()">getType()</a></span> - Method in class io.github.ndanhkhoi.telegram.bot.core.resolver.<a href="io/github/ndanhkhoi/telegram/bot/core/resolver/InputFileResolver.html" title="class in io.github.ndanhkhoi.telegram.bot.core.resolver">InputFileResolver</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/github/ndanhkhoi/telegram/bot/core/resolver/NumberResolver.html#getType()">getType()</a></span> - Method in class io.github.ndanhkhoi.telegram.bot.core.resolver.<a href="io/github/ndanhkhoi/telegram/bot/core/resolver/NumberResolver.html" title="class in io.github.ndanhkhoi.telegram.bot.core.resolver">NumberResolver</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/github/ndanhkhoi/telegram/bot/core/resolver/StringResolver.html#getType()">getType()</a></span> - Method in class io.github.ndanhkhoi.telegram.bot.core.resolver.<a href="io/github/ndanhkhoi/telegram/bot/core/resolver/StringResolver.html" title="class in io.github.ndanhkhoi.telegram.bot.core.resolver">StringResolver</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/github/ndanhkhoi/telegram/bot/core/resolver/TypeResolver.html#getType()">getType()</a></span> - Method in interface io.github.ndanhkhoi.telegram.bot.core.resolver.<a href="io/github/ndanhkhoi/telegram/bot/core/resolver/TypeResolver.html" title="interface in io.github.ndanhkhoi.telegram.bot.core.resolver">TypeResolver</a></dt>
@@ -772,6 +774,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dl>
 <dt><a href="io/github/ndanhkhoi/telegram/bot/subscriber/NonCommandUpdateSubscriber.html" title="interface in io.github.ndanhkhoi.telegram.bot.subscriber"><span class="typeNameLink">NonCommandUpdateSubscriber</span></a> - Interface in <a href="io/github/ndanhkhoi/telegram/bot/subscriber/package-summary.html">io.github.ndanhkhoi.telegram.bot.subscriber</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/github/ndanhkhoi/telegram/bot/core/resolver/NumberResolver.html" title="class in io.github.ndanhkhoi.telegram.bot.core.resolver"><span class="typeNameLink">NumberResolver</span></a> - Class in <a href="io/github/ndanhkhoi/telegram/bot/core/resolver/package-summary.html">io.github.ndanhkhoi.telegram.bot.core.resolver</a></dt>
+<dd>
+<div class="block">Created at 15:26:04 January 17, 2023,</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/github/ndanhkhoi/telegram/bot/core/resolver/NumberResolver.html#%3Cinit%3E()">NumberResolver()</a></span> - Constructor for class io.github.ndanhkhoi.telegram.bot.core.resolver.<a href="io/github/ndanhkhoi/telegram/bot/core/resolver/NumberResolver.html" title="class in io.github.ndanhkhoi.telegram.bot.core.resolver">NumberResolver</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <a id="I:O">
 <!--   -->
@@ -821,8 +829,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/github/ndanhkhoi/telegram/bot/constant/MessageParseMode.html#PLAIN">PLAIN</a></span> - io.github.ndanhkhoi.telegram.bot.constant.<a href="io/github/ndanhkhoi/telegram/bot/constant/MessageParseMode.html" title="enum in io.github.ndanhkhoi.telegram.bot.constant">MessageParseMode</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/github/ndanhkhoi/telegram/bot/subscriber/PosSubscriber.html" title="interface in io.github.ndanhkhoi.telegram.bot.subscriber"><span class="typeNameLink">PosSubscriber</span></a> - Interface in <a href="io/github/ndanhkhoi/telegram/bot/subscriber/package-summary.html">io.github.ndanhkhoi.telegram.bot.subscriber</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/github/ndanhkhoi/telegram/bot/core/BotDispatcher.html#postConstruct()">postConstruct()</a></span> - Method in class io.github.ndanhkhoi.telegram.bot.core.<a href="io/github/ndanhkhoi/telegram/bot/core/BotDispatcher.html" title="class in io.github.ndanhkhoi.telegram.bot.core">BotDispatcher</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/github/ndanhkhoi/telegram/bot/core/processor/BotAdvicePostProcessor.html#postProcessAfterInitialization(java.lang.Object,java.lang.String)">postProcessAfterInitialization(Object, String)</a></span> - Method in class io.github.ndanhkhoi.telegram.bot.core.processor.<a href="io/github/ndanhkhoi/telegram/bot/core/processor/BotAdvicePostProcessor.html" title="class in io.github.ndanhkhoi.telegram.bot.core.processor">BotAdvicePostProcessor</a></dt>
 <dd>&nbsp;</dd>
@@ -876,6 +882,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/github/ndanhkhoi/telegram/bot/core/resolver/FileResolver.html#resolve(java.io.File,io.github.ndanhkhoi.telegram.bot.model.BotCommand,io.github.ndanhkhoi.telegram.bot.model.BotCommandParams)">resolve(File, BotCommand, BotCommandParams)</a></span> - Method in class io.github.ndanhkhoi.telegram.bot.core.resolver.<a href="io/github/ndanhkhoi/telegram/bot/core/resolver/FileResolver.html" title="class in io.github.ndanhkhoi.telegram.bot.core.resolver">FileResolver</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/github/ndanhkhoi/telegram/bot/core/resolver/NumberResolver.html#resolve(java.lang.Number,io.github.ndanhkhoi.telegram.bot.model.BotCommand,io.github.ndanhkhoi.telegram.bot.model.BotCommandParams)">resolve(Number, BotCommand, BotCommandParams)</a></span> - Method in class io.github.ndanhkhoi.telegram.bot.core.resolver.<a href="io/github/ndanhkhoi/telegram/bot/core/resolver/NumberResolver.html" title="class in io.github.ndanhkhoi.telegram.bot.core.resolver">NumberResolver</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/github/ndanhkhoi/telegram/bot/core/resolver/StringResolver.html#resolve(java.lang.String,io.github.ndanhkhoi.telegram.bot.model.BotCommand,io.github.ndanhkhoi.telegram.bot.model.BotCommandParams)">resolve(String, BotCommand, BotCommandParams)</a></span> - Method in class io.github.ndanhkhoi.telegram.bot.core.resolver.<a href="io/github/ndanhkhoi/telegram/bot/core/resolver/StringResolver.html" title="class in io.github.ndanhkhoi.telegram.bot.core.resolver">StringResolver</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/github/ndanhkhoi/telegram/bot/core/resolver/CollectiomResolver.html#resolve(java.util.Collection,io.github.ndanhkhoi.telegram.bot.model.BotCommand,io.github.ndanhkhoi.telegram.bot.model.BotCommandParams)">resolve(Collection, BotCommand, BotCommandParams)</a></span> - Method in class io.github.ndanhkhoi.telegram.bot.core.resolver.<a href="io/github/ndanhkhoi/telegram/bot/core/resolver/CollectiomResolver.html" title="class in io.github.ndanhkhoi.telegram.bot.core.resolver">CollectiomResolver</a></dt>
@@ -927,8 +935,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/github/ndanhkhoi/telegram/bot/model/BotCommand.html#setAllowAllGroupAccess(boolean)">setAllowAllGroupAccess(boolean)</a></span> - Method in class io.github.ndanhkhoi.telegram.bot.model.<a href="io/github/ndanhkhoi/telegram/bot/model/BotCommand.html" title="class in io.github.ndanhkhoi.telegram.bot.model">BotCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/github/ndanhkhoi/telegram/bot/model/BotCommand.html#setAllowAllUserAccess(boolean)">setAllowAllUserAccess(boolean)</a></span> - Method in class io.github.ndanhkhoi.telegram.bot.model.<a href="io/github/ndanhkhoi/telegram/bot/model/BotCommand.html" title="class in io.github.ndanhkhoi.telegram.bot.model">BotCommand</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/github/ndanhkhoi/telegram/bot/core/BotDispatcher.html#setApplicationContext(org.springframework.context.ApplicationContext)">setApplicationContext(ApplicationContext)</a></span> - Method in class io.github.ndanhkhoi.telegram.bot.core.<a href="io/github/ndanhkhoi/telegram/bot/core/BotDispatcher.html" title="class in io.github.ndanhkhoi.telegram.bot.core">BotDispatcher</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/github/ndanhkhoi/telegram/bot/core/resolver/CollectiomResolver.html#setApplicationContext(org.springframework.context.ApplicationContext)">setApplicationContext(ApplicationContext)</a></span> - Method in class io.github.ndanhkhoi.telegram.bot.core.resolver.<a href="io/github/ndanhkhoi/telegram/bot/core/resolver/CollectiomResolver.html" title="class in io.github.ndanhkhoi.telegram.bot.core.resolver">CollectiomResolver</a></dt>
 <dd>&nbsp;</dd>

@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":9,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
+var data = {"i0":9,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":9,"i7":10,"i8":10,"i9":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -90,13 +90,13 @@ loadScripts(document, 'script');</script>
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -130,42 +130,15 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
-<dl>
-<dt>All Implemented Interfaces:</dt>
-<dd><code>org.springframework.beans.factory.Aware</code>, <code>org.springframework.context.ApplicationContextAware</code></dd>
-</dl>
 <hr>
-<pre>public class <span class="typeNameLabel">BotDispatcher</span>
-extends java.lang.Object
-implements org.springframework.context.ApplicationContextAware</pre>
+<pre>public final class <span class="typeNameLabel">BotDispatcher</span>
+extends java.lang.Object</pre>
 </li>
 </ul>
 </div>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
-<section>
-<ul class="blockList">
-<li class="blockList"><a id="constructor.summary">
-<!--   -->
-</a>
-<h3>Constructor Summary</h3>
-<table class="memberSummary">
-<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Constructor</th>
-<th class="colLast" scope="col">Description</th>
-</tr>
-<tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(io.github.ndanhkhoi.telegram.bot.core.BotProperties,org.telegram.telegrambots.meta.bots.AbsSender)">BotDispatcher</a></span>&#8203;(<a href="BotProperties.html" title="class in io.github.ndanhkhoi.telegram.bot.core">BotProperties</a>&nbsp;botProperties,
-             org.telegram.telegrambots.meta.bots.AbsSender&nbsp;sender)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-</table>
-</li>
-</ul>
-</section>
 <!-- ========== METHOD SUMMARY =========== -->
 <section>
 <ul class="blockList">
@@ -181,58 +154,55 @@ implements org.springframework.context.ApplicationContextAware</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createInstance(org.springframework.context.ApplicationContext,io.github.ndanhkhoi.telegram.bot.core.BotProperties,org.telegram.telegrambots.meta.bots.AbsSender)">createInstance</a></span>&#8203;(org.springframework.context.ApplicationContext&nbsp;applicationContext,
+              <a href="BotProperties.html" title="class in io.github.ndanhkhoi.telegram.bot.core">BotProperties</a>&nbsp;botProperties,
+              org.telegram.telegrambots.meta.bots.AbsSender&nbsp;sender)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>&lt;T extends java.io.Serializable,&#8203;M extends org.telegram.telegrambots.meta.api.methods.BotApiMethod&lt;T&gt;&gt;<br>T</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#executeSneakyThrows(M)">executeSneakyThrows</a></span>&#8203;(M&nbsp;method)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../model/BotCommand.html" title="class in io.github.ndanhkhoi.telegram.bot.model">BotCommand</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAvailableBotCommands(org.telegram.telegrambots.meta.api.objects.Update)">getAvailableBotCommands</a></span>&#8203;(org.telegram.telegrambots.meta.api.objects.Update&nbsp;update)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.util.Optional&lt;<a href="../model/BotCommand.html" title="class in io.github.ndanhkhoi.telegram.bot.model">BotCommand</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCommand(org.telegram.telegrambots.meta.api.objects.Update)">getCommand</a></span>&#8203;(org.telegram.telegrambots.meta.api.objects.Update&nbsp;update)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../model/BotCommandParams.html" title="class in io.github.ndanhkhoi.telegram.bot.model">BotCommandParams</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCommandParams(org.telegram.telegrambots.meta.api.objects.Update)">getCommandParams</a></span>&#8203;(org.telegram.telegrambots.meta.api.objects.Update&nbsp;update)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="registry/CommandRegistry.html" title="class in io.github.ndanhkhoi.telegram.bot.core.registry">CommandRegistry</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCommandRegistry()">getCommandRegistry</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static <a href="BotDispatcher.html" title="class in io.github.ndanhkhoi.telegram.bot.core">BotDispatcher</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getInstance()">getInstance</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>org.telegram.telegrambots.meta.bots.AbsSender</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSender()">getSender</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="../subscriber/UpdateSubscriber.html" title="class in io.github.ndanhkhoi.telegram.bot.subscriber">UpdateSubscriber</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUpdateSubscriber()">getUpdateSubscriber</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onRegisterBot()">onRegisterBot</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#postConstruct()">postConstruct</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i10" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setApplicationContext(org.springframework.context.ApplicationContext)">setApplicationContext</a></span>&#8203;(@NonNull org.springframework.context.ApplicationContext&nbsp;applicationContext)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onRegisterBot()">onRegisterBot</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -252,26 +222,6 @@ implements org.springframework.context.ApplicationContextAware</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-<section>
-<ul class="blockList">
-<li class="blockList"><a id="constructor.detail">
-<!--   -->
-</a>
-<h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(io.github.ndanhkhoi.telegram.bot.core.BotProperties,org.telegram.telegrambots.meta.bots.AbsSender)">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>BotDispatcher</h4>
-<pre>public&nbsp;BotDispatcher&#8203;(<a href="BotProperties.html" title="class in io.github.ndanhkhoi.telegram.bot.core">BotProperties</a>&nbsp;botProperties,
-                     org.telegram.telegrambots.meta.bots.AbsSender&nbsp;sender)</pre>
-</li>
-</ul>
-</li>
-</ul>
-</section>
 <!-- ============ METHOD DETAIL ========== -->
 <section>
 <ul class="blockList">
@@ -279,16 +229,6 @@ implements org.springframework.context.ApplicationContextAware</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="postConstruct()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>postConstruct</h4>
-<pre class="methodSignature">@PostConstruct
-public&nbsp;void&nbsp;postConstruct()</pre>
-</li>
-</ul>
 <a id="getInstance()">
 <!--   -->
 </a>
@@ -296,6 +236,17 @@ public&nbsp;void&nbsp;postConstruct()</pre>
 <li class="blockList">
 <h4>getInstance</h4>
 <pre class="methodSignature">public static&nbsp;<a href="BotDispatcher.html" title="class in io.github.ndanhkhoi.telegram.bot.core">BotDispatcher</a>&nbsp;getInstance()</pre>
+</li>
+</ul>
+<a id="createInstance(org.springframework.context.ApplicationContext,io.github.ndanhkhoi.telegram.bot.core.BotProperties,org.telegram.telegrambots.meta.bots.AbsSender)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>createInstance</h4>
+<pre class="methodSignature">public static&nbsp;void&nbsp;createInstance&#8203;(org.springframework.context.ApplicationContext&nbsp;applicationContext,
+                                  <a href="BotProperties.html" title="class in io.github.ndanhkhoi.telegram.bot.core">BotProperties</a>&nbsp;botProperties,
+                                  org.telegram.telegrambots.meta.bots.AbsSender&nbsp;sender)</pre>
 </li>
 </ul>
 <a id="getSender()">
@@ -366,27 +317,10 @@ public&nbsp;void&nbsp;postConstruct()</pre>
 </a><a id="executeSneakyThrows(M)">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>executeSneakyThrows</h4>
 <pre class="methodSignature">public&nbsp;&lt;T extends java.io.Serializable,&#8203;M extends org.telegram.telegrambots.meta.api.methods.BotApiMethod&lt;T&gt;&gt;&nbsp;T&nbsp;executeSneakyThrows&#8203;(M&nbsp;method)</pre>
-</li>
-</ul>
-<a id="setApplicationContext(org.springframework.context.ApplicationContext)">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>setApplicationContext</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setApplicationContext&#8203;(@NonNull
-                                  @NonNull org.springframework.context.ApplicationContext&nbsp;applicationContext)
-                           throws org.springframework.beans.BeansException</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>setApplicationContext</code>&nbsp;in interface&nbsp;<code>org.springframework.context.ApplicationContextAware</code></dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>org.springframework.beans.BeansException</code></dd>
-</dl>
 </li>
 </ul>
 </li>
@@ -442,13 +376,13 @@ public&nbsp;void&nbsp;postConstruct()</pre>
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
