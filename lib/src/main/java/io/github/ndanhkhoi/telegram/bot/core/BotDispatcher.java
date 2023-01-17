@@ -27,7 +27,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class BotDispatcher {
+public final class BotDispatcher {
     private final ApplicationContext applicationContext;
     private final BotProperties botProperties;
     private final AbsSender sender;
