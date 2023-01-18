@@ -239,11 +239,11 @@ You can create a bean that inplements `CallbackQuerySubscriber` to trigger callb
 public class CustomCallbackQuerySubscriber implements CallbackQuerySubscriber {
 
     @Override
-    public void accept(Update update) {
+    public void accept(Update update) throws Exception {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText("Callback query data: " + update.getCallbackQuery().getData());
         sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId() + "");
-        BotDispatcher.getInstance().getSender().executeSneakyThrows(sendMessage);
+        BotDispatcher.getInstance().getSender().execute(sendMessage);
     }
 
 }
