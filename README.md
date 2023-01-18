@@ -172,7 +172,7 @@ You can authorize command with these properties in `@CommandMapping` annotaion:
 
 ### Single value
 
-- `String` - the text will be reply to user make a request
+- `String/Number` - the text will be reply to user make a request
 - `InputFile/File/byte[]/ByteArrayResource` - the file will be reply to user make a request
 - `BotApiMethod` - it will be excuted automatically
 - `Void` - do nothing
