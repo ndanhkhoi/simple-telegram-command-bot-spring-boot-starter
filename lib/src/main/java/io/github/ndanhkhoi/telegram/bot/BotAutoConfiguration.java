@@ -66,13 +66,13 @@ public class BotAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(value = "khoinda.bot.webhook.useWebhook", havingValue = "false", matchIfMissing = true)
+    @ConditionalOnProperty(value = "khoinda.bot.webhook.use-webhook", havingValue = "false", matchIfMissing = true)
     SimpleTelegramLongPollingCommandBot simpleTelegramLongPollingCommandBot() {
         return new SimpleTelegramLongPollingCommandBot(botProperties);
     }
 
     @Bean
-    @ConditionalOnProperty(value = "khoinda.bot.webhook.useWebhook", havingValue = "true")
+    @ConditionalOnProperty(value = "khoinda.bot.webhook.use-webhook", havingValue = "true")
     SimpleTelegramWebhookCommandBot simpleTelegramWebhookCommandBot() {
         return new SimpleTelegramWebhookCommandBot(botProperties);
     }
@@ -88,7 +88,7 @@ public class BotAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(value = "khoinda.bot.webhook.useWebhook", havingValue = "true")
+    @ConditionalOnProperty(value = "khoinda.bot.webhook.use-webhook", havingValue = "true")
     SetWebhook setWebhook() {
         SetWebhook setWebhook = new SetWebhook();
         setWebhook.setUrl(botProperties.getWebhook().getUrl());
@@ -97,7 +97,7 @@ public class BotAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(value = "khoinda.bot.webhook.useWebhook", havingValue = "true")
+    @ConditionalOnProperty(value = "khoinda.bot.webhook.use-webhook", havingValue = "true")
     ServerlessWebhook webhook() {
         return new ServerlessWebhook();
     }
