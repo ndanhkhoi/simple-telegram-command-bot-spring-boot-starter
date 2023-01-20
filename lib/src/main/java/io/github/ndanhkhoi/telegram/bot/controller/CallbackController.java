@@ -26,7 +26,7 @@ import java.util.NoSuchElementException;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@ConditionalOnProperty(value = "khoinda.bot.webhook.useWebhook", havingValue = "true")
+@ConditionalOnProperty(value = "khoinda.bot.webhook.use-webhook", havingValue = "true")
 @RequestMapping("/callback")
 public class CallbackController {
 
