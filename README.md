@@ -66,7 +66,7 @@ Just import add the library to your project with one of these options:
 <dependency>
     <groupId>com.github.ndanhkhoi</groupId>
     <artifactId>simple-telegram-command-bot-spring-boot-starter</artifactId>
-    <version>2023.01.19</version>
+    <version>2023.01.20</version>
 </dependency>
 ```
 
@@ -84,7 +84,7 @@ repositories {
 
 ```gradle
 dependencies {
-    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:2023.01.19'
+    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:2023.01.20'
 }
 ```
 
