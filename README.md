@@ -94,9 +94,7 @@ dependencies {
 
 - Add [Telegram Bot Java Library](https://github.com/rubenlagus/TelegramBots) as dependency
 
--
-
-Add [Simple Telegram Command Bot Spring Boot Starter](https://github.com/ndanhkhoi/simple-telegram-command-bot-spring-boot-starter)
+- Add [Simple Telegram Command Bot Spring Boot Starter](https://github.com/ndanhkhoi/simple-telegram-command-bot-spring-boot-starter)
 
 - Add bot's properties to your **application.yml**
 
