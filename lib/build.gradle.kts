@@ -9,9 +9,9 @@
 plugins {
     `java-library`
     `maven-publish`
-    id("org.springframework.boot") version "2.7.8"  apply false
+    id("org.springframework.boot") version "2.7.11"  apply false
     id("io.spring.dependency-management") version "1.0.15.RELEASE"
-    id("com.github.monosoul.yadegrap") version "1.0.0"
+    id("io.freefair.lombok") version "8.0.1"
 }
 
 group = "com.github.ndanhkhoi"
@@ -77,8 +77,6 @@ tasks {
         from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
         with(jar.get() as CopySpec)
     }
-
-    val delombok = "delombok"(com.github.monosoul.yadegrap.DelombokTask::class)
 
     javadoc {
         dependsOn(delombok)
