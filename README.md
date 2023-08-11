@@ -45,7 +45,7 @@ markdown-toc</a></i></small>
 
 Just import add the library to your project with one of these options:
 
-1. Using Maven Central Repository:
+### Using Maven Central Repository:
 
 - Step 1. Add the JitPack repository to your build file
 
@@ -66,11 +66,11 @@ Just import add the library to your project with one of these options:
 <dependency>
     <groupId>com.github.ndanhkhoi</groupId>
     <artifactId>simple-telegram-command-bot-spring-boot-starter</artifactId>
-    <version>2023.01.20</version>
+    <version>2023.08.11</version>
 </dependency>
 ```
 
-2. Using Gradle:
+### Using Gradle:
 
 - Step 1. Add the JitPack repository to your build file
 
@@ -84,7 +84,7 @@ repositories {
 
 ```gradle
 dependencies {
-    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:2023.01.20'
+    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:2023.08.11'
 }
 ```
 
