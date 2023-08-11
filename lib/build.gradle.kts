@@ -9,7 +9,7 @@
 plugins {
     `java-library`
     `maven-publish`
-    id("org.springframework.boot") version "2.7.8"  apply false
+    id("org.springframework.boot") version "2.7.14"  apply false
     id("io.spring.dependency-management") version "1.0.15.RELEASE"
     id("com.github.monosoul.yadegrap") version "1.0.0"
 }
@@ -23,16 +23,16 @@ repositories {
 }
 
 dependencies {
-    implementation("org.telegram:telegrambots:6.4.0")
+    implementation("org.telegram:telegrambots:6.7.0")
     implementation("org.springframework.boot:spring-boot-starter")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    api("io.projectreactor:reactor-core:3.5.2")
-    api("io.projectreactor.addons:reactor-extra:3.5.0")
+    api("io.projectreactor:reactor-core:3.5.8")
+    api("io.projectreactor.addons:reactor-extra:3.5.1")
     api("org.apache.commons:commons-lang3:3.12.0")
     api("commons-io:commons-io:2.11.0")
-    api("com.google.guava:guava:31.1-jre")
+    api("com.google.guava:guava:32.1.2-jre")
     api("org.springframework:spring-web")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
