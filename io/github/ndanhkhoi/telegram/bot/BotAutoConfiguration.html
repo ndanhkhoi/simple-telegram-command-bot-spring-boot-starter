@@ -134,7 +134,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>@ConditionalOnProperty(value="khoinda.bot.enable-auto-config",
                        havingValue="true",
                        matchIfMissing=true)
-@Configuration
+@AutoConfiguration
 @ComponentScan
 @EnableConfigurationProperties(<a href="core/BotProperties.html" title="class in io.github.ndanhkhoi.telegram.bot.core">BotProperties.class</a>)
 @Import({<a href="core/processor/ProcessorConfig.html" title="class in io.github.ndanhkhoi.telegram.bot.core.processor">ProcessorConfig.class</a>,<a href="core/registry/RegistryConfig.html" title="class in io.github.ndanhkhoi.telegram.bot.core.registry">RegistryConfig.class</a>,<a href="core/resolver/TypeResolverConfig.html" title="class in io.github.ndanhkhoi.telegram.bot.core.resolver">TypeResolverConfig.class</a>,<a href="subscriber/SubscriberConfig.html" title="class in io.github.ndanhkhoi.telegram.bot.subscriber">SubscriberConfig.class</a>,<a href="repository/RepositoryConfig.html" title="class in io.github.ndanhkhoi.telegram.bot.repository">RepositoryConfig.class</a>,<a href="mapper/MapperConfig.html" title="class in io.github.ndanhkhoi.telegram.bot.mapper">MapperConfig.class</a>})
