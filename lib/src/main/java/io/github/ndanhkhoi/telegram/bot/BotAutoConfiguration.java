@@ -13,13 +13,13 @@ import io.github.ndanhkhoi.telegram.bot.subscriber.SubscriberConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
@@ -38,7 +38,7 @@ import java.time.Duration;
 @Slf4j
 @RequiredArgsConstructor
 @ConditionalOnProperty(value = "khoinda.bot.enable-auto-config", havingValue = "true", matchIfMissing = true)
-@Configuration
+@AutoConfiguration
 @ComponentScan
 @EnableConfigurationProperties({BotProperties.class})
 @Import({
