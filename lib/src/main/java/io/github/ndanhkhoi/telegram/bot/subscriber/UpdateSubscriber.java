@@ -256,20 +256,22 @@ public class UpdateSubscriber implements ApplicationContextAware {
         }
         else {
             Message message = update.getMessage();
-            boolean isNonCommand = message == null ||
-                    (message.hasText() && !StringUtils.startsWith(message.getText(), CommonConstant.CMD_PREFIX)) ||
-                    (message.hasPhoto() && !StringUtils.startsWith(message.getCaption(), CommonConstant.CMD_PREFIX)) ||
-                    TelegramMessageUtils.isChannelPost(update);
+            boolean isCommand = !TelegramMessageUtils.isChannelPost(update) &&
+                    message != null &&
+                    (
+                            (message.hasText() && StringUtils.startsWith(message.getText(), CommonConstant.CMD_PREFIX)) ||
+                                    (message.hasPhoto() && StringUtils.startsWith(message.getCaption(), CommonConstant.CMD_PREFIX))
+                    );
 
-            if (isNonCommand) {
-                NonCommandUpdateSubscriber nonCommandUpdateSubscriber = applicationContext.getBean(NonCommandUpdateSubscriber.class);
-                nonCommandUpdateSubscriber.accept(update);
-            }
-            else {
+            if (isCommand) {
                 BotCommandParams botCommandParams = BotDispatcher.getInstance().getCommandParams(update);
                 if (botCommandParams != null) {
                     excuteCommand(update, botCommandParams);
                 }
+            }
+            else {
+                NonCommandUpdateSubscriber nonCommandUpdateSubscriber = applicationContext.getBean(NonCommandUpdateSubscriber.class);
+                nonCommandUpdateSubscriber.accept(update);
             }
         }
     }
