@@ -65,7 +65,7 @@ Just import add the library to your project with one of these options:
 <dependency>
     <groupId>com.github.ndanhkhoi</groupId>
     <artifactId>simple-telegram-command-bot-spring-boot-starter</artifactId>
-    <version>2023.08.13</version>
+    <version>2023.08.20</version>
 </dependency>
 ```
 
@@ -83,7 +83,7 @@ repositories {
 
 ```gradle
 dependencies {
-    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:2023.08.13'
+    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:2023.08.20'
 }
 ```
 
@@ -296,9 +296,8 @@ This library uses following dependencies:
 3. [Lombok](https://github.com/projectlombok/lombok)
 4. [Reactor Core](https://github.com/reactor/reactor-core)
 5. [Reactor Extra Utilities](https://github.com/reactor/reactor-addons)
-6. [Google Guava](https://github.com/google/guava)
-7. [Apache Commons Lang](https://github.com/apache/commons-lang)
-8. [Apache Commons IO](https://github.com/apache/commons-io)
+6. [Apache Commons Lang](https://github.com/apache/commons-lang)
+7. [Apache Commons IO](https://github.com/apache/commons-io)
 
 ## Telegram Bot API
 

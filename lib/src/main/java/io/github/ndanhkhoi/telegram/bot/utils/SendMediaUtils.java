@@ -1,7 +1,7 @@
 package io.github.ndanhkhoi.telegram.bot.utils;
 
-import com.google.common.collect.ImmutableMap;
 import io.github.ndanhkhoi.telegram.bot.constant.MediaType;
+import jakarta.annotation.Nullable;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import reactor.function.Consumer4;
 
-import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -25,12 +25,14 @@ import java.util.Map;
 @UtilityClass
 public class SendMediaUtils {
 
-    private static final Map<MediaType, Consumer4<Message, InputFile, Long, AbsSender>> inputfileConsumerMap = ImmutableMap.<MediaType, Consumer4<Message, InputFile, Long, AbsSender>>builder()
-            .put(MediaType.STICKER, SendMediaUtils::sendSticker)
-            .put(MediaType.DOCUMENT, SendMediaUtils::sendDocument)
-            .put(MediaType.PHOTO, SendMediaUtils::sendPhoto)
-            .put(MediaType.VOICE, SendMediaUtils::sendVoice)
-            .build();
+    private static final Map<MediaType, Consumer4<Message, InputFile, Long, AbsSender>> inputfileConsumerMap = new HashMap<>();
+
+    static {
+        inputfileConsumerMap.put(MediaType.STICKER, SendMediaUtils::sendSticker);
+        inputfileConsumerMap.put(MediaType.DOCUMENT, SendMediaUtils::sendDocument);
+        inputfileConsumerMap.put(MediaType.PHOTO, SendMediaUtils::sendPhoto);
+        inputfileConsumerMap.put(MediaType.VOICE, SendMediaUtils::sendVoice);
+    }
 
     @SneakyThrows
     public static void sendDocument(@Nullable Message messageToReply, InputFile inputFile, Long chatId, AbsSender bot) {

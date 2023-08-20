@@ -1,6 +1,5 @@
 package io.github.ndanhkhoi.telegram.bot.core;
 
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -15,18 +14,17 @@ import java.util.List;
  * Created at 11:33:32 October 08, 2021
  */
 @Slf4j
-@RequiredArgsConstructor
 public class SimpleTelegramLongPollingCommandBot extends TelegramLongPollingBot {
     private final BotProperties botProperties;
+
+    public SimpleTelegramLongPollingCommandBot(BotProperties botProperties) {
+        super(botProperties.getToken());
+        this.botProperties = botProperties;
+    }
 
     @Override
     public String getBotUsername() {
         return botProperties.getUsername();
-    }
-
-    @Override
-    public String getBotToken() {
-        return botProperties.getToken();
     }
 
     @SneakyThrows
