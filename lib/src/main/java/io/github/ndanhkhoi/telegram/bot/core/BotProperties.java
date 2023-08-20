@@ -48,6 +48,7 @@ public class BotProperties {
         private Boolean useWebhook = false;
         private String url;
         private String secretToken;
+        private String baseCallbackPath;
     }
 
 }

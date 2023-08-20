@@ -31,11 +31,7 @@ public class AdviceRegistry {
         return adviceMap.get(clazz);
     }
 
-    @Getter
-    @RequiredArgsConstructor
-    public static class Advice {
-        private final Object bean;
-        private final Method method;
+    public record Advice(Object bean, Method method) {
     }
 
 }

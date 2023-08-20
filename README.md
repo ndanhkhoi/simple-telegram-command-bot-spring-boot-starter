@@ -65,7 +65,7 @@ Just import add the library to your project with one of these options:
 <dependency>
     <groupId>com.github.ndanhkhoi</groupId>
     <artifactId>simple-telegram-command-bot-spring-boot-starter</artifactId>
-    <version>2023.08.20</version>
+    <version>2023.08.21</version>
 </dependency>
 ```
 
@@ -83,7 +83,7 @@ repositories {
 
 ```gradle
 dependencies {
-    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:2023.08.20'
+    implementation 'com.github.ndanhkhoi:simple-telegram-command-bot-spring-boot-starter:2023.08.21'
 }
 ```
 
@@ -161,9 +161,9 @@ You can authorize command with these properties in `@CommandMapping` annotaion:
 
 - `@CommandName` - An annotation to mark a param in command method as a command name
 - `@CommandBody` - An annotation to mark a param in command method as a command body
-- `@ChatId` - An annotation to mark a param in command method as a chat id, can be use on `Long` type
-- `@SendUserId` - An annotation to mark a param in command method as a user id, can be use on `Long` type
-- `@SendUsername` - An annotation to mark a param in command method as a username, can be use on `String` type
+- `@ChatId` - An annotation to mark a param in command method as a chat id, can be used on `Long` type
+- `@SendUserId` - An annotation to mark a param in command method as a user id, can be used on `Long` type
+- `@SendUsername` - An annotation to mark a param in command method as a username, can be used on `String` type
 
 ## Supported return values
 
@@ -256,6 +256,7 @@ There are some beans that you can create an inplements to do your stuff
 - `NonCommandUpdateSubscriber` - handle an update does not contain command
 - `PreSubscriber` - do your job before process command
 - `PosSubscriber` - do your job after process command
+- `AfterRegisterBotSubscriber` - do your job after register bot
 
 ## Configurations
 
@@ -263,25 +264,26 @@ There are some beans that you can create an inplements to do your stuff
 
 By default, you can configure only these properties:
 
-| Property                                 | Description                                                                                                                                                                                                                                              | Default value       |
-|------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
-| khoinda.bot.enable-auto-config           | Enable bot auto configuration                                                                                                                                                                                                                            | `true`              |
-| khoinda.bot.username                     | Bot's username                                                                                                                                                                                                                                           |                     |
-| khoinda.bot.token                        | Bot's token                                                                                                                                                                                                                                              |                     |
-| khoinda.bot.logging-chat-id              | Chat id can received logging when new `Update` recieved                                                                                                                                                                                                  |                     |
-| khoinda.bot.bot-owner-chat-id            | Chat id of bot's owner                                                                                                                                                                                                                                   | `new ArrayList<>()` |
-| khoinda.bot.bot-route-packages           | Package(s) name that includes BotRoute class                                                                                                                                                                                                             | `new ArrayList<>()` |
-| khoinda.bot.enable-update-trace          | Enable /update_trace for owner                                                                                                                                                                                                                           | `false`             |
-| khoinda.bot.disable-default-commands     | Disable /help, /start by default                                                                                                                                                                                                                         | `false`             |
-| khoinda.bot.show-command-menu            | Show command on bot menu                                                                                                                                                                                                                                 | `true`              |
-| khoinda.bot.executor.core-pool-size      | Bot executor core pool size                                                                                                                                                                                                                              | `8`                 |
-| khoinda.bot.executor.max-pool-size       | Bot executor max pool size                                                                                                                                                                                                                               | `Integer.MAX_VALUE` |
-| khoinda.bot.executor.queue-capacity      | Bot executor queue capacity                                                                                                                                                                                                                              | `Integer.MAX_VALUE` |
-| khoinda.bot.executor.thread-name-prefix  | Bot executor thread name prefix                                                                                                                                                                                                                          | `bot-task-`         |
-| khoinda.bot.register-delay               | Number of second(s) delay to register bot when application ready                                                                                                                                                                                         | `0`                 |
-| khoinda.webhook.use-webhook              | Use webhook bot instead of long polling                                                                                                                                                                                                                  | `false`             |
-| khoinda.webhook.url                      | Base URL for webhook                                                                                                                                                                                                                                     |                     |
-| khoinda.webhook.secret-token             | A secret token to be sent in a header “X-Telegram-Bot-Api-Secret-Token” in every webhook request, 1-256 characters. Only characters A-Z, a-z, 0-9, _ and - are allowed. The header is useful to ensure that the request comes from a webhook set by you. |                     |
+| Property                                | Description                                                                                                                                                                                                                                              | Default value       |
+|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
+| khoinda.bot.enable-auto-config          | Enable bot auto configuration                                                                                                                                                                                                                            | `true`              |
+| khoinda.bot.username                    | Bot's username                                                                                                                                                                                                                                           |                     |
+| khoinda.bot.token                       | Bot's token                                                                                                                                                                                                                                              |                     |
+| khoinda.bot.logging-chat-id             | Chat id can received logging when new `Update` recieved                                                                                                                                                                                                  |                     |
+| khoinda.bot.bot-owner-chat-id           | Chat id of bot's owner                                                                                                                                                                                                                                   | `new ArrayList<>()` |
+| khoinda.bot.bot-route-packages          | Package(s) name that includes BotRoute class                                                                                                                                                                                                             | `new ArrayList<>()` |
+| khoinda.bot.enable-update-trace         | Enable /update_trace for owner                                                                                                                                                                                                                           | `false`             |
+| khoinda.bot.disable-default-commands    | Disable /help, /start by default                                                                                                                                                                                                                         | `false`             |
+| khoinda.bot.show-command-menu           | Show command on bot menu                                                                                                                                                                                                                                 | `true`              |
+| khoinda.bot.executor.core-pool-size     | Bot executor core pool size                                                                                                                                                                                                                              | `8`                 |
+| khoinda.bot.executor.max-pool-size      | Bot executor max pool size                                                                                                                                                                                                                               | `Integer.MAX_VALUE` |
+| khoinda.bot.executor.queue-capacity     | Bot executor queue capacity                                                                                                                                                                                                                              | `Integer.MAX_VALUE` |
+| khoinda.bot.executor.thread-name-prefix | Bot executor thread name prefix                                                                                                                                                                                                                          | `bot-task-`         |
+| khoinda.bot.register-delay              | Number of second(s) delay to register bot when application ready                                                                                                                                                                                         | `0`                 |
+| khoinda.webhook.use-webhook             | Use webhook bot instead of long polling                                                                                                                                                                                                                  | `false`             |
+| khoinda.webhook.url                     | Base URL for webhook                                                                                                                                                                                                                                     |                     |
+| khoinda.webhook.secret-token            | A secret token to be sent in a header “X-Telegram-Bot-Api-Secret-Token” in every webhook request, 1-256 characters. Only characters A-Z, a-z, 0-9, _ and - are allowed. The header is useful to ensure that the request comes from a webhook set by you. |                     |
+| khoinda.bot.webhook.base-callback-path  | Base path for webhook callback url.                                                                                                                                                                                                                      | `/callback`         |
 
 ## Java Docs
 

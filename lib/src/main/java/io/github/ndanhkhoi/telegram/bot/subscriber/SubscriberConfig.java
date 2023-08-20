@@ -40,6 +40,12 @@ public class SubscriberConfig {
         return new DefaultPosSubscriber();
     }
 
+    @ConditionalOnMissingBean(AfterRegisterBotSubscriber.class)
+    @Bean
+    AfterRegisterBotSubscriber afterRegisterBotSubscriber() {
+        return new DefaultAfterRegisterBotSubscriber();
+    }
+
     @Bean
     UpdateSubscriber updateSubscriber() {
         return new UpdateSubscriber();

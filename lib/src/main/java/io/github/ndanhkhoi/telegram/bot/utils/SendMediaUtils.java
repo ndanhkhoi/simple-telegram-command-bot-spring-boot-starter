@@ -14,7 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import reactor.function.Consumer4;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 /**
@@ -25,7 +25,7 @@ import java.util.Map;
 @UtilityClass
 public class SendMediaUtils {
 
-    private static final Map<MediaType, Consumer4<Message, InputFile, Long, AbsSender>> inputfileConsumerMap = new HashMap<>();
+    private static final Map<MediaType, Consumer4<Message, InputFile, Long, AbsSender>> inputfileConsumerMap =new EnumMap<>(MediaType.class);
 
     static {
         inputfileConsumerMap.put(MediaType.STICKER, SendMediaUtils::sendSticker);

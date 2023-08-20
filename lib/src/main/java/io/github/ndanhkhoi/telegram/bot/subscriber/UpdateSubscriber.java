@@ -134,8 +134,7 @@ public class UpdateSubscriber implements ApplicationContextAware {
 
     private void handleConsumeError(Throwable t, BotCommandParams botCommandParams) {
         // Exception when invoke method. Ex: bot method throws exception manually
-        if (t instanceof InvocationTargetException) {
-            InvocationTargetException itex = (InvocationTargetException) t;
+        if (t instanceof InvocationTargetException itex) {
             executeCommandAdvice(itex.getTargetException(), botCommandParams);
         }
         else {
@@ -198,8 +197,8 @@ public class UpdateSubscriber implements ApplicationContextAware {
     public void executeCommandAdvice(Throwable t, BotCommandParams params) {
         AdviceRegistry adviceRegistry = applicationContext.getBean(AdviceRegistry.class);
         if (adviceRegistry.hasAdvice(t.getClass())) {
-            Method handleMethod = adviceRegistry.getAdvice(t.getClass()).getMethod();
-            Object adviceBean = adviceRegistry.getAdvice(t.getClass()).getBean();
+            Method handleMethod = adviceRegistry.getAdvice(t.getClass()).method();
+            Object adviceBean = adviceRegistry.getAdvice(t.getClass()).bean();
             Parameter[] parameters = handleMethod.getParameters();
             Object[] args = new Object[parameters.length];
             for (int idx = 0; idx < parameters.length; idx++) {
@@ -215,8 +214,8 @@ public class UpdateSubscriber implements ApplicationContextAware {
                 log.warn("Returnd value of {}#{} is null, so default error handler will be called as a callback", adviceBean.getClass().getSimpleName(), handleMethod.getName());
                 sendUnknownErrorAlert(params, t);
             }
-            else if (returnValue instanceof String) {
-                TelegramMessageUtils.replyMessage(BotDispatcher.getInstance().getSender(), params.getUpdate().getMessage(), (String) returnValue, null);
+            else if (returnValue instanceof String stringReturnValue) {
+                TelegramMessageUtils.replyMessage(BotDispatcher.getInstance().getSender(), params.getUpdate().getMessage(), stringReturnValue, null);
             }
             else if (returnValue instanceof BotApiMethod) {
                 BotDispatcher.getInstance().executeSneakyThrows((BotApiMethod<? extends Serializable>) returnValue);

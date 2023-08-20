@@ -9,6 +9,7 @@ import io.github.ndanhkhoi.telegram.bot.core.registry.RegistryConfig;
 import io.github.ndanhkhoi.telegram.bot.core.resolver.TypeResolverConfig;
 import io.github.ndanhkhoi.telegram.bot.mapper.MapperConfig;
 import io.github.ndanhkhoi.telegram.bot.repository.RepositoryConfig;
+import io.github.ndanhkhoi.telegram.bot.subscriber.AfterRegisterBotSubscriber;
 import io.github.ndanhkhoi.telegram.bot.subscriber.SubscriberConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -107,7 +108,11 @@ public class BotAutoConfiguration {
     public void registerBot() {
         Mono.just(botProperties.getWebhook().getUseWebhook())
                 .delaySubscription(Duration.ofSeconds(botProperties.getRegisterDelay()))
-                .doOnSuccess(api -> log.info("Spring Boot Telegram Command Bot Auto Configuration by @ndanhkhoi"))
+                .doOnSuccess(e -> {
+                    log.info("Spring Boot Telegram Command Bot Auto Configuration by @ndanhkhoi");
+                    applicationContext.getBean(AfterRegisterBotSubscriber.class)
+                            .accept(BotDispatcher.getInstance().getSender());
+                })
                 .doOnError(ex -> {
                     throw Exceptions.errorCallbackNotImplemented(ex);
                 })

@@ -1,9 +1,6 @@
 package io.github.ndanhkhoi.telegram.bot.controller;
 
 import io.github.ndanhkhoi.telegram.bot.core.BotProperties;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -27,7 +24,7 @@ import java.util.NoSuchElementException;
 @RestController
 @RequiredArgsConstructor
 @ConditionalOnProperty(value = "khoinda.bot.webhook.use-webhook", havingValue = "true")
-@RequestMapping("/callback")
+@RequestMapping("${khoinda.bot.webhook.base-callback-path:/callback}")
 public class CallbackController {
 
     private final ServerlessWebhook webhook;
@@ -40,29 +37,17 @@ public class CallbackController {
         if (StringUtils.equals(botProperties.getWebhook().getSecretToken(), secretToken)) {
             try {
                 webhook.updateReceived(botPath, update);
-                response = CallbackResponse.builder()
-                        .success(true)
-                        .message(HttpStatus.OK.toString())
-                        .build();
+                response = new CallbackResponse(true, HttpStatus.OK.toString());
             }
             catch (NoSuchElementException e) {
-                response = CallbackResponse.builder()
-                        .success(false)
-                        .message(HttpStatus.NOT_FOUND.toString())
-                        .build();
+                response = new CallbackResponse(false, HttpStatus.NOT_FOUND.toString());
             }
             catch (TelegramApiValidationException e) {
-                response = CallbackResponse.builder()
-                        .success(false)
-                        .message(HttpStatus.INTERNAL_SERVER_ERROR.toString())
-                        .build();
+                response = new CallbackResponse(false, HttpStatus.INTERNAL_SERVER_ERROR.toString());
             }
         }
         else {
-            response = CallbackResponse.builder()
-                    .success(false)
-                    .message(HttpStatus.UNAUTHORIZED.toString())
-                    .build();
+            response = new CallbackResponse(false, HttpStatus.UNAUTHORIZED.toString());
         }
         return ResponseEntity.ok()
                 .body(response);
@@ -78,12 +63,7 @@ public class CallbackController {
         }
     }
 
-    @Data
-    @Builder
-    @AllArgsConstructor
-    private static class CallbackResponse {
-        private boolean success;
-        private String message;
+    public record CallbackResponse(boolean success, String message) {
     }
 
 }

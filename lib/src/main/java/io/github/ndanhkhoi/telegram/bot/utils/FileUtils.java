@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -40,6 +41,13 @@ public final class FileUtils {
         InputFile inputFile = new InputFile();
         String fileName = StringUtils.firstNonBlank(resource.getFilename(), CommonConstant.TEMP_PREFIX + getPosfixFileInstantByTime(ZoneId.systemDefault()));
         inputFile.setMedia(resource.getInputStream(), fileName);
+        return inputFile;
+    }
+
+    @SneakyThrows
+    public static InputFile getInputFile(InputStream inputStream) {
+        InputFile inputFile = new InputFile();
+        inputFile.setMedia(inputStream, CommonConstant.TEMP_PREFIX + getPosfixFileInstantByTime(ZoneId.systemDefault()));
         return inputFile;
     }
 
