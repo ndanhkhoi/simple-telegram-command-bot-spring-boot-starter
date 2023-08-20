@@ -9,6 +9,7 @@ import io.github.ndanhkhoi.telegram.bot.model.BotCommandParams;
 import io.github.ndanhkhoi.telegram.bot.model.MessageParser;
 import io.github.ndanhkhoi.telegram.bot.subscriber.UpdateSubscriber;
 import io.github.ndanhkhoi.telegram.bot.utils.TelegramMessageUtils;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -24,24 +25,22 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 public final class BotDispatcher {
     private final ApplicationContext applicationContext;
     private final BotProperties botProperties;
+
+    @Getter
     private final AbsSender sender;
 
+    @Getter
     private static BotDispatcher instance;
 
     private BotDispatcher(ApplicationContext applicationContext, BotProperties botProperties, AbsSender sender) {
         this.applicationContext = applicationContext;
         this.botProperties = botProperties;
         this.sender = sender;
-    }
-
-    public static BotDispatcher getInstance() {
-        return instance;
     }
 
     public static void createInstance(ApplicationContext applicationContext, BotProperties botProperties, AbsSender sender) {
@@ -53,10 +52,6 @@ public final class BotDispatcher {
                 throw new java.lang.UnsupportedOperationException("This is a singleton class and cannot be instantiated more than once");
             }
         }
-    }
-
-    public AbsSender getSender() {
-        return sender;
     }
 
 
